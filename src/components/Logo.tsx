@@ -28,14 +28,18 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
         style={{
           width: icon + 12,
           height: icon + 12,
-          backgroundColor: 'var(--logo-bg, #0a0f5c)'
+          backgroundColor: "var(--logo-bg, #0a0f5c)",
         }}
       >
-        <GraduationCap size={icon} style={{ color: 'var(--logo-icon, #ffffff)' }} strokeWidth={2.5} />
+        <GraduationCap
+          size={icon}
+          style={{ color: "var(--logo-icon, #ffffff)" }}
+          strokeWidth={2.5}
+        />
       </div>
       <span
         className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
-        style={{ color: 'var(--logo-text, #0a0f5c)' }}
+        style={{ color: "var(--logo-text, #0a0f5c)" }}
       >
         TertiaryFree
       </span>

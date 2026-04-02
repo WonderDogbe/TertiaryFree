@@ -220,33 +220,36 @@ export default function LandingPage() {
                 className="relative z-[60] flex flex-col gap-1.5 p-2 transition-opacity hover:opacity-80 lg:hidden"
                 aria-label="Toggle menu"
               >
-                <div 
-                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2 bg-slate-900 dark:bg-white" : ""}`} 
+                <div
+                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2 bg-slate-900 dark:bg-white" : ""}`}
                 />
-                <div 
-                  className={`h-1 w-5 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`} 
+                <div
+                  className={`h-1 w-5 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
                 />
-                <div 
-                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 absolute ${isMenuOpen ? "-rotate-45 translate-y-2 opacity-100 bg-slate-900 dark:bg-white" : "opacity-0"}`} 
+                <div
+                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 absolute ${isMenuOpen ? "-rotate-45 translate-y-2 opacity-100 bg-slate-900 dark:bg-white" : "opacity-0"}`}
                 />
               </button>
 
               {/* Mobile Menu Overlay & Drawer */}
-              <div 
+              <div
                 className={`fixed inset-0 z-50 lg:hidden transition-all duration-500 ${isMenuOpen ? "visible" : "invisible"}`}
               >
                 {/* Backdrop with Blur */}
-                <div 
+                <div
                   className={`absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
                   onClick={() => setIsMenuOpen(false)}
                 />
 
                 {/* Drawer */}
-                <div 
+                <div
                   className={`absolute right-0 top-0 h-full w-full bg-white dark:bg-[#020617] transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
                 >
                   <div className="flex h-full flex-col p-8 pt-32">
-                    <nav className="flex flex-col gap-y-[3px]" aria-label="Mobile">
+                    <nav
+                      className="flex flex-col gap-y-[3px]"
+                      aria-label="Mobile"
+                    >
                       {NAV_LINKS.map((item) => (
                         <Link
                           key={`mobile-${item.href}`}
@@ -296,7 +299,9 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <main className={`pt-24 sm:pt-28 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+      <main
+        className={`pt-24 sm:pt-28 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+      >
         <section className="relative overflow-hidden">
           <div
             className="absolute inset-x-0 top-[-160px] -z-10 h-[520px] bg-[radial-gradient(circle_at_top_left,#2dd4a844,transparent_50%),radial-gradient(circle_at_top_right,#0a0f5c22,transparent_45%)] dark:bg-[radial-gradient(circle_at_top_left,#2dd4a822,transparent_50%),radial-gradient(circle_at_top_right,#ffffff11,transparent_45%)]"
@@ -308,9 +313,9 @@ export default function LandingPage() {
               <p className="inline-flex items-center rounded-full border border-[#0a0f5c]/15 dark:border-white/10 bg-white dark:bg-slate-900 px-4 py-1 text-sm font-medium text-[#0a0f5c] dark:text-[#2dd4a8]">
                 Built for students and lecturers
               </p>
-              <h1 
+              <h1
                 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl"
-                style={{ color: 'var(--hero-text-color, #130138)' }}
+                style={{ color: "var(--hero-text-color, #130138)" }}
               >
                 Never Miss a Lecture Again
               </h1>
@@ -455,7 +460,9 @@ export default function LandingPage() {
                   className="transition-transform duration-200 hover:-translate-y-1"
                 >
                   <FeatureCard
-                    icon={<Icon className="h-5 w-5 text-slate-800 dark:text-[#2dd4a8]" />}
+                    icon={
+                      <Icon className="h-5 w-5 text-slate-800 dark:text-[#2dd4a8]" />
+                    }
                     title={item.title}
                     description={item.description}
                   />
@@ -482,23 +489,23 @@ export default function LandingPage() {
                 const Icon = step.icon;
 
                 return (
-                        <article
-                          key={step.title}
-                          className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900"
-                        >
-                          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#0a0f5c]/10 dark:bg-[#2dd4a8]/10">
-                            <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
-                          </div>
-                          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                            Step {index + 1}
-                          </p>
-                          <h3 className="mt-2 text-lg font-bold text-[#0a0f5c] dark:text-white">
-                            {step.title}
-                          </h3>
-                          <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                            {step.description}
-                          </p>
-                        </article>
+                  <article
+                    key={step.title}
+                    className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900"
+                  >
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#0a0f5c]/10 dark:bg-[#2dd4a8]/10">
+                      <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                      Step {index + 1}
+                    </p>
+                    <h3 className="mt-2 text-lg font-bold text-[#0a0f5c] dark:text-white">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+                      {step.description}
+                    </p>
+                  </article>
                 );
               })}
             </div>
@@ -627,7 +634,9 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <div className={`transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+      <div
+        className={`transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+      >
         <Footer />
       </div>
     </div>

@@ -14,9 +14,21 @@ import { Footer } from "@/components/Footer";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const HERO_IMAGES = [
-  "/library-hero.png",
-  "/medium-shot-students-classroom.jpg",
-  "/study-group-african-people.jpg",
+  {
+    url: "/library-hero.png",
+    title: "Centralized Academic Hub",
+    description: "Access your entire university life from a single, unified dashboard."
+  },
+  {
+    url: "/medium-shot-students-classroom.jpg",
+    title: "Real-time Timetables",
+    description: "Stay updated with instant schedule changes and personalized lecture alerts."
+  },
+  {
+    url: "/study-group-african-people.jpg",
+    title: "Unified Course Materials",
+    description: "Organize your notes, slides, and assignments in one searchable location."
+  },
 ];
 
 export default function LandingPage() {
@@ -142,9 +154,9 @@ export default function LandingPage() {
               <div className="mt-16 flow-root sm:mt-24 animate-slide-up delay-100 mx-auto max-w-6xl">
                 <div className="relative p-0 lg:p-0">
                   <div className="overflow-hidden rounded-[2rem] sm:rounded-[3rem] shadow-2xl h-[300px] sm:h-[500px] lg:h-[650px] relative bg-slate-200">
-                    {HERO_IMAGES.map((img, index) => (
+                    {HERO_IMAGES.map((item, index) => (
                       <div
-                        key={img}
+                        key={item.url}
                         className={`absolute inset-0 transition-transform duration-1000 ease-[cubic-bezier(0.65,0,0.35,1)] ${
                           index === currentImageIndex
                             ? "translate-x-0 z-10"
@@ -155,11 +167,23 @@ export default function LandingPage() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={img}
-                          alt={`App dashboard mock ${index + 1}`}
+                          src={item.url}
+                          alt={item.title}
                           className="absolute h-full w-full object-cover object-center"
                         />
-                        <div className="absolute inset-0 bg-[#0a0f5c]/30 mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+                        
+                        {/* Text Overlay */}
+                        <div className={`absolute bottom-8 left-8 right-8 sm:bottom-12 sm:left-12 sm:right-12 transition-all duration-700 delay-300 ${
+                          index === currentImageIndex ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                        }`}>
+                          <h3 className="text-xl sm:text-3xl font-bold text-white mb-2 sm:mb-4">
+                            {item.title}
+                          </h3>
+                          <p className="text-sm sm:text-lg text-white/90 max-w-xl line-clamp-2 sm:line-clamp-none">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>

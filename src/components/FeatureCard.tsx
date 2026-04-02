@@ -9,34 +9,14 @@ interface FeatureCardProps {
   color?: string;
 }
 
-export function FeatureCard({
-  icon,
-  title,
-  description,
-  color = "var(--color-primary)",
-}: FeatureCardProps) {
+export function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
-    <div
-      className="feature-card rounded-2xl p-5"
-      style={{
-        background: color,
-        minHeight: 120,
-      }}
-    >
-      <div
-        className="flex items-center justify-center rounded-xl mb-3"
-        style={{
-          width: 44,
-          height: 44,
-          background: "rgba(255, 255, 255, 0.2)",
-        }}
-      >
+    <div className="rounded-2xl border border-slate-200/50 bg-slate-100/50 p-6 transition-all hover:bg-slate-100/80 hover:shadow-md h-full">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm text-slate-900">
         {icon}
       </div>
-      <h3 className="text-white font-semibold text-base mb-1">{title}</h3>
-      <p className="text-sm" style={{ color: "rgba(255, 255, 255, 0.75)" }}>
-        {description}
-      </p>
+      <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
     </div>
   );
 }

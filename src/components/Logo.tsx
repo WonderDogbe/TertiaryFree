@@ -24,15 +24,19 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
       id="brand-logo"
     >
       <div
-        className="flex items-center justify-center rounded-lg bg-[#0a0f5c] group-hover:bg-[#1a2080] transition-colors shadow-sm"
+        className="flex items-center justify-center rounded-lg shadow-sm transition-colors"
         style={{
           width: icon + 12,
           height: icon + 12,
+          backgroundColor: 'var(--logo-bg, #0a0f5c)'
         }}
       >
-        <GraduationCap size={icon} className="text-white" strokeWidth={2.5} />
+        <GraduationCap size={icon} style={{ color: 'var(--logo-icon, #ffffff)' }} strokeWidth={2.5} />
       </div>
-      <span className={`font-extrabold ${text} text-[#0a0f5c] tracking-tight group-hover:text-[#1a2080] transition-colors`}>
+      <span
+        className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
+        style={{ color: 'var(--logo-text, #0a0f5c)' }}
+      >
         TertiaryFree
       </span>
     </Link>

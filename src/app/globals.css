@@ -17,33 +17,20 @@ body {
   font-family: var(--font-sans);
   background-color: #fafbfc;
   color: #0f172a;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }
 
 :root.dark html,
 :root.dark body {
   background-color: #020617;
-  color: #f8fafc;
+  --hero-text-color: #ffffff;
+  --logo-bg: #2dd4a8;
+  --logo-icon: #0a0f5c;
+  --logo-text: #2dd4a8;
 }
 
-/* Force blue/navy text to white in dark mode using escaped selectors for Tailwind arbitrary values */
-.dark .text-\[\#0a0f5c\],
-.dark .text-slate-900,
-.dark .text-slate-700,
-.dark .text-\[\#0a7fd9\] {
-  color: #ffffff !important;
-}
-
-/* Force brand gradients to lighter shades or white for dark mode */
-.dark .text-gradient {
-  background: linear-gradient(90deg, #ffffff, #2dd4a8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.dark .bg-slate-50 {
+/* Dark mode overrides */
+.dark .bg-slate-50,
+.dark .bg-slate-50\/90 {
   background-color: #020617 !important;
 }
 
@@ -51,16 +38,34 @@ body {
   background-color: #0f172a !important;
 }
 
-.dark .text-slate-900 {
-  color: #f8fafc !important;
-}
-
+/* Fix specific colors for dark mode visibility */
 .dark .text-slate-600 {
   color: #94a3b8 !important;
 }
 
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
 .dark .border-slate-100 {
   border-color: #1e293b !important;
+}
+
+/* Navigation items in dark mode */
+.dark header nav a {
+  color: #cbd5e1 !important;
+}
+
+.dark header nav a:hover {
+  color: #2dd4a8 !important;
+}
+
+/* Buttons in dark mode */
+.dark .btn-brand {
+  background-color: #2dd4a8 !important;
+  color: #0a0f5c !important;
+}
+
+.dark .btn-brand:hover {
+  background-color: #3dedc0 !important;
 }
 
 /* Premium UI Utilities */

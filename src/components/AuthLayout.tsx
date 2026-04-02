@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -35,8 +37,9 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             ))}
           </div>
           <blockquote className="text-3xl font-bold leading-tight tracking-tight mb-6">
-            "TertiaryFree has completely transformed how I manage my university
-            life. Everything from grades to tuition is just a click away."
+            &quot;TertiaryFree has completely transformed how I manage my
+            university life. Everything from grades to tuition is just a click
+            away.&quot;
           </blockquote>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-[#0a0f5c] font-bold text-lg">
@@ -54,6 +57,15 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
       {/* Right pane - Form Content (Previously Left) */}
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-[500px] xl:w-[600px] lg:px-12 xl:px-24 py-12 relative">
+        <div className="absolute top-8 left-8 sm:left-12 xl:left-24">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-[#0a0f5c] transition-colors group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Back to main
+          </Link>
+        </div>
         <div className="absolute top-8 right-8">
           <ThemeToggle />
         </div>

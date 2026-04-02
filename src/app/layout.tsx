@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TertiaryFree — Your Academic Journey, Unified",
+  title: "TertiaryFree — ",
   description:
     "Simplify university life. Centralize timetables, course materials, announcements, attendance, and payments into one premium platform.",
   keywords: [
@@ -41,8 +41,8 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <MantineProvider defaultColorScheme="light">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <MantineProvider defaultColorScheme="auto">
             {children}
           </MantineProvider>
         </ThemeProvider>

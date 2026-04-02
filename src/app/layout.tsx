@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -36,10 +37,15 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-        <MantineProvider defaultColorScheme="light">
-          {children}
-        </MantineProvider>
+      <body
+        className="min-h-full flex flex-col"
+        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+      >
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <MantineProvider defaultColorScheme="light">
+            {children}
+          </MantineProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

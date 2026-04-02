@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   ArrowRight,
   Wallet,
@@ -9,8 +10,25 @@ import {
   BookOpen,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { Footer } from "@/components/Footer";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+const HERO_IMAGES = [
+  "/library-hero.png",
+  "/medium-shot-students-classroom.jpg",
+  "/study-group-african-people.jpg",
+];
 
 export default function LandingPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-[#2dd4a8] selection:text-[#0a0f5c]">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -22,10 +40,37 @@ export default function LandingPage() {
             <div className="flex lg:flex-1">
               <Logo size="md" />
             </div>
+            <div className="hidden lg:flex flex-1 justify-center items-center gap-x-8 mx-12">
+              <Link
+                href="#features"
+                className="text-sm font-medium text-slate-700 hover:text-[#0a0f5c] transition"
+              >
+                Features
+              </Link>
+              <Link
+                href="#about"
+                className="text-sm font-medium text-slate-700 hover:text-[#0a0f5c] transition"
+              >
+                About Us
+              </Link>
+              <Link
+                href="#tutorials"
+                className="text-sm font-medium text-slate-700 hover:text-[#0a0f5c] transition"
+              >
+                Tutorials
+              </Link>
+              <Link
+                href="#contact"
+                className="text-sm font-medium text-slate-700 hover:text-[#0a0f5c] transition"
+              >
+                Contact Us
+              </Link>
+            </div>
             <div className="flex flex-1 justify-end items-center gap-x-4 sm:gap-x-6">
+              <ThemeToggle />
               <Link
                 href="/login"
-                className="text-sm font-semibold leading-6 text-slate-700 hover:text-[#0a0f5c] transition"
+                className="text-sm font-semibold leading-6 text-slate-700 dark:text-slate-300 hover:text-[#0a0f5c] dark:hover:text-white transition"
               >
                 Sign in
               </Link>
@@ -60,19 +105,7 @@ export default function LandingPage() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="mx-auto max-w-3xl text-center animate-slide-up">
                 <div className="mb-8 flex justify-center">
-                  <span className="relative rounded-full px-4 py-1.5 text-xs sm:text-sm leading-6 text-slate-600 ring-1 ring-slate-900/10 hover:ring-slate-900/20 shadow-sm bg-white/50 backdrop-blur-sm">
-                    Announcing the new Semester 2024 update.{" "}
-                    <Link
-                      href="/register"
-                      className="font-semibold text-[#0a0f5c]"
-                    >
-                      <span
-                        className="absolute inset-0"
-                        aria-hidden="true"
-                      ></span>
-                      Read more <span aria-hidden="true">&rarr;</span>
-                    </Link>
-                  </span>
+                 
                 </div>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
                   Your Academic Journey,{" "}
@@ -106,16 +139,29 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="mt-16 flow-root sm:mt-24 animate-slide-up delay-100 mx-auto max-w-5xl">
-                <div className="relative -m-2 rounded-xl bg-slate-900/5 p-2 ring-1 ring-inset ring-slate-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-                  <div className="overflow-hidden rounded-lg sm:rounded-xl shadow-2xl ring-1 ring-slate-900/10 h-[250px] sm:h-[400px] lg:h-[500px] relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/library-hero.png"
-                      alt="App dashboard mock"
-                      className="absolute h-full w-full object-cover object-center"
-                    />
-                    <div className="absolute inset-0 bg-[#0a0f5c]/30 mix-blend-multiply" />
+              <div className="mt-16 flow-root sm:mt-24 animate-slide-up delay-100 mx-auto max-w-6xl">
+                <div className="relative p-0 lg:p-0">
+                  <div className="overflow-hidden rounded-[2rem] sm:rounded-[3rem] shadow-2xl h-[300px] sm:h-[500px] lg:h-[650px] relative bg-slate-200">
+                    {HERO_IMAGES.map((img, index) => (
+                      <div
+                        key={img}
+                        className={`absolute inset-0 transition-transform duration-1000 ease-[cubic-bezier(0.65,0,0.35,1)] ${
+                          index === currentImageIndex
+                            ? "translate-x-0 z-10"
+                            : index < currentImageIndex
+                              ? "-translate-x-full z-0"
+                              : "translate-x-full z-0"
+                        }`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img}
+                          alt={`App dashboard mock ${index + 1}`}
+                          className="absolute h-full w-full object-cover object-center"
+                        />
+                        <div className="absolute inset-0 bg-[#0a0f5c]/30 mix-blend-multiply" />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -187,9 +233,7 @@ export default function LandingPage() {
         {/* Feature section */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
           <div className="mx-auto max-w-2xl lg:text-center animate-slide-up delay-200">
-            <h2 className="text-base font-semibold leading-7 text-[#0a0f5c] tracking-wide uppercase">
-              Deploy faster
-            </h2>
+          
             <p className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl title-font">
               Everything you need to succeed
             </p>
@@ -278,6 +322,8 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

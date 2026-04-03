@@ -165,13 +165,15 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0a0f5c]">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0a0f5c] dark:text-[#5eead4]">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+      <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
         {title}
       </h2>
-      <p className="mt-4 text-base text-slate-600 sm:text-lg">{description}</p>
+      <p className="mt-4 text-base text-slate-600 dark:text-slate-300 sm:text-lg">
+        {description}
+      </p>
     </div>
   );
 }
@@ -342,7 +344,7 @@ export default function LandingPage() {
 
             <div className="mt-16 sm:mt-24">
               <div className="relative mx-auto max-w-none border-none bg-transparent p-0 shadow-none">
-                <div className="overflow-hidden rounded-[2rem] sm:rounded-[4rem] bg-slate-100 aspect-[21/11] relative shadow-2xl">
+                <div className="relative aspect-[21/11] overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl dark:bg-slate-900 sm:rounded-[4rem]">
                   {HERO_IMAGES.map((item, index) => (
                     <div
                       key={item.url}
@@ -415,22 +417,22 @@ export default function LandingPage() {
               return (
                 <article
                   key={item.problem}
-                  className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 md:grid-cols-[1fr_auto_1fr] md:items-center"
+                  className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-5 md:grid-cols-[1fr_auto_1fr] md:items-center"
                 >
-                  <div className="flex items-start gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
-                    <ProblemIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-rose-600" />
-                    <p className="text-sm font-medium text-rose-800">
+                  <div className="flex items-start gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 dark:border-rose-900/40 dark:bg-rose-950/30">
+                    <ProblemIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-rose-600 dark:text-rose-300" />
+                    <p className="text-sm font-medium text-rose-800 dark:text-rose-200">
                       {item.problem}
                     </p>
                   </div>
 
                   <div className="hidden md:flex items-center justify-center">
-                    <ArrowRight className="h-5 w-5 text-slate-400" />
+                    <ArrowRight className="h-5 w-5 text-slate-400 dark:text-slate-500" />
                   </div>
 
-                  <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3">
-                    <SolutionIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-700" />
-                    <p className="text-sm font-semibold text-emerald-800">
+                  <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 dark:border-emerald-900/40 dark:bg-emerald-950/30">
+                    <SolutionIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
+                    <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
                       {item.solution}
                     </p>
                   </div>
@@ -483,7 +485,7 @@ export default function LandingPage() {
           />
 
           <div className="relative mt-12">
-            <div className="hidden md:block absolute left-10 right-10 top-8 h-px bg-slate-200" />
+            <div className="absolute left-10 right-10 top-8 hidden h-px bg-slate-200 dark:bg-slate-700 md:block" />
             <div className="grid gap-6 md:grid-cols-3">
               {HOW_IT_WORKS_STEPS.map((step, index) => {
                 const Icon = step.icon;
@@ -523,7 +525,7 @@ export default function LandingPage() {
           />
 
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900">
+            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Weekly timetable view
               </h3>
@@ -544,7 +546,7 @@ export default function LandingPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900">
+            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Notification example
               </h3>
@@ -566,7 +568,7 @@ export default function LandingPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900">
+            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Chat interface preview
               </h3>
@@ -602,7 +604,7 @@ export default function LandingPage() {
               return (
                 <article
                   key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900"
+                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
                 >
                   <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#2dd4a8]/15 dark:bg-[#2dd4a8]/10">
                     <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />

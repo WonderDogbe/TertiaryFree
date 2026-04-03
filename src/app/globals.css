@@ -19,9 +19,20 @@ body {
   color: #0f172a;
 }
 
-:root.dark html,
-:root.dark body {
+:root {
+  --hero-text-color: #130138;
+  --logo-bg: #0a0f5c;
+  --logo-icon: #ffffff;
+  --logo-text: #0a0f5c;
+}
+
+html.dark,
+html.dark body {
   background-color: #020617;
+  color: #e2e8f0;
+}
+
+html.dark {
   --hero-text-color: #ffffff;
   --logo-bg: #2dd4a8;
   --logo-icon: #0a0f5c;
@@ -38,24 +49,50 @@ body {
   background-color: #0f172a !important;
 }
 
+.dark .bg-slate-100,
+.dark .bg-slate-100\/50,
+.dark .bg-slate-100\/80 {
+  background-color: #111827 !important;
+}
+
 /* Fix specific colors for dark mode visibility */
+.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+.dark .text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
 .dark .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-slate-500 {
   color: #94a3b8 !important;
 }
 
 .dark .border-slate-200,
 .dark .border-slate-200\/80,
 .dark .border-slate-100 {
-  border-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.dark .border-slate-300 {
+  border-color: #475569 !important;
 }
 
 /* Navigation items in dark mode */
 .dark header nav a {
-  color: #cbd5e1 !important;
+  color: #e2e8f0 !important;
 }
 
 .dark header nav a:hover {
-  color: #2dd4a8 !important;
+  color: #5eead4 !important;
 }
 
 /* Buttons in dark mode */
@@ -144,6 +181,44 @@ body {
 .mantine-Input-input:focus {
   border-color: #0a0f5c;
   box-shadow: 0 0 0 3px rgba(10, 15, 92, 0.1);
+}
+
+.dark .mantine-InputWrapper-label {
+  color: #cbd5e1;
+}
+
+.dark .mantine-Input-input,
+.dark .mantine-PasswordInput-input,
+.dark .mantine-Select-input {
+  background-color: #0b1220;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+.dark .mantine-Input-input::placeholder,
+.dark .mantine-PasswordInput-input::placeholder,
+.dark .mantine-Select-input::placeholder {
+  color: #64748b;
+}
+
+.dark .mantine-Input-input:focus,
+.dark .mantine-PasswordInput-input:focus,
+.dark .mantine-Select-input:focus {
+  border-color: #2dd4a8;
+  box-shadow: 0 0 0 3px rgba(45, 212, 168, 0.18);
+}
+
+.dark .mantine-Select-dropdown {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+}
+
+.dark .mantine-Select-option {
+  color: #e2e8f0;
+}
+
+.dark .mantine-Select-option:hover {
+  background-color: #1e293b;
 }
 
 /* Brand Button */

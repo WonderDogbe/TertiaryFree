@@ -30,10 +30,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout
-      title="Welcome Back"
-      subtitle="Sign in to access your unified academic dashboard"
-    >
+    <AuthLayout subtitle="Sign in to access your unified academic dashboard">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <TextInput
           id="login-identifier"
@@ -46,7 +43,8 @@ export default function LoginPage() {
             setFormData((prev) => ({ ...prev, identifier: e.target.value }))
           }
           classNames={{
-            input: 'focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c]'
+            input:
+              "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
           }}
         />
 
@@ -61,7 +59,8 @@ export default function LoginPage() {
             setFormData((prev) => ({ ...prev, password: e.target.value }))
           }
           classNames={{
-            input: 'focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c]'
+            input:
+              "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
           }}
         />
 
@@ -69,7 +68,7 @@ export default function LoginPage() {
         <div className="flex justify-end -mt-3 sm:-mt-4">
           <button
             type="button"
-            className="text-xs sm:text-sm font-semibold text-[#0a0f5c] bg-transparent border-none cursor-pointer hover:underline"
+            className="border-none bg-transparent text-xs font-semibold text-[#0a0f5c] hover:underline cursor-pointer sm:text-sm dark:text-[#5eead4]"
             id="forgot-password-link"
           >
             Forgot password?
@@ -99,9 +98,13 @@ export default function LoginPage() {
         </button>
 
         {/* Register Link */}
-        <p className="text-center text-sm sm:text-sm mt-4 text-slate-500">
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-300 sm:text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-semibold text-[#0a0f5c] hover:underline transition-colors" id="register-link">
+          <Link
+            href="/register"
+            className="font-semibold text-[#0a0f5c] transition-colors hover:underline dark:text-[#5eead4]"
+            id="register-link"
+          >
             Create Account
           </Link>
         </p>

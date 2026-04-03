@@ -3,8 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TextInput, PasswordInput } from "@mantine/core";
-import { Mail, Lock, User, UserPlus } from "lucide-react";
+import { TextInput, PasswordInput, Select } from "@mantine/core";
+import {
+  Mail,
+  Lock,
+  User,
+  UserPlus,
+  BookOpen,
+  GraduationCap,
+  Building2,
+  School,
+} from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 
 export default function RegisterPage() {
@@ -12,6 +21,10 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: "",
     identifier: "",
+    school: "",
+    programme: "",
+    department: "",
+    level: "",
     password: "",
     confirmPassword: "",
   });
@@ -21,6 +34,10 @@ export default function RegisterPage() {
   const isFormValid =
     formData.name.trim() !== "" &&
     formData.identifier.trim() !== "" &&
+    formData.school.trim() !== "" &&
+    formData.programme.trim() !== "" &&
+    formData.department.trim() !== "" &&
+    formData.level.trim() !== "" &&
     formData.password.trim() !== "" &&
     formData.confirmPassword.trim() !== "" &&
     formData.password === formData.confirmPassword;
@@ -52,14 +69,12 @@ export default function RegisterPage() {
   };
 
   const inputClassNames = {
-    input: 'focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c]'
+    input:
+      "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
   };
 
   return (
-    <AuthLayout
-      title="Create Account"
-      subtitle="Join thousands of students simplifying their academic life"
-    >
+    <AuthLayout subtitle="Join thousands of students simplifying their academic life">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
         <TextInput
           id="register-name"
@@ -83,6 +98,68 @@ export default function RegisterPage() {
           value={formData.identifier}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, identifier: e.target.value }))
+          }
+          classNames={inputClassNames}
+        />
+
+        <TextInput
+          id="register-school"
+          label="School Name"
+          placeholder="e.g. University of Ghana"
+          size="md"
+          leftSection={<School size={18} className="text-slate-400" />}
+          value={formData.school}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, school: e.target.value }))
+          }
+          classNames={inputClassNames}
+        />
+
+        <TextInput
+          id="register-programme"
+          label="Programme"
+          placeholder="e.g. B.Sc. Computer Science"
+          size="md"
+          leftSection={<BookOpen size={18} className="text-slate-400" />}
+          value={formData.programme}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, programme: e.target.value }))
+          }
+          classNames={inputClassNames}
+        />
+
+        <TextInput
+          id="register-department"
+          label="Department"
+          placeholder="e.g. Mathematical Sciences"
+          size="md"
+          leftSection={<Building2 size={18} className="text-slate-400" />}
+          value={formData.department}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, department: e.target.value }))
+          }
+          classNames={inputClassNames}
+        />
+
+        <Select
+          id="register-level"
+          label="Level"
+          placeholder="Select your level"
+          size="md"
+          leftSection={<GraduationCap size={18} className="text-slate-400" />}
+          data={[
+            { value: "100-1", label: "Level 100 (1st Semester)" },
+            { value: "100-2", label: "Level 100 (2nd Semester)" },
+            { value: "200-1", label: "Level 200 (1st Semester)" },
+            { value: "200-2", label: "Level 200 (2nd Semester)" },
+            { value: "300-1", label: "Level 300 (1st Semester)" },
+            { value: "300-2", label: "Level 300 (2nd Semester)" },
+            { value: "400-1", label: "Level 400 (1st Semester)" },
+            { value: "400-2", label: "Level 400 (2nd Semester)" },
+          ]}
+          value={formData.level}
+          onChange={(value) =>
+            setFormData((prev) => ({ ...prev, level: value || "" }))
           }
           classNames={inputClassNames}
         />
@@ -147,9 +224,13 @@ export default function RegisterPage() {
         </button>
 
         {/* Login Link */}
-        <p className="text-center text-sm sm:text-sm mt-4 text-slate-500">
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-300 sm:text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-[#0a0f5c] hover:underline transition-colors" id="login-link">
+          <Link
+            href="/login"
+            className="font-semibold text-[#0a0f5c] transition-colors hover:underline dark:text-[#5eead4]"
+            id="login-link"
+          >
             Sign In
           </Link>
         </p>

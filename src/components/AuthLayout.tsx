@@ -3,17 +3,15 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "./Logo";
-import { ThemeToggle } from "./ThemeToggle";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
-  title: string;
   subtitle: string;
 }
 
-export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Left pane - Image (Previously Right) */}
       <div className="hidden lg:block relative w-0 flex-1 bg-slate-200">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -60,28 +58,21 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         <div className="absolute top-8 left-8 sm:left-12 xl:left-24">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-[#0a0f5c] transition-colors group"
+            className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[#0a0f5c] group dark:text-slate-300 dark:hover:text-[#5eead4]"
           >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to main
+            <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
           </Link>
         </div>
-        <div className="absolute top-8 right-8">
-          <ThemeToggle />
-        </div>
         <div className="mx-auto w-full max-w-md lg:w-full">
-          <header className="mb-10 sm:mb-12">
+          <header className="mb-10 sm:mb-12 flex flex-col items-center">
             <Logo size="lg" />
           </header>
 
-          <div className="animate-slide-up">
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              {title}
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
+          <div className="animate-slide-up text-center">
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">{subtitle}</p>
           </div>
 
-          <div className="mt-8 sm:mt-10 animate-slide-up delay-100 bg-white sm:shadow-lg sm:rounded-2xl sm:p-8 sm:border sm:border-slate-100">
+          <div className="mt-8 sm:mt-10 animate-slide-up delay-100 bg-white sm:shadow-lg sm:rounded-2xl sm:p-8 sm:border sm:border-slate-100 dark:bg-slate-900 dark:border-slate-700">
             {children}
           </div>
         </div>

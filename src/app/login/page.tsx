@@ -10,12 +10,13 @@ import { AuthLayout } from "@/components/AuthLayout";
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    identifier: "",
+    email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
 
-  const isFormValid = formData.identifier.trim() !== "" && formData.password.trim() !== "";
+  const isFormValid =
+    formData.email.trim() !== "" && formData.password.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +34,14 @@ export default function LoginPage() {
     <AuthLayout subtitle="Sign in to access your unified academic dashboard">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <TextInput
-          id="login-identifier"
-          label="Email or Student ID"
+          id="login-email"
+          label="Email Address"
           placeholder="e.g. john@university.edu"
           size="md"
           leftSection={<Mail size={18} className="text-slate-400" />}
-          value={formData.identifier}
+          value={formData.email}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, identifier: e.target.value }))
+            setFormData((prev) => ({ ...prev, email: e.target.value }))
           }
           classNames={{
             input:

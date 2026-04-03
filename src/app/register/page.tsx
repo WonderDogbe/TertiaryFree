@@ -3,7 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TextInput, PasswordInput, Select } from "@mantine/core";
+import {
+  TextInput,
+  PasswordInput,
+  Select,
+  SegmentedControl,
+} from "@mantine/core";
 import {
   Mail,
   Lock,
@@ -13,18 +18,22 @@ import {
   GraduationCap,
   Building2,
   School,
+  Briefcase,
 } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [userType, setUserType] = useState<"student" | "lecturer">("student");
   const [formData, setFormData] = useState({
     name: "",
-    identifier: "",
+    email: "",
     school: "",
     programme: "",
     department: "",
     level: "",
+    title: "",
+    courseLectured: "",
     password: "",
     confirmPassword: "",
   });
@@ -33,14 +42,15 @@ export default function RegisterPage() {
 
   const isFormValid =
     formData.name.trim() !== "" &&
-    formData.identifier.trim() !== "" &&
+    formData.email.trim() !== "" &&
     formData.school.trim() !== "" &&
-    formData.programme.trim() !== "" &&
     formData.department.trim() !== "" &&
-    formData.level.trim() !== "" &&
     formData.password.trim() !== "" &&
     formData.confirmPassword.trim() !== "" &&
-    formData.password === formData.confirmPassword;
+    formData.password === formData.confirmPassword &&
+    (userType === "student"
+      ? formData.programme.trim() !== "" && formData.level.trim() !== ""
+      : formData.title.trim() !== "" && formData.courseLectured.trim() !== "");
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -50,6 +60,9 @@ export default function RegisterPage() {
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
+    }
+    if (!formData.email.includes("@")) {
+      newErrors.email = "Invalid email address";
     }
 
     setErrors(newErrors);
@@ -65,7 +78,7 @@ export default function RegisterPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setLoading(false);
     // For now, just log. Later connect to auth backend.
-    console.log("Register submitted:", formData);
+    console.log("Register submitted:", { userType, ...formData });
   };
 
   const inputClassNames = {
@@ -74,7 +87,32 @@ export default function RegisterPage() {
   };
 
   return (
-    <AuthLayout subtitle="Join thousands of students simplifying their academic life">
+    <AuthLayout
+      subtitle={
+        userType === "student"
+          ? "Join thousands of students simplifying their academic life"
+          : "Manage your lectures and connect with students effortlessly"
+      }
+    >
+      <div className="mb-8 flex flex-col items-center">
+        <p className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
+          ARE YOU A STUDENT OR A LECTURER?
+        </p>
+        <SegmentedControl
+          fullWidth
+          size="md"
+          radius="xl"
+          value={userType}
+          onChange={(value) => setUserType(value as "student" | "lecturer")}
+          data={[
+            { label: "Student", value: "student" },
+            { label: "Lecturer", value: "lecturer" },
+          ]}
+          color={userType === "student" ? "#0a0f5c" : "#2dd4a8"}
+          className="bg-slate-100 dark:bg-slate-800"
+        />
+      </div>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
         <TextInput
           id="register-name"
@@ -90,17 +128,68 @@ export default function RegisterPage() {
         />
 
         <TextInput
-          id="register-identifier"
-          label="Email or Student ID"
+          id="register-email"
+          label={
+            userType === "student" ? "Student Email Address" : "Email Address"
+          }
           placeholder="e.g. john@university.edu"
           size="md"
           leftSection={<Mail size={18} className="text-slate-400" />}
-          value={formData.identifier}
+          value={formData.email}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, identifier: e.target.value }))
+            setFormData((prev) => ({ ...prev, email: e.target.value }))
           }
+          error={errors.email}
           classNames={inputClassNames}
         />
+
+        {userType === "student" ? (
+          <>
+            <TextInput
+              id="register-programme"
+              label="Programme"
+              placeholder="e.g. B.Sc. Computer Science"
+              size="md"
+              leftSection={<BookOpen size={18} className="text-slate-400" />}
+              value={formData.programme}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, programme: e.target.value }))
+              }
+              classNames={inputClassNames}
+            />
+          </>
+        ) : (
+          <>
+            <TextInput
+              id="register-title"
+              label="Title"
+              placeholder="e.g. Dr., Prof., Mr., Ms."
+              size="md"
+              leftSection={<Briefcase size={18} className="text-slate-400" />}
+              value={formData.title}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
+              classNames={inputClassNames}
+            />
+
+            <TextInput
+              id="register-course"
+              label="Course Lectured"
+              placeholder="e.g. Advanced Data Structures"
+              size="md"
+              leftSection={<BookOpen size={18} className="text-slate-400" />}
+              value={formData.courseLectured}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  courseLectured: e.target.value,
+                }))
+              }
+              classNames={inputClassNames}
+            />
+          </>
+        )}
 
         <TextInput
           id="register-school"
@@ -111,19 +200,6 @@ export default function RegisterPage() {
           value={formData.school}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, school: e.target.value }))
-          }
-          classNames={inputClassNames}
-        />
-
-        <TextInput
-          id="register-programme"
-          label="Programme"
-          placeholder="e.g. B.Sc. Computer Science"
-          size="md"
-          leftSection={<BookOpen size={18} className="text-slate-400" />}
-          value={formData.programme}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, programme: e.target.value }))
           }
           classNames={inputClassNames}
         />
@@ -141,28 +217,30 @@ export default function RegisterPage() {
           classNames={inputClassNames}
         />
 
-        <Select
-          id="register-level"
-          label="Level"
-          placeholder="Select your level"
-          size="md"
-          leftSection={<GraduationCap size={18} className="text-slate-400" />}
-          data={[
-            { value: "100-1", label: "Level 100 (1st Semester)" },
-            { value: "100-2", label: "Level 100 (2nd Semester)" },
-            { value: "200-1", label: "Level 200 (1st Semester)" },
-            { value: "200-2", label: "Level 200 (2nd Semester)" },
-            { value: "300-1", label: "Level 300 (1st Semester)" },
-            { value: "300-2", label: "Level 300 (2nd Semester)" },
-            { value: "400-1", label: "Level 400 (1st Semester)" },
-            { value: "400-2", label: "Level 400 (2nd Semester)" },
-          ]}
-          value={formData.level}
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, level: value || "" }))
-          }
-          classNames={inputClassNames}
-        />
+        {userType === "student" && (
+          <Select
+            id="register-level"
+            label="Level"
+            placeholder="Select your level"
+            size="md"
+            leftSection={<GraduationCap size={18} className="text-slate-400" />}
+            data={[
+              { value: "100-1", label: "Level 100 (1st Semester)" },
+              { value: "100-2", label: "Level 100 (2nd Semester)" },
+              { value: "200-1", label: "Level 200 (1st Semester)" },
+              { value: "200-2", label: "Level 200 (2nd Semester)" },
+              { value: "300-1", label: "Level 300 (1st Semester)" },
+              { value: "300-2", label: "Level 300 (2nd Semester)" },
+              { value: "400-1", label: "Level 400 (1st Semester)" },
+              { value: "400-2", label: "Level 400 (2nd Semester)" },
+            ]}
+            value={formData.level}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, level: value || "" }))
+            }
+            classNames={inputClassNames}
+          />
+        )}
 
         <PasswordInput
           id="register-password"

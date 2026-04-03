@@ -39,21 +39,21 @@ const PROBLEM_SOLUTION_ITEMS: Array<{
 }> = [
   {
     problem: "Students miss lectures due to poor communication",
-    solution: "Personalized timetable",
+    solution: "Real-time updates",
     problemIcon: TriangleAlert,
-    solutionIcon: CalendarCheck2,
+    solutionIcon: CircleCheck,
   },
   {
     problem: "Timetables are confusing",
-    solution: "Real-time updates",
+    solution: "Personalized timetable",
     problemIcon: Clock3,
-    solutionIcon: BellRing,
+    solutionIcon: CalendarCheck2,
   },
   {
     problem: "Last-minute cancellations waste time",
     solution: "Smart notifications",
     problemIcon: CalendarX2,
-    solutionIcon: CircleCheck,
+    solutionIcon: BellRing,
   },
 ];
 
@@ -168,10 +168,13 @@ function SectionHeading({
       <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0a0f5c] dark:text-[#5eead4]">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 sm:text-4xl">
+      <h2
+        className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl"
+        style={{ color: "var(--hero-text-color, #130138)" }}
+      >
         {title}
       </h2>
-      <p className="mt-4 text-base text-slate-600 dark:text-slate-300 sm:text-lg">
+      <p className="mt-4 text-base text-slate-700 dark:text-slate-300 sm:text-lg">
         {description}
       </p>
     </div>
@@ -223,13 +226,13 @@ export default function LandingPage() {
                 aria-label="Toggle menu"
               >
                 <div
-                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2 bg-slate-900 dark:bg-white" : ""}`}
+                  className={`h-0.5 w-7 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2 !bg-[#0a0f5c] dark:!bg-white" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
                 />
                 <div
-                  className={`h-1 w-5 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0" : ""}`}
+                  className={`h-0.5 w-5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
                 />
                 <div
-                  className={`h-1 w-7 bg-[#0a0f5c] dark:bg-[#2dd4a8] rounded-full transition-all duration-300 absolute ${isMenuOpen ? "-rotate-45 translate-y-2 opacity-100 bg-slate-900 dark:bg-white" : "opacity-0"}`}
+                  className={`h-0.5 w-7 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-[5px] !bg-[#0a0f5c] dark:!bg-white" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
                 />
               </button>
 
@@ -257,7 +260,8 @@ export default function LandingPage() {
                           key={`mobile-${item.href}`}
                           href={item.href}
                           onClick={() => setIsMenuOpen(false)}
-                          className="text-lg font-bold tracking-tight text-slate-900 dark:text-white transition-colors hover:text-[#0a0f5c] dark:hover:text-[#2dd4a8] py-1"
+                          className="text-lg font-bold tracking-tight transition-colors hover:opacity-70 py-1"
+                          style={{ color: "var(--hero-text-color, #130138)" }}
                         >
                           {item.label}
                         </Link>
@@ -493,7 +497,7 @@ export default function LandingPage() {
                 return (
                   <article
                     key={step.title}
-                    className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900"
+                    className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
                   >
                     <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#0a0f5c]/10 dark:bg-[#2dd4a8]/10">
                       <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
@@ -628,7 +632,7 @@ export default function LandingPage() {
             </h2>
             <Link
               href="/register"
-              className="mt-8 inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-bold text-[#0a0f5c] transition-all hover:-translate-y-0.5 hover:bg-slate-100"
+              className="mt-8 inline-flex items-center justify-center rounded-full bg-[#2dd4a8] px-8 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#3dedc0] dark:bg-[#2dd4a8] dark:text-white dark:hover:bg-[#3dedc0]"
             >
               Create Free Account
             </Link>

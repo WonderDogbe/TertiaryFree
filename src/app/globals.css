@@ -49,10 +49,23 @@ html.dark {
   background-color: #0f172a !important;
 }
 
-.dark .bg-slate-100,
-.dark .bg-slate-100\/50,
-.dark .bg-slate-100\/80 {
-  background-color: #111827 !important;
+/* Mantine Input Overrides for Authentication Pages */
+.mantine-TextInput-input,
+.mantine-PasswordInput-input,
+.mantine-Select-input,
+.mantine-MultiSelect-input {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+.dark .mantine-TextInput-input,
+.dark .mantine-PasswordInput-input,
+.dark .mantine-Select-input,
+.dark .mantine-MultiSelect-input {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #334155 !important;
 }
 
 /* Fix specific colors for dark mode visibility */
@@ -190,9 +203,9 @@ html.dark {
 .dark .mantine-Input-input,
 .dark .mantine-PasswordInput-input,
 .dark .mantine-Select-input {
-  background-color: #0b1220;
+  background-color: #ffffff;
   border-color: #334155;
-  color: #e2e8f0;
+  color: #0f172a;
 }
 
 .dark .mantine-Input-input::placeholder,

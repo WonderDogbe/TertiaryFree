@@ -15,7 +15,7 @@ body {
   padding: 0;
   scroll-behavior: smooth;
   font-family: var(--font-sans);
-  background-color: #fafbfc;
+  background-color: #ffffff;
   color: #0f172a;
 }
 
@@ -117,6 +117,35 @@ html.dark {
 .dark .btn-brand:hover {
   background-color: #3dedc0 !important;
 }
+
+/* Dashboard Premium Styles */
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+  }
+
+  .dark .glass-panel-dark {
+    @apply bg-slate-900/40 backdrop-blur-lg border border-slate-700/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+  }
+
+  .premium-shadow {
+    box-shadow: 0 10px 30px -10px rgba(10, 15, 92, 0.1);
+  }
+
+  .premium-shadow-hover:hover {
+    box-shadow: 0 25px 50px -12px rgba(10, 15, 92, 0.15);
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
 
 /* Premium UI Utilities */
 .glass-panel {

@@ -6,9 +6,14 @@ import { GraduationCap } from "lucide-react";
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   className?: string;
+  showText?: boolean;
 }
 
-export function Logo({ size = "md", className = "" }: LogoProps) {
+export function Logo({ 
+  size = "md", 
+  className = "", 
+  showText = true 
+}: LogoProps) {
   const sizeMap = {
     sm: { icon: 20, text: "text-base" },
     md: { icon: 24, text: "text-lg" },
@@ -24,7 +29,7 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
       id="brand-logo"
     >
       <div
-        className="flex items-center justify-center rounded-lg shadow-sm transition-colors"
+        className="flex items-center justify-center rounded-lg shadow-sm transition-colors flex-shrink-0"
         style={{
           width: icon + 12,
           height: icon + 12,
@@ -37,12 +42,14 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
           strokeWidth={2.5}
         />
       </div>
-      <span
-        className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
-        style={{ color: "var(--logo-text, #0a0f5c)" }}
-      >
-        TertiaryFree
-      </span>
+      {showText && (
+        <span
+          className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
+          style={{ color: "var(--logo-text, #0a0f5c)" }}
+        >
+          TertiaryFree
+        </span>
+      )}
     </Link>
   );
 }

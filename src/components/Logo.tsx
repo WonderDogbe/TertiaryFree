@@ -9,10 +9,10 @@ interface LogoProps {
   showText?: boolean;
 }
 
-export function Logo({ 
-  size = "md", 
-  className = "", 
-  showText = true 
+export function Logo({
+  size = "md",
+  className = "",
+  showText = true,
 }: LogoProps) {
   const sizeMap = {
     sm: { icon: 20, text: "text-base" },

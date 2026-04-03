@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Home, 
-  Calendar, 
-  CheckCircle2, 
-  BookOpen, 
-  GraduationCap, 
-  Wallet, 
-  Settings, 
+import {
+  Home,
+  Calendar,
+  CheckCircle2,
+  BookOpen,
+  GraduationCap,
+  Wallet,
+  Settings,
   LogOut,
-  Bell
+  Bell,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -25,7 +25,11 @@ const NAV_ITEMS = [
   { icon: Wallet, label: "Finance", href: "/dashboard/finance" },
 ];
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   return (
@@ -49,8 +53,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 key={item.href}
                 href={item.href}
                 className={`flex items-center w-full p-3 rounded-xl transition-all ${
-                  isActive 
-                    ? "bg-[#0a0f5c] text-white dark:bg-[#2dd4a8] dark:text-[#0a0f5c]" 
+                  isActive
+                    ? "bg-[#0a0f5c] text-white dark:bg-[#2dd4a8] dark:text-[#0a0f5c]"
                     : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
                 }`}
               >
@@ -66,11 +70,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="w-full px-3 space-y-2 pb-4">
           <div className="flex items-center w-full p-3 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-xl cursor-pointer">
             <Settings size={24} className="flex-shrink-0" />
-            <span className="ml-4 font-bold text-sm whitespace-nowrap opacity-100 transition-opacity duration-300">Settings</span>
+            <span className="ml-4 font-bold text-sm whitespace-nowrap opacity-100 transition-opacity duration-300">
+              Settings
+            </span>
           </div>
-          <Link href="/login" className="flex items-center w-full p-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all">
+          <Link
+            href="/login"
+            className="flex items-center w-full p-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all"
+          >
             <LogOut size={24} className="flex-shrink-0" />
-            <span className="ml-4 font-bold text-sm whitespace-nowrap opacity-100 transition-opacity duration-300">Logout</span>
+            <span className="ml-4 font-bold text-sm whitespace-nowrap opacity-100 transition-opacity duration-300">
+              Logout
+            </span>
           </Link>
         </div>
       </aside>
@@ -80,8 +91,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Header */}
         <header className="sticky top-0 z-30 flex items-center justify-between px-8 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
           <div>
-            <h1 className="text-xl font-bold text-[#0a0f5c] dark:text-white">Dashboard Overview</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Welcome back, John 👋</p>
+            <h1 className="text-xl font-bold text-[#0a0f5c] dark:text-white">
+              Dashboard Overview
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Welcome back, John 👋
+            </p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -97,9 +112,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Content Area */}
-        <div className="p-8">
-          {children}
-        </div>
+        <div className="p-8">{children}</div>
       </main>
     </div>
   );

@@ -1,142 +1,31 @@
 "use client";
 
-import type { ComponentType } from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  ArrowRight,
+  BarChart3,
   BellRing,
   CalendarCheck2,
-  CalendarX2,
-  CircleCheck,
-  Clock3,
+  Check,
+  CloudUpload,
   Menu,
-  Megaphone,
-  MessageSquare,
+  Moon,
   QrCode,
-  TriangleAlert,
+  Settings,
+  Sun,
+  Users,
+  UserPlus,
+  X,
+  type LucideIcon,
 } from "lucide-react";
-import { FeatureCard } from "@/components/FeatureCard";
 import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/Logo";
-import { ThemeToggle } from "@/components/ThemeToggle";
-
-type IconType = ComponentType<{ className?: string }>;
 
 const NAV_LINKS = [
-  { href: "#problem-solution", label: "Problem & Solution" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How It Works" },
-  { href: "#app-preview", label: "App Preview" },
-  { href: "#benefits", label: "Benefits" },
-];
-
-const PROBLEM_SOLUTION_ITEMS: Array<{
-  problem: string;
-  solution: string;
-  problemIcon: IconType;
-  solutionIcon: IconType;
-}> = [
-  {
-    problem: "Students miss lectures due to poor communication",
-    solution: "Real-time updates",
-    problemIcon: TriangleAlert,
-    solutionIcon: CircleCheck,
-  },
-  {
-    problem: "Timetables are confusing",
-    solution: "Personalized timetable",
-    problemIcon: Clock3,
-    solutionIcon: CalendarCheck2,
-  },
-  {
-    problem: "Last-minute cancellations waste time",
-    solution: "Smart notifications",
-    problemIcon: CalendarX2,
-    solutionIcon: BellRing,
-  },
-];
-
-const FEATURE_ITEMS: Array<{
-  title: string;
-  description: string;
-  icon: IconType;
-}> = [
-  {
-    title: "Personalized Timetable",
-    description: "Auto-generated weekly schedules that match your courses.",
-    icon: CalendarCheck2,
-  },
-  {
-    title: "Smart Notifications",
-    description: "Receive reminders before classes and assignment deadlines.",
-    icon: BellRing,
-  },
-  {
-    title: "Lecture Updates",
-    description:
-      "Instant alerts when lectures are moved, delayed, or canceled.",
-    icon: CalendarX2,
-  },
-  {
-    title: "QR Attendance",
-    description: "Fast and secure attendance with one-tap QR scanning.",
-    icon: QrCode,
-  },
-  {
-    title: "Class Chat",
-    description: "Stay connected with class chats and lecturer updates.",
-    icon: MessageSquare,
-  },
-];
-
-const HOW_IT_WORKS_STEPS: Array<{
-  title: string;
-  description: string;
-  icon: IconType;
-}> = [
-  {
-    title: "Sign up and select courses",
-    description: "Create your account and pick your registered classes.",
-    icon: Megaphone,
-  },
-  {
-    title: "Get personalized timetable",
-    description: "Your weekly schedule is generated and synced instantly.",
-    icon: CalendarCheck2,
-  },
-  {
-    title: "Receive reminders and updates",
-    description: "Get proactive reminders, changes, and important notices.",
-    icon: BellRing,
-  },
-];
-
-const BENEFITS: Array<{
-  title: string;
-  description: string;
-  icon: IconType;
-}> = [
-  {
-    title: "Save time",
-    description: "Stop checking multiple portals and messages every day.",
-    icon: Clock3,
-  },
-  {
-    title: "Stay organized",
-    description: "Keep classes, deadlines, and updates in one place.",
-    icon: CalendarCheck2,
-  },
-  {
-    title: "Never miss lectures",
-    description: "Timely reminders and updates keep you consistently informed.",
-    icon: BellRing,
-  },
-  {
-    title: "Better communication",
-    description: "Students and lecturers stay aligned with fewer surprises.",
-    icon: MessageSquare,
-  },
+  { href: "#about", label: "About" },
+  { href: "#contact", label: "Contact Us" },
 ];
 
 const HERO_IMAGES = [
@@ -154,36 +43,187 @@ const HERO_IMAGES = [
   },
 ];
 
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
+type FeatureCardItem = {
   title: string;
   description: string;
-}) {
+  points: string[];
+  icon: LucideIcon;
+  iconClassName: string;
+  featured?: boolean;
+};
+
+const FEATURE_AUTO_ADVANCE_MS = 3200;
+const FEATURE_SWIPE_THRESHOLD = 56;
+
+function getCircularOffset(index: number, activeIndex: number, total: number) {
+  const rawOffset = index - activeIndex;
   return (
-    <div className="mx-auto max-w-3xl text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0a0f5c] dark:text-[#5eead4]">
-        {eyebrow}
-      </p>
-      <h2
-        className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl"
-        style={{ color: "var(--hero-text-color, #130138)" }}
-      >
-        {title}
-      </h2>
-      <p className="mt-4 text-base text-slate-700 dark:text-slate-300 sm:text-lg">
-        {description}
-      </p>
-    </div>
+    ((rawOffset + total + Math.floor(total / 2)) % total) -
+    Math.floor(total / 2)
   );
 }
 
+function wrapIndex(index: number, total: number) {
+  return ((index % total) + total) % total;
+}
+
+const FEATURE_CARDS: FeatureCardItem[] = [
+  {
+    title: "QR Attendance Check-In",
+    description:
+      "Allow students to check in quickly with secure class QR sessions that are easy to manage.",
+    points: [
+      "One-tap class check-in",
+      "Fraud-resistant session codes",
+      "Attendance history by course",
+    ],
+    icon: QrCode,
+    iconClassName: "bg-gradient-to-br from-blue-500 to-blue-700",
+  },
+  {
+    title: "Mobile Lecturer Attendance",
+    description:
+      "Lecturers can mark and confirm attendance from any device in class or on practical sessions.",
+    points: [
+      "Works on mobile and desktop",
+      "Offline capture support",
+      "Quick bulk confirmation",
+    ],
+    icon: CalendarCheck2,
+    iconClassName: "bg-gradient-to-br from-emerald-500 to-teal-600",
+    featured: true,
+  },
+  {
+    title: "Student And Lecturer Workspace",
+    description:
+      "Give both students and lecturers tailored dashboards while keeping everyone aligned in one system.",
+    points: [
+      "Role-based access",
+      "Shared class visibility",
+      "Clear communication channels",
+    ],
+    icon: Users,
+    iconClassName: "bg-gradient-to-br from-sky-500 to-cyan-500",
+  },
+  {
+    title: "Personalized Timetable",
+    description:
+      "Build weekly class schedules automatically so students always know where to be and when.",
+    points: [
+      "Auto-synced class slots",
+      "Course-specific view",
+      "Easy timetable updates",
+    ],
+    icon: CalendarCheck2,
+    iconClassName: "bg-gradient-to-br from-indigo-500 to-blue-600",
+  },
+  {
+    title: "Attendance Insights And Reports",
+    description:
+      "Generate meaningful reports to monitor class participation trends and identify at-risk students early.",
+    points: [
+      "Visual attendance analytics",
+      "Downloadable reports",
+      "Department-level summaries",
+    ],
+    icon: BarChart3,
+    iconClassName: "bg-gradient-to-br from-orange-400 to-amber-500",
+  },
+  {
+    title: "Real-Time Class Notifications",
+    description:
+      "Send instant updates about timetable changes, room swaps, and lecture reminders to everyone.",
+    points: ["Lecture reminders", "Change alerts", "Announcement delivery"],
+    icon: BellRing,
+    iconClassName: "bg-gradient-to-br from-cyan-500 to-blue-500",
+  },
+];
+
 export default function LandingPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
+  const [isFeaturePaused, setIsFeaturePaused] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isThemeReady, setIsThemeReady] = useState(false);
+  const featureSwipeStartX = useRef<number | null>(null);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      setIsDarkMode(true);
+      setIsThemeReady(true);
+      return;
+    }
+
+    if (savedTheme === "light") {
+      setIsDarkMode(false);
+      setIsThemeReady(true);
+      return;
+    }
+
+    setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setIsThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isThemeReady) {
+      return;
+    }
+
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+
+    if (isDarkMode) {
+      root.classList.add("dark");
+      window.localStorage.setItem("theme", "dark");
+      return;
+    }
+
+    root.classList.add("light");
+    window.localStorage.setItem("theme", "light");
+  }, [isDarkMode, isThemeReady]);
+
+  const goToFeature = (index: number) => {
+    setActiveFeatureIndex(wrapIndex(index, FEATURE_CARDS.length));
+  };
+
+  const goToNextFeature = () => {
+    setActiveFeatureIndex((prev) => wrapIndex(prev + 1, FEATURE_CARDS.length));
+  };
+
+  const goToPreviousFeature = () => {
+    setActiveFeatureIndex((prev) => wrapIndex(prev - 1, FEATURE_CARDS.length));
+  };
+
+  const handleFeatureSwipeStart = (clientX: number) => {
+    featureSwipeStartX.current = clientX;
+  };
+
+  const handleFeatureSwipeEnd = (clientX: number) => {
+    if (featureSwipeStartX.current === null) {
+      return;
+    }
+
+    const deltaX = clientX - featureSwipeStartX.current;
+    featureSwipeStartX.current = null;
+
+    if (Math.abs(deltaX) < FEATURE_SWIPE_THRESHOLD) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      goToNextFeature();
+      return;
+    }
+
+    goToPreviousFeature();
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -192,48 +232,82 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (isFeaturePaused) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setActiveFeatureIndex((prev) =>
+        wrapIndex(prev + 1, FEATURE_CARDS.length),
+      );
+    }, FEATURE_AUTO_ADVANCE_MS);
+
+    return () => clearInterval(timer);
+  }, [isFeaturePaused]);
+
   return (
-    <div className="min-h-screen bg-slate-50 selection:bg-[#2dd4a8] selection:text-[#0a0f5c]">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/80 bg-slate-50/90 backdrop-blur-md">
+    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 dark:border-blue-900/40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
         <nav
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+          className="relative mx-auto w-full px-6 sm:px-10 lg:px-16"
           aria-label="Global"
         >
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-4 lg:py-5">
             <Logo size="md" />
 
-            <div className="hidden lg:flex items-center gap-x-7">
-              {NAV_LINKS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-sm font-medium text-slate-700 transition-colors hover:text-[#0a0f5c]"
-                >
-                  {item.label}
-                </Link>
-              ))}
+            {/* Building Mode - Centered */}
+            <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+              <p className="inline-flex items-center rounded-full border border-red-300 bg-red-600 px-4 py-1 text-sm font-medium text-white">
+                Building Mode
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
-              <div className="hidden sm:block">
-                <ThemeToggle />
+            <div className="hidden lg:flex lg:items-center lg:gap-6">
+              <button
+                onClick={toggleDarkMode}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 dark:border-blue-900/40 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)]"
+                aria-label="Toggle dark mode"
+              >
+                {isDarkMode ? (
+                  <Moon className="h-5 w-5" />
+                ) : (
+                  <Sun className="h-5 w-5" />
+                )}
+              </button>
+
+              <div className="flex items-center gap-8">
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-sm font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-primary)]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
 
+              <Link
+                href="#"
+                className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700"
+              >
+                Sign in
+              </Link>
+            </div>
+
+            <div className="flex items-center lg:hidden">
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="relative z-[60] flex flex-col gap-1.5 p-2 transition-opacity hover:opacity-80 lg:hidden"
+                className="relative z-[60] inline-flex text-[var(--color-primary)] transition-colors"
                 aria-label="Toggle menu"
               >
-                <div
-                  className={`h-0.5 w-7 rounded-full transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-2 !bg-[#0a0f5c] dark:!bg-white" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
-                />
-                <div
-                  className={`h-0.5 w-5 rounded-full transition-all duration-300 ${isMenuOpen ? "opacity-0" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
-                />
-                <div
-                  className={`h-0.5 w-7 rounded-full transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-[5px] !bg-[#0a0f5c] dark:!bg-white" : "!bg-[#0a0f5c] dark:!bg-[#2dd4a8]"}`}
-                />
+                {isMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
 
               {/* Mobile Menu Overlay & Drawer */}
@@ -242,113 +316,96 @@ export default function LandingPage() {
               >
                 {/* Backdrop with Blur */}
                 <div
-                  className={`absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
+                  className={`absolute inset-0 bg-slate-950/30 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
                   onClick={() => setIsMenuOpen(false)}
                 />
 
                 {/* Drawer */}
                 <div
-                  className={`absolute right-0 top-0 h-full w-full bg-white dark:bg-[#020617] transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+                  className={`absolute right-0 top-0 h-full w-full bg-white transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
                 >
                   <div className="flex h-full flex-col p-8 pt-32">
-                    <nav
-                      className="flex flex-col gap-y-[3px]"
-                      aria-label="Mobile"
-                    >
-                      {NAV_LINKS.map((item) => (
+                    <nav className="flex flex-col gap-y-2" aria-label="Mobile">
+                      {NAV_LINKS.map((link) => (
                         <Link
-                          key={`mobile-${item.href}`}
-                          href={item.href}
+                          key={`mobile-${link.label}`}
+                          href={link.href}
                           onClick={() => setIsMenuOpen(false)}
-                          className="text-lg font-bold tracking-tight transition-colors hover:opacity-70 py-1"
-                          style={{ color: "var(--hero-text-color, #130138)" }}
+                          className="text-lg font-bold tracking-tight text-[var(--color-text)] transition-colors hover:text-[var(--color-primary)]"
                         >
-                          {item.label}
+                          {link.label}
                         </Link>
                       ))}
-                      <div className="my-4 border-t border-slate-100 dark:border-slate-800" />
+
                       <div className="flex flex-col gap-3">
                         <Link
-                          href="/login"
+                          href="#about"
                           onClick={() => setIsMenuOpen(false)}
-                          className="w-full rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 text-center text-base font-semibold text-slate-900 dark:text-white transition-all hover:border-[#0a0f5c] dark:hover:border-[#2dd4a8]"
-                        >
-                          Sign in
-                        </Link>
-                        <Link
-                          href="/register"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="btn-brand w-full py-3 text-center text-base dark:bg-[#2dd4a8] dark:text-[#0a0f5c]"
+                          className="btn-brand mt-4 w-full py-3 text-center text-base"
                         >
                           Get Started
+                        </Link>
+                        <Link
+                          href="#"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-100 w-full text-center"
+                        >
+                          Sign in
                         </Link>
                       </div>
                     </nav>
 
                     <div className="mt-auto pt-10 text-center">
-                      <p className="text-sm font-bold uppercase tracking-widest text-[#0a0f5c]/40 dark:text-white/20">
+                      <p className="text-sm font-bold uppercase tracking-widest text-[var(--color-text)]/30">
                         TertiaryFree
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <Link
-                href="/login"
-                className="hidden sm:inline-flex text-sm font-semibold text-slate-700 transition-colors hover:text-[#0a0f5c]"
-              >
-                Sign in
-              </Link>
             </div>
           </div>
         </nav>
       </header>
 
       <main
-        className={`pt-24 sm:pt-28 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        className={`pt-32 sm:pt-40 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
-        <section className="relative overflow-hidden">
+        <section id="home" className="relative overflow-hidden">
           <div
-            className="absolute inset-x-0 top-[-160px] -z-10 h-[520px] bg-[radial-gradient(circle_at_top_left,#2dd4a844,transparent_50%),radial-gradient(circle_at_top_right,#0a0f5c22,transparent_45%)] dark:bg-[radial-gradient(circle_at_top_left,#2dd4a822,transparent_50%),radial-gradient(circle_at_top_right,#ffffff11,transparent_45%)]"
+            className="absolute inset-x-0 top-[-160px] -z-10 h-[540px] bg-[radial-gradient(circle_at_top_left,#60A5FA33,transparent_50%),radial-gradient(circle_at_top_right,#2563EB22,transparent_45%)]"
             aria-hidden="true"
           />
 
-          <div className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 lg:px-8 lg:pb-24">
+          <div className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8 lg:pb-32">
             <div className="text-center">
-              <p className="inline-flex items-center rounded-full border border-[#0a0f5c]/15 dark:border-white/10 bg-white dark:bg-slate-900 px-4 py-1 text-sm font-medium text-[#0a0f5c] dark:text-[#2dd4a8]">
+              <p className="inline-flex items-center rounded-full border border-blue-200 bg-[var(--color-secondary-bg)] px-4 py-1 text-sm font-medium text-[var(--color-primary)]">
                 Built for students and lecturers
               </p>
               <h1
                 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl"
-                style={{ color: "var(--hero-text-color, #130138)" }}
+                style={{ color: "var(--hero-text-color, #111827)" }}
               >
                 Never Miss a Lecture Again
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg sm:leading-8">
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
                 Personalized timetables, real-time updates, and smart
                 notifications for students and lecturers.
               </p>
 
               <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
                 <Link
-                  href="/login"
-                  className="btn-brand px-7 py-3 text-sm font-semibold shadow-lg shadow-[#0a0f5c]/20 dark:shadow-black/50"
+                  href="#about"
+                  className="btn-brand px-8 py-3 text-sm font-semibold shadow-lg shadow-blue-200"
                 >
                   Get Started
-                </Link>
-                <Link
-                  href="/register"
-                  className="inline-flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-7 py-3 text-sm font-semibold text-slate-800 dark:text-white transition-all hover:-translate-y-0.5 hover:border-[#0a0f5c] dark:hover:border-[#2dd4a8] hover:text-[#0a0f5c] dark:hover:text-[#2dd4a8]"
-                >
-                  Sign Up Free
                 </Link>
               </div>
             </div>
 
-            <div className="mt-16 sm:mt-24">
+            <div id="how-it-works" className="mt-16 sm:mt-24">
               <div className="relative mx-auto max-w-none border-none bg-transparent p-0 shadow-none">
-                <div className="relative aspect-[21/11] overflow-hidden rounded-[2rem] bg-slate-100 shadow-2xl dark:bg-slate-900 sm:rounded-[4rem]">
+                <div className="relative aspect-[21/11] overflow-hidden rounded-[2rem] bg-[var(--color-secondary-bg)] shadow-2xl shadow-blue-100 dark:shadow-none sm:rounded-[4rem]">
                   {HERO_IMAGES.map((item, index) => (
                     <div
                       key={item.url}
@@ -366,7 +423,7 @@ export default function LandingPage() {
                         alt={`app screenshot ${index + 1}`}
                         className="h-full w-full object-cover object-center"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
 
                       <div
                         className={`absolute inset-x-0 bottom-16 sm:bottom-20 px-6 text-center transition-all duration-1000 delay-300 ${
@@ -400,242 +457,327 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <section
-          id="problem-solution"
-          className="scroll-mt-28 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
-        >
-          <SectionHeading
-            eyebrow="Problem & Solution"
-            title="Clear academic communication, solved"
-            description="We address the biggest lecture-management pain points with focused product solutions."
-          />
+            <div id="features" className="mt-16 sm:mt-20 lg:mt-24">
+              <div className="text-center">
+                <h2 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
+                  Everything You Need For
+                </h2>
+                <p className="mt-3 text-2xl font-semibold tracking-tight text-[var(--color-primary)] sm:text-3xl">
+                  Smarter Campus Attendance
+                </p>
+                <p className="mx-auto mt-4 max-w-3xl text-base text-slate-600 sm:text-lg">
+                  TertiaryFree brings attendance, timetable flow, lecturer
+                  tools, and class communication into one connected platform.
+                </p>
+              </div>
 
-          <div className="mt-12 space-y-4">
-            {PROBLEM_SOLUTION_ITEMS.map((item) => {
-              const ProblemIcon = item.problemIcon;
-              const SolutionIcon = item.solutionIcon;
+              <div
+                className="relative mt-14 h-[620px] touch-pan-y overflow-hidden select-none sm:h-[600px]"
+                onMouseEnter={() => setIsFeaturePaused(true)}
+                onMouseLeave={() => setIsFeaturePaused(false)}
+                onFocusCapture={() => setIsFeaturePaused(true)}
+                onBlurCapture={() => setIsFeaturePaused(false)}
+                onTouchStart={(event) => {
+                  const touch = event.touches[0];
 
-              return (
-                <article
-                  key={item.problem}
-                  className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-5 md:grid-cols-[1fr_auto_1fr] md:items-center"
-                >
-                  <div className="flex items-start gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 dark:border-rose-900/40 dark:bg-rose-950/30">
-                    <ProblemIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-rose-600 dark:text-rose-300" />
-                    <p className="text-sm font-medium text-rose-800 dark:text-rose-200">
-                      {item.problem}
-                    </p>
-                  </div>
+                  if (!touch) {
+                    return;
+                  }
 
-                  <div className="hidden md:flex items-center justify-center">
-                    <ArrowRight className="h-5 w-5 text-slate-400 dark:text-slate-500" />
-                  </div>
+                  setIsFeaturePaused(true);
+                  handleFeatureSwipeStart(touch.clientX);
+                }}
+                onTouchEnd={(event) => {
+                  const touch = event.changedTouches[0];
 
-                  <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 dark:border-emerald-900/40 dark:bg-emerald-950/30">
-                    <SolutionIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-700 dark:text-emerald-300" />
-                    <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
-                      {item.solution}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
+                  if (touch) {
+                    handleFeatureSwipeEnd(touch.clientX);
+                  }
 
-        <section
-          id="features"
-          className="scroll-mt-28 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
-        >
-          <SectionHeading
-            eyebrow="Features"
-            title="Everything you need in one platform"
-            description="Five practical features designed to help you stay prepared, present, and informed."
-          />
+                  setIsFeaturePaused(false);
+                }}
+                onTouchCancel={() => {
+                  featureSwipeStartX.current = null;
+                  setIsFeaturePaused(false);
+                }}
+                onPointerDown={(event) => {
+                  if (event.pointerType === "mouse" && event.button !== 0) {
+                    return;
+                  }
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURE_ITEMS.map((item) => {
-              const Icon = item.icon;
-
-              return (
+                  setIsFeaturePaused(true);
+                  handleFeatureSwipeStart(event.clientX);
+                }}
+                onPointerUp={(event) => {
+                  handleFeatureSwipeEnd(event.clientX);
+                  setIsFeaturePaused(false);
+                }}
+                onPointerCancel={() => {
+                  featureSwipeStartX.current = null;
+                  setIsFeaturePaused(false);
+                }}
+              >
                 <div
-                  key={item.title}
-                  className="transition-transform duration-200 hover:-translate-y-1"
-                >
-                  <FeatureCard
-                    icon={
-                      <Icon className="h-5 w-5 text-slate-800 dark:text-[#2dd4a8]" />
-                    }
-                    title={item.title}
-                    description={item.description}
-                  />
+                  className="absolute inset-y-0 left-0 z-20 w-10 bg-gradient-to-r from-white to-transparent dark:from-[#0B0F19] dark:to-transparent sm:w-24"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute inset-y-0 right-0 z-20 w-10 bg-gradient-to-l from-white to-transparent dark:from-[#0B0F19] dark:to-transparent sm:w-24"
+                  aria-hidden="true"
+                />
+
+                {FEATURE_CARDS.map((card, index) => {
+                  const Icon = card.icon;
+                  const offset = getCircularOffset(
+                    index,
+                    activeFeatureIndex,
+                    FEATURE_CARDS.length,
+                  );
+                  const absOffset = Math.abs(offset);
+                  const isVisible = absOffset <= 2;
+                  const scale =
+                    absOffset === 0 ? 1.1 : absOffset === 1 ? 0.86 : 0.74;
+                  const opacity =
+                    absOffset === 0 ? 1 : absOffset === 1 ? 0.8 : 0.45;
+                  const zIndex = FEATURE_CARDS.length - absOffset;
+                  const shift = `calc(${offset} * min(18.25rem, 35vw))`;
+
+                  return (
+                    <article
+                      key={card.title}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Show ${card.title}`}
+                      aria-pressed={index === activeFeatureIndex}
+                      onClick={() => goToFeature(index)}
+                      onFocus={() => goToFeature(index)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          goToFeature(index);
+                          return;
+                        }
+
+                        if (event.key === "ArrowRight") {
+                          event.preventDefault();
+                          goToNextFeature();
+                          return;
+                        }
+
+                        if (event.key === "ArrowLeft") {
+                          event.preventDefault();
+                          goToPreviousFeature();
+                        }
+                      }}
+                      style={{
+                        transform: `translateX(-50%) translateX(${shift}) scale(${scale})`,
+                        opacity: isVisible ? opacity : 0,
+                        zIndex,
+                        filter: absOffset > 1 ? "saturate(85%)" : "none",
+                      }}
+                      className={`group absolute left-1/2 top-0 flex flex-col w-[min(90vw,25.5rem)] min-h-[480px] overflow-hidden rounded-3xl border bg-[var(--color-secondary-bg)] p-7 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        card.featured
+                          ? "border-[var(--color-primary)] shadow-xl shadow-blue-100/80 dark:shadow-none"
+                          : "border-blue-100/80"
+                      } ${
+                        isVisible
+                          ? "pointer-events-auto cursor-pointer shadow-2xl shadow-blue-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-4 dark:shadow-none"
+                          : "pointer-events-none"
+                      }`}
+                    >
+                      {card.featured && (
+                        <span className="pointer-events-none absolute right-[-42px] top-5 rotate-45 bg-[var(--color-primary)] px-12 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white">
+                          Most Popular
+                        </span>
+                      )}
+
+                      <div className="mb-5 flex justify-center">
+                        <div
+                          className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-105 ${card.iconClassName}`}
+                        >
+                          <Icon className="h-7 w-7" />
+                        </div>
+                      </div>
+
+                      <h3 className="text-center text-2xl font-extrabold tracking-tight text-slate-900 dark:text-[#E5E7EB] sm:text-[1.9rem]">
+                        {card.title}
+                      </h3>
+
+                      <p className="mt-3 flex-grow text-base leading-7 text-slate-600">
+                        {card.description}
+                      </p>
+
+                      <ul className="mt-6 space-y-2.5">
+                        {card.points.map((point) => (
+                          <li
+                            key={point}
+                            className="flex items-start gap-2.5 text-sm font-medium text-slate-700"
+                          >
+                            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </article>
+                  );
+                })}
+
+                <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-2.5 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 backdrop-blur">
+                  {FEATURE_CARDS.map((card, index) => (
+                    <button
+                      key={`feature-dot-${card.title}`}
+                      onClick={() => goToFeature(index)}
+                      aria-label={`Show ${card.title}`}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        index === activeFeatureIndex
+                          ? "w-8 bg-[var(--color-primary)]"
+                          : "w-2 bg-blue-200 hover:bg-blue-300"
+                      }`}
+                    />
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section
-          id="how-it-works"
-          className="scroll-mt-28 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
-        >
-          <SectionHeading
-            eyebrow="How It Works"
-            title="Get value in three simple steps"
-            description="From onboarding to daily reminders, setup is fast and easy to follow."
-          />
-
-          <div className="relative mt-12">
-            <div className="absolute left-10 right-10 top-8 hidden h-px bg-slate-200 dark:bg-slate-700 md:block" />
-            <div className="grid gap-6 md:grid-cols-3">
-              {HOW_IT_WORKS_STEPS.map((step, index) => {
-                const Icon = step.icon;
-
-                return (
-                  <article
-                    key={step.title}
-                    className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900"
-                  >
-                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#0a0f5c]/10 dark:bg-[#2dd4a8]/10">
-                      <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
-                    </div>
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                      Step {index + 1}
-                    </p>
-                    <h3 className="mt-2 text-lg font-bold text-[#0a0f5c] dark:text-white">
-                      {step.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                      {step.description}
-                    </p>
-                  </article>
-                );
-              })}
+              </div>
             </div>
-          </div>
-        </section>
 
-        <section
-          id="app-preview"
-          className="scroll-mt-28 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
-        >
-          <SectionHeading
-            eyebrow="App Preview"
-            title="A quick look at the interface"
-            description="Preview weekly schedules, smart alerts, and lecturer-student chat in one place."
-          />
-
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Weekly timetable view
-              </h3>
-              <div className="mt-4 space-y-2">
-                {[
-                  "Mon 09:00 - Calculus",
-                  "Tue 12:00 - Software Lab",
-                  "Wed 10:00 - Statistics",
-                  "Thu 14:00 - Networking",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-medium text-[#0a0f5c] dark:text-slate-300 dark:bg-slate-800"
-                  >
-                    {item}
-                  </div>
-                ))}
+            <div id="how-it-works" className="mt-20 sm:mt-28 lg:mt-32">
+              <div className="text-center">
+                <p className="inline-flex items-center rounded-full border border-blue-100/80 bg-blue-50 px-4 py-1 text-sm font-semibold text-[var(--color-primary)]">
+                  SIMPLE PROCESS
+                </p>
+                <h2 className="mt-6 text-4xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-5xl">
+                  How It
+                </h2>
+                <p className="text-4xl font-extrabold tracking-tight text-[var(--color-primary)] sm:text-5xl">
+                  WORKS
+                </p>
+                <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
+                  Get started in minutes, not days
+                </p>
               </div>
-            </article>
 
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Notification example
-              </h3>
-              <div className="mt-5 rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 dark:border-slate-700 p-4">
-                <div className="flex items-start gap-3">
-                  <BellRing className="mt-1 h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
-                  <div>
-                    <p className="text-sm font-semibold text-[#0a0f5c] dark:text-white">
-                      Lecture moved to 3:00 PM
-                    </p>
-                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                      CS301 Software Engineering has changed room to Hall B2.
-                    </p>
-                    <p className="mt-2 text-xs font-medium text-slate-500 dark:text-slate-500">
-                      2 min ago
+              <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                <div key="step-1" className="relative">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      1
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <UserPlus className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      Set Up Institution
+                    </h3>
+                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
+                      Quick registration with your school details and admin
+                      account
                     </p>
                   </div>
                 </div>
-              </div>
-            </article>
 
-            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Chat interface preview
-              </h3>
-              <div className="mt-5 space-y-3">
-                <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300">
-                  Reminder: bring your lab reports to tomorrow&apos;s class.
-                </div>
-                <div className="ml-auto max-w-[88%] rounded-2xl rounded-tr-sm bg-[#0a0f5c] px-3 py-2 text-sm text-white">
-                  Got it, thank you!
-                </div>
-                <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-700 dark:text-slate-300">
-                  I also posted today&apos;s slides in Announcements.
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section
-          id="benefits"
-          className="scroll-mt-28 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
-        >
-          <SectionHeading
-            eyebrow="Benefits"
-            title="Built to make academic life easier"
-            description="The platform helps students and lecturers focus on learning, not logistics."
-          />
-
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {BENEFITS.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <article
-                  key={item.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
-                >
-                  <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#2dd4a8]/15 dark:bg-[#2dd4a8]/10">
-                    <Icon className="h-5 w-5 text-[#0a0f5c] dark:text-[#2dd4a8]" />
+                <div key="step-2" className="relative">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      2
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-[#0a0f5c] dark:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                    {item.description}
+
+                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <CloudUpload className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      Add Students & Lecturers
+                    </h3>
+                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
+                      Import via Excel spreadsheet or add users manually in bulk
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-3" className="relative">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      3
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <Settings className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      Configure Attendance
+                    </h3>
+                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
+                      Choose between QR codes, mobile device, or manual tracking
+                      methods
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-4" className="relative">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      4
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <Check className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      Start Tracking
+                    </h3>
+                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
+                      Begin attendance sessions and monitor participation in
+                      real-time
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="about" className="mt-20 sm:mt-28 lg:mt-32">
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[var(--color-primary)] to-blue-600 px-6 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
+                <div className="relative z-10 mx-auto max-w-3xl text-center">
+                  <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                    Transform Your Tertiary Experience
+                  </h2>
+                  <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">
+                    Streamline attendance tracking, empower your students and
+                    lecturers, and build a smarter campus experience with
+                    TertiaryFree.
                   </p>
-                </article>
-              );
-            })}
-          </div>
-        </section>
 
-        <section className="mx-auto max-w-7xl px-4 pb-20 pt-4 sm:px-6 sm:pb-24 lg:px-8">
-          <div className="rounded-3xl bg-gradient-to-br from-[#0a0f5c] to-[#142286] px-6 py-10 text-center shadow-xl sm:px-10 sm:py-14">
-            <h2 className="mx-auto max-w-3xl text-2xl font-extrabold leading-tight text-white sm:text-4xl">
-              Start managing your academic life smarter today
-            </h2>
-            <Link
-              href="/register"
-              className="mt-8 inline-flex items-center justify-center rounded-full bg-[#2dd4a8] px-8 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#3dedc0] dark:bg-[#2dd4a8] dark:text-white dark:hover:bg-[#3dedc0]"
-            >
-              Create Free Account
-            </Link>
+                  <div className="mt-10 flex flex-col items-center justify-center">
+                    <Link
+                      href="#"
+                      className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-50 hover:-translate-y-0.5 shadow-lg"
+                    >
+                      Create Account
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="absolute inset-0 overflow-hidden rounded-3xl">
+                  <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-400/10 blur-3xl" />
+                  <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-white/5 blur-3xl" />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

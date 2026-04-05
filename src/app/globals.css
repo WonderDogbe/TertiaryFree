@@ -1,10 +1,11 @@
 @import "tailwindcss";
 @import "@mantine/core/styles.css";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-brand-primary: #0a0f5c;
-  --color-brand-secondary: #2dd4a8;
-  --color-surface: #f4f6fb;
+  --color-brand-primary: #2563eb;
+  --color-brand-secondary: #60a5fa;
+  --color-surface: #f9fafb;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -16,106 +17,63 @@ body {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
   background-color: #ffffff;
-  color: #0f172a;
+  color: #111827;
 }
 
 :root {
-  --hero-text-color: #130138;
-  --logo-bg: #0a0f5c;
+  --color-primary: #2563eb;
+  --color-background: #ffffff;
+  --color-secondary-bg: #f9fafb;
+  --color-text: #111827;
+  --color-accent: #60a5fa;
+  --hero-text-color: #111827;
+  --logo-bg: #2563eb;
   --logo-icon: #ffffff;
-  --logo-text: #0a0f5c;
+  --logo-text: #111827;
+}
+
+:root.dark {
+  --color-primary: #3b82f6;
+  --color-background: #0b0f19;
+  --color-secondary-bg: #111827;
+  --color-text: #e5e7eb;
+  --color-accent: #60a5fa;
+  --hero-text-color: #e5e7eb;
+  --logo-bg: #3b82f6;
+  --logo-icon: #ffffff;
+  --logo-text: #e5e7eb;
+}
+
+html.light,
+html.light body {
+  background-color: #ffffff;
+  color: #111827;
 }
 
 html.dark,
 html.dark body {
-  background-color: #020617;
-  color: #e2e8f0;
+  background-color: #0b0f19;
+  color: #e5e7eb;
 }
 
-html.dark {
-  --hero-text-color: #ffffff;
-  --logo-bg: #2dd4a8;
-  --logo-icon: #0a0f5c;
-  --logo-text: #2dd4a8;
-}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --color-primary: #3b82f6;
+    --color-background: #0b0f19;
+    --color-secondary-bg: #111827;
+    --color-text: #e5e7eb;
+    --color-accent: #60a5fa;
+    --hero-text-color: #e5e7eb;
+    --logo-bg: #3b82f6;
+    --logo-icon: #ffffff;
+    --logo-text: #e5e7eb;
+  }
 
-/* Dark mode overrides */
-.dark .bg-slate-50,
-.dark .bg-slate-50\/90 {
-  background-color: #020617 !important;
-}
-
-.dark .bg-white {
-  background-color: #0f172a !important;
-}
-
-/* Mantine Input Overrides for Authentication Pages */
-.mantine-TextInput-input,
-.mantine-PasswordInput-input,
-.mantine-Select-input,
-.mantine-MultiSelect-input {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
-}
-
-.dark .mantine-TextInput-input,
-.dark .mantine-PasswordInput-input,
-.dark .mantine-Select-input,
-.dark .mantine-MultiSelect-input {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #334155 !important;
-}
-
-/* Fix specific colors for dark mode visibility */
-.dark .text-slate-900 {
-  color: #f8fafc !important;
-}
-
-.dark .text-slate-800 {
-  color: #e2e8f0 !important;
-}
-
-.dark .text-slate-700 {
-  color: #cbd5e1 !important;
-}
-
-.dark .text-slate-600 {
-  color: #94a3b8 !important;
-}
-
-.dark .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-.dark .border-slate-200,
-.dark .border-slate-200\/80,
-.dark .border-slate-100 {
-  border-color: #334155 !important;
-}
-
-.dark .border-slate-300 {
-  border-color: #475569 !important;
-}
-
-/* Navigation items in dark mode */
-.dark header nav a {
-  color: #e2e8f0 !important;
-}
-
-.dark header nav a:hover {
-  color: #5eead4 !important;
-}
-
-/* Buttons in dark mode */
-.dark .btn-brand {
-  background-color: #2dd4a8 !important;
-  color: #0a0f5c !important;
-}
-
-.dark .btn-brand:hover {
-  background-color: #3dedc0 !important;
+  html:not(.light):not(.dark),
+  html:not(.light):not(.dark) body {
+    background-color: #0b0f19;
+    color: #e5e7eb;
+  }
 }
 
 /* Dashboard Premium Styles */
@@ -124,16 +82,12 @@ html.dark {
     @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
   }
 
-  .dark .glass-panel-dark {
-    @apply bg-slate-900/40 backdrop-blur-lg border border-slate-700/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
-  }
-
   .premium-shadow {
-    box-shadow: 0 10px 30px -10px rgba(10, 15, 92, 0.1);
+    box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.14);
   }
 
   .premium-shadow-hover:hover {
-    box-shadow: 0 25px 50px -12px rgba(10, 15, 92, 0.15);
+    box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.2);
   }
 
   .animate-slide-up {
@@ -163,11 +117,22 @@ html.dark {
     0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-.glass-panel-dark {
-  background: rgba(10, 15, 92, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+html.dark .glass-panel {
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .glass-panel {
+    background: rgba(17, 24, 39, 0.85);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .premium-shadow {
@@ -177,11 +142,11 @@ html.dark {
 }
 
 .hero-gradient {
-  background: linear-gradient(135deg, #0a0f5c 0%, #1a2080 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, #0a0f5c, #1a2080);
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -226,51 +191,13 @@ html.dark {
   transition: all 0.2s ease;
 }
 .mantine-Input-input:focus {
-  border-color: #0a0f5c;
-  box-shadow: 0 0 0 3px rgba(10, 15, 92, 0.1);
-}
-
-.dark .mantine-InputWrapper-label {
-  color: #cbd5e1;
-}
-
-.dark .mantine-Input-input,
-.dark .mantine-PasswordInput-input,
-.dark .mantine-Select-input {
-  background-color: #ffffff;
-  border-color: #334155;
-  color: #0f172a;
-}
-
-.dark .mantine-Input-input::placeholder,
-.dark .mantine-PasswordInput-input::placeholder,
-.dark .mantine-Select-input::placeholder {
-  color: #64748b;
-}
-
-.dark .mantine-Input-input:focus,
-.dark .mantine-PasswordInput-input:focus,
-.dark .mantine-Select-input:focus {
-  border-color: #2dd4a8;
-  box-shadow: 0 0 0 3px rgba(45, 212, 168, 0.18);
-}
-
-.dark .mantine-Select-dropdown {
-  background-color: #0f172a;
-  border: 1px solid #334155;
-}
-
-.dark .mantine-Select-option {
-  color: #e2e8f0;
-}
-
-.dark .mantine-Select-option:hover {
-  background-color: #1e293b;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 /* Brand Button */
 .btn-brand {
-  background-color: #0a0f5c;
+  background-color: #2563eb;
   color: white;
   border-radius: 9999px;
   padding: 0.75rem 1.75rem;
@@ -282,9 +209,9 @@ html.dark {
   gap: 0.5rem;
 }
 .btn-brand:hover {
-  background-color: #1a2080;
+  background-color: #1d4ed8;
   transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(10, 15, 92, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.24);
 }
 .btn-brand:active {
   transform: translateY(0);

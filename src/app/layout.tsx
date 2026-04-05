@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { MantineProvider, ColorSchemeScript } from "@mantine/core";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { MantineProvider } from "@mantine/core";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,7 +24,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
-        <ColorSchemeScript defaultColorScheme="light" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -41,11 +39,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <MantineProvider defaultColorScheme="auto">
-            {children}
-          </MantineProvider>
-        </ThemeProvider>
+        <MantineProvider defaultColorScheme="auto">{children}</MantineProvider>
       </body>
     </html>
   );

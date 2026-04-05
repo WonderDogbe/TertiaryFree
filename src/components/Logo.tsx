@@ -33,7 +33,7 @@ export function Logo({
         style={{
           width: icon + 12,
           height: icon + 12,
-          backgroundColor: "var(--logo-bg, #0a0f5c)",
+          backgroundColor: "var(--logo-bg, #2563eb)",
         }}
       >
         <GraduationCap
@@ -45,7 +45,7 @@ export function Logo({
       {showText && (
         <span
           className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
-          style={{ color: "var(--logo-text, #0a0f5c)" }}
+          style={{ color: "var(--logo-text, #111827)" }}
         >
           TertiaryFree
         </span>

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   TextInput,
   PasswordInput,
   Select,
-  SegmentedControl,
 } from "@mantine/core";
 import {
   Mail,
@@ -23,7 +22,7 @@ import {
 import { AuthLayout } from "@/components/AuthLayout";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const [userType, setUserType] = useState<"student" | "lecturer">("student");
   const [formData, setFormData] = useState({
     name: "",
@@ -39,6 +38,14 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const role = searchParams.get("role");
+
+    if (role === "student" || role === "lecturer") {
+      setUserType(role);
+    }
+  }, [searchParams]);
 
   const isFormValid =
     formData.name.trim() !== "" &&
@@ -81,9 +88,19 @@ export default function RegisterPage() {
     console.log("Register submitted:", { userType, ...formData });
   };
 
-  const inputClassNames = {
-    input:
-      "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
+  const inputStyles = {
+    label: {
+      color: "var(--color-text)",
+      fontWeight: 500,
+    },
+    input: {
+      backgroundColor: "#ffffff",
+      color: "#0f172a",
+      borderColor: "#dbeafe",
+    },
+    section: {
+      color: "#94a3b8",
+    },
   };
 
   return (
@@ -94,25 +111,6 @@ export default function RegisterPage() {
           : "Manage your lectures and connect with students effortlessly"
       }
     >
-      <div className="mb-8 flex flex-col items-center">
-        <p className="mb-3 text-sm font-semibold text-slate-500 dark:text-slate-400">
-          ARE YOU A STUDENT OR A LECTURER?
-        </p>
-        <SegmentedControl
-          fullWidth
-          size="md"
-          radius="xl"
-          value={userType}
-          onChange={(value) => setUserType(value as "student" | "lecturer")}
-          data={[
-            { label: "Student", value: "student" },
-            { label: "Lecturer", value: "lecturer" },
-          ]}
-          color={userType === "student" ? "#0a0f5c" : "#2dd4a8"}
-          className="bg-slate-100 dark:bg-slate-800"
-        />
-      </div>
-
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
         <TextInput
           id="register-name"
@@ -124,7 +122,7 @@ export default function RegisterPage() {
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
           }
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         <TextInput
@@ -140,7 +138,7 @@ export default function RegisterPage() {
             setFormData((prev) => ({ ...prev, email: e.target.value }))
           }
           error={errors.email}
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         {userType === "student" ? (
@@ -155,7 +153,7 @@ export default function RegisterPage() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, programme: e.target.value }))
               }
-              classNames={inputClassNames}
+              styles={inputStyles}
             />
           </>
         ) : (
@@ -170,7 +168,7 @@ export default function RegisterPage() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }
-              classNames={inputClassNames}
+              styles={inputStyles}
             />
 
             <TextInput
@@ -186,7 +184,7 @@ export default function RegisterPage() {
                   courseLectured: e.target.value,
                 }))
               }
-              classNames={inputClassNames}
+              styles={inputStyles}
             />
           </>
         )}
@@ -201,7 +199,7 @@ export default function RegisterPage() {
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, school: e.target.value }))
           }
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         <TextInput
@@ -214,7 +212,7 @@ export default function RegisterPage() {
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, department: e.target.value }))
           }
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         {userType === "student" && (
@@ -238,7 +236,7 @@ export default function RegisterPage() {
             onChange={(value) =>
               setFormData((prev) => ({ ...prev, level: value || "" }))
             }
-            classNames={inputClassNames}
+            styles={inputStyles}
           />
         )}
 
@@ -256,7 +254,7 @@ export default function RegisterPage() {
             }
           }}
           error={errors.password}
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         <PasswordInput
@@ -276,7 +274,7 @@ export default function RegisterPage() {
             }
           }}
           error={errors.confirmPassword}
-          classNames={inputClassNames}
+          styles={inputStyles}
         />
 
         {/* Submit Button */}
@@ -306,7 +304,7 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-semibold text-[#0a0f5c] transition-colors hover:underline dark:text-[#5eead4]"
+            className="font-semibold text-[var(--color-primary)] transition-colors hover:underline"
             id="login-link"
           >
             Sign In

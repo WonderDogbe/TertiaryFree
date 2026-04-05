@@ -56,9 +56,9 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
       {/* Left pane - Image carousel */}
-      <div className="hidden lg:block relative w-0 flex-1 bg-slate-200 overflow-hidden">
+      <div className="relative hidden w-0 flex-1 overflow-hidden bg-[var(--color-secondary-bg)] lg:block">
         {AUTH_IMAGES.map((img, index) => (
           <div
             key={img.url}
@@ -90,12 +90,12 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
                 &quot;{img.quote}&quot;
               </blockquote>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-[#0a0f5c] font-bold text-lg">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/85 text-lg font-bold text-[var(--color-primary)]">
                   {img.initial}
                 </div>
                 <div>
                   <p className="font-semibold text-lg">{img.author}</p>
-                  <p className="text-[#2dd4a8] font-medium">{img.role}</p>
+                  <p className="font-medium text-[var(--color-accent)]">{img.role}</p>
                 </div>
               </div>
             </div>
@@ -124,7 +124,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
         <div className="absolute top-8 left-8 sm:left-12 xl:left-24">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[#0a0f5c] group dark:text-slate-300 dark:hover:text-[#5eead4]"
+            className="group flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)]"
           >
             <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
           </Link>
@@ -140,7 +140,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
             </p>
           </div>
 
-          <div className="mt-8 sm:mt-10 animate-slide-up delay-100 bg-white sm:shadow-lg sm:rounded-2xl sm:p-8 sm:border sm:border-slate-100 dark:bg-slate-900 dark:border-slate-700">
+          <div className="mt-8 animate-slide-up delay-100 bg-[var(--color-secondary-bg)] sm:mt-10 sm:rounded-2xl sm:border sm:border-blue-100/70 sm:p-8 sm:shadow-lg dark:border-blue-900/40">
             {children}
           </div>
         </div>

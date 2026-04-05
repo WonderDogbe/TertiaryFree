@@ -289,7 +289,7 @@ export default function LandingPage() {
               </div>
 
               <Link
-                href="#"
+                href="/login"
                 className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700"
               >
                 Sign in
@@ -316,13 +316,13 @@ export default function LandingPage() {
               >
                 {/* Backdrop with Blur */}
                 <div
-                  className={`absolute inset-0 bg-slate-950/30 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
+                  className={`absolute inset-0 bg-slate-950/40 backdrop-blur-md transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
                   onClick={() => setIsMenuOpen(false)}
                 />
 
                 {/* Drawer */}
                 <div
-                  className={`absolute right-0 top-0 h-full w-full bg-white transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+                  className={`absolute right-0 top-0 h-full w-1/2 bg-white transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
                 >
                   <div className="flex h-full flex-col p-8 pt-32">
                     <nav className="flex flex-col gap-y-2" aria-label="Mobile">
@@ -339,14 +339,14 @@ export default function LandingPage() {
 
                       <div className="flex flex-col gap-3">
                         <Link
-                          href="#about"
+                          href="/get-started"
                           onClick={() => setIsMenuOpen(false)}
                           className="btn-brand mt-4 w-full py-3 text-center text-base"
                         >
                           Get Started
                         </Link>
                         <Link
-                          href="#"
+                          href="/login"
                           onClick={() => setIsMenuOpen(false)}
                           className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-100 w-full text-center"
                         >
@@ -395,7 +395,7 @@ export default function LandingPage() {
 
               <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
                 <Link
-                  href="#about"
+                  href="/get-started"
                   className="btn-brand px-8 py-3 text-sm font-semibold shadow-lg shadow-blue-200"
                 >
                   Get Started
@@ -764,7 +764,7 @@ export default function LandingPage() {
 
                   <div className="mt-10 flex flex-col items-center justify-center">
                     <Link
-                      href="#"
+                      href="/get-started"
                       className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-50 hover:-translate-y-0.5 shadow-lg"
                     >
                       Create Account

@@ -7,13 +7,14 @@ import { Logo } from "./Logo";
 interface AuthLayoutProps {
   children: React.ReactNode;
   subtitle: string;
-  userType?: "student" | "lecturer";
+  userType?: "student" | "lecturer" | "login";
 }
 
 const ROLE_IMAGES = {
   student: "/smiley-friends-with-books-having-coffee-together-outside.jpg",
   lecturer:
     "/confident-entrepreneur-strategize-business-whiskey-luxury-social-club.jpg",
+  login: "/pic.jpg",
 };
 
 export function AuthLayout({

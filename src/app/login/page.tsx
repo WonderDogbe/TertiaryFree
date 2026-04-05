@@ -30,8 +30,20 @@ export default function LoginPage() {
     console.log("Login submitted:", formData);
   };
 
+  const inputStyles = {
+    input: {
+      backgroundColor: "#ffffff",
+      color: "#0f172a",
+      borderColor: "#dbeafe",
+    },
+    label: {
+      color: "var(--color-text)",
+      fontWeight: 500,
+    },
+  };
+
   return (
-    <AuthLayout subtitle="Sign in to access your unified academic dashboard">
+    <AuthLayout userType="login" subtitle="Sign in to access your unified academic dashboard">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <TextInput
           id="login-email"
@@ -43,6 +55,7 @@ export default function LoginPage() {
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, email: e.target.value }))
           }
+          styles={inputStyles}
           classNames={{
             input:
               "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
@@ -59,6 +72,7 @@ export default function LoginPage() {
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, password: e.target.value }))
           }
+          styles={inputStyles}
           classNames={{
             input:
               "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",

@@ -12,10 +12,15 @@ interface AuthLayoutProps {
 
 const ROLE_IMAGES = {
   student: "/smiley-friends-with-books-having-coffee-together-outside.jpg",
-  lecturer: "/confident-entrepreneur-strategize-business-whiskey-luxury-social-club.jpg",
+  lecturer:
+    "/confident-entrepreneur-strategize-business-whiskey-luxury-social-club.jpg",
 };
 
-export function AuthLayout({ children, subtitle, userType = "student" }: AuthLayoutProps) {
+export function AuthLayout({
+  children,
+  subtitle,
+  userType = "student",
+}: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
       {/* Left pane - Image */}

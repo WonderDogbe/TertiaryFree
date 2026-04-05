@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Presentation, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  GraduationCap,
+  Presentation,
+  type LucideIcon,
+} from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 type RoleOption = {

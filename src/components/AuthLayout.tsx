@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "./Logo";
@@ -8,115 +7,25 @@ import { Logo } from "./Logo";
 interface AuthLayoutProps {
   children: React.ReactNode;
   subtitle: string;
+  userType?: "student" | "lecturer";
 }
 
-const AUTH_IMAGES = [
-  {
-    url: "/college-students-different-ethnicities-cramming.jpg",
-    quote:
-      "TertiaryFree has completely transformed how I manage my university life. Everything from grades to tuition is just a click away.",
-    author: "Sarah J.",
-    role: "Computer Science, Senior",
-    initial: "S",
-  },
-  {
-    url: "/woman-with-books-pointing.jpg",
-    quote:
-      "I never miss a lecture anymore. The real-time notifications are a total game changer for my busy schedule!",
-    author: "Michael K.",
-    role: "Mechanical Engineering, Junior",
-    initial: "M",
-  },
-  {
-    url: "/study-group-african-people.jpg",
-    quote:
-      "The collaboration tools and class chats make group projects so much easier. I feel more connected than ever.",
-    author: "David O.",
-    role: "Business Admin, Sophomore",
-    initial: "D",
-  },
-  {
-    url: "/confident-entrepreneur-strategize-business-whiskey-luxury-social-club.jpg",
-    quote:
-      "TertiaryFree has streamlined how I communicate with all my sections. The attendance and schedule updates are incredibly efficient.",
-    author: "Prof. Kwame A.",
-    role: "Senior Lecturer, Engineering",
-    initial: "K",
-  },
-];
+const ROLE_IMAGES = {
+  student: "/smiley-friends-with-books-having-coffee-together-outside.jpg",
+  lecturer: "/confident-entrepreneur-strategize-business-whiskey-luxury-social-club.jpg",
+};
 
-export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % AUTH_IMAGES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
+export function AuthLayout({ children, subtitle, userType = "student" }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
-      {/* Left pane - Image carousel */}
+      {/* Left pane - Image */}
       <div className="relative hidden w-0 flex-1 overflow-hidden bg-[var(--color-secondary-bg)] lg:block">
-        {AUTH_IMAGES.map((img, index) => (
-          <div
-            key={img.url}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="absolute inset-0 h-full w-full object-cover"
-              src={img.url}
-              alt="Students studying"
-            />
-            <div className="absolute inset-0 bg-black/40" />
-
-            <div className="absolute bottom-16 left-16 right-16 text-white max-w-2xl">
-              <div className="mb-6 flex gap-2">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <svg
-                    key={s}
-                    className="w-6 h-6 text-yellow-400 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <blockquote className="text-3xl font-bold leading-tight tracking-tight mb-6 transition-all duration-700">
-                &quot;{img.quote}&quot;
-              </blockquote>
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/85 text-lg font-bold text-[var(--color-primary)]">
-                  {img.initial}
-                </div>
-                <div>
-                  <p className="font-semibold text-lg">{img.author}</p>
-                  <p className="font-medium text-[var(--color-accent)]">{img.role}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Navigation Dots */}
-        <div className="absolute bottom-8 left-16 flex gap-2 z-20">
-          {AUTH_IMAGES.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentImageIndex(i)}
-              className={`h-1.5 transition-all duration-300 rounded-full ${
-                i === currentImageIndex
-                  ? "w-8 bg-white"
-                  : "w-1.5 bg-white/40 hover:bg-white/60"
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={ROLE_IMAGES[userType]}
+          alt={userType === "student" ? "Students" : "Lecturer"}
+          className="h-full w-full object-cover"
+        />
       </div>
 
       {/* Right pane - Form Content (Previously Left) */}

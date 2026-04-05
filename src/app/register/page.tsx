@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  TextInput,
-  PasswordInput,
-  Select,
-} from "@mantine/core";
+import { TextInput, PasswordInput, Select } from "@mantine/core";
 import {
   Mail,
   Lock,
@@ -105,6 +101,7 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout
+      userType={userType}
       subtitle={
         userType === "student"
           ? "Join thousands of students simplifying their academic life"

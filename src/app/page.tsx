@@ -261,8 +261,8 @@ export default function LandingPage() {
                   <Image
                     src="/logo - Copy.png"
                     alt="TertiaryFree Logo"
-                    width={110}
-                    height={95}
+                    width={60}
+                    height={50}
                     priority
                     className="h-auto w-auto"
                   />

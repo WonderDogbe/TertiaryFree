@@ -40,7 +40,10 @@ export default function GetStartedPage() {
       <div className="mx-auto flex w-full max-w-6xl flex-col">
         <header className="flex items-center justify-between">
           <Link href="/" aria-label="Go back to home">
-            <Logo size="sm" className="origin-left scale-125 sm:scale-150 lg:scale-[2]" />
+            <Logo
+              size="sm"
+              className="origin-left scale-125 sm:scale-150 lg:scale-[2]"
+            />
           </Link>
 
           <Link

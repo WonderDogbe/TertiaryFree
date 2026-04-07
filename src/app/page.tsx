@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   BarChart3,
   BellRing,
@@ -254,7 +255,27 @@ export default function LandingPage() {
           aria-label="Global"
         >
           <div className="flex items-center justify-between py-4 lg:py-5">
-            <Logo size="md" />
+            <div className="flex items-center">
+              <div className="lg:hidden">
+                <Link href="/" aria-label="TertiaryFree home">
+                  <Image
+                    src="/logo - Copy.png"
+                    alt="TertiaryFree Logo"
+                    width={110}
+                    height={95}
+                    priority
+                    className="h-auto w-auto"
+                  />
+                </Link>
+              </div>
+
+              <div className="hidden lg:block">
+                <Logo
+                  size="sm"
+                  className="origin-left scale-125 sm:scale-150 lg:scale-[2]"
+                />
+              </div>
+            </div>
 
             {/* Building Mode - Centered */}
             <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2">

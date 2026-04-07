@@ -1,55 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import Image from "next/image";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   className?: string;
-  showText?: boolean;
 }
 
 export function Logo({
   size = "md",
   className = "",
-  showText = true,
 }: LogoProps) {
   const sizeMap = {
-    sm: { icon: 20, text: "text-base" },
-    md: { icon: 24, text: "text-lg" },
-    lg: { icon: 32, text: "text-2xl" },
+    sm: { width: 120, height: 40 },
+    md: { width: 150, height: 50 },
+    lg: { width: 200, height: 67 },
   };
 
-  const { icon, text } = sizeMap[size];
+  const { width, height } = sizeMap[size];
 
   return (
     <Link
       href="/"
-      className={`inline-flex items-center gap-2 no-underline group ${className}`}
+      className={`inline-flex items-center no-underline group ${className}`}
       id="brand-logo"
     >
-      <div
-        className="flex items-center justify-center rounded-lg shadow-sm transition-colors flex-shrink-0"
-        style={{
-          width: icon + 12,
-          height: icon + 12,
-          backgroundColor: "var(--logo-bg, #2563eb)",
-        }}
-      >
-        <GraduationCap
-          size={icon}
-          style={{ color: "var(--logo-icon, #ffffff)" }}
-          strokeWidth={2.5}
-        />
-      </div>
-      {showText && (
-        <span
-          className={`font-extrabold ${text} tracking-tight transition-colors sm:block text-xs sm:text-lg`}
-          style={{ color: "var(--logo-text, #111827)" }}
-        >
-          TertiaryFree
-        </span>
-      )}
+      <Image
+        src="/logo.png"
+        alt="TertiaryFree Logo"
+        width={width}
+        height={height}
+        priority
+        className="h-auto w-auto"
+      />
     </Link>
   );
 }

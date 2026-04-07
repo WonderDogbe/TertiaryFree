@@ -46,7 +46,7 @@ export function AuthLayout({
         </div>
         <div className="mx-auto w-full max-w-md lg:w-full">
           <header className="mb-10 sm:mb-12 flex flex-col items-center">
-            <Logo size="lg" />
+            <Logo size="sm" className="scale-125 sm:scale-150 lg:scale-[2]" />
           </header>
 
           <div className="animate-slide-up text-center">

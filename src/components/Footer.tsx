@@ -13,7 +13,7 @@ export function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="mb-3 flex">
-              <Logo size="sm" />
+              <Logo size="sm" className="origin-left scale-125 sm:scale-150 lg:scale-[2]" />
             </div>
             <p className="max-w-md text-sm text-slate-600">
               TertiaryFree helps students and lecturers stay aligned with

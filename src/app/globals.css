@@ -38,7 +38,7 @@ body {
   --color-secondary-bg: #111827;
   --color-text: #e5e7eb;
   --color-accent: #60a5fa;
-  --hero-text-color: #e5e7eb;
+  --hero-text-color: #ffffff;
   --logo-bg: #3b82f6;
   --logo-icon: #ffffff;
   --logo-text: #e5e7eb;
@@ -56,25 +56,7 @@ html.dark body {
   color: #e5e7eb;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not(.light):not(.dark) {
-    --color-primary: #3b82f6;
-    --color-background: #0b0f19;
-    --color-secondary-bg: #111827;
-    --color-text: #e5e7eb;
-    --color-accent: #60a5fa;
-    --hero-text-color: #e5e7eb;
-    --logo-bg: #3b82f6;
-    --logo-icon: #ffffff;
-    --logo-text: #e5e7eb;
-  }
-
-  html:not(.light):not(.dark),
-  html:not(.light):not(.dark) body {
-    background-color: #0b0f19;
-    color: #e5e7eb;
-  }
-}
+/* Keep light mode as first-visit default; dark mode is only applied via explicit user toggle. */
 
 /* Dashboard Premium Styles */
 @layer components {
@@ -123,16 +105,6 @@ html.dark .glass-panel {
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.3),
     0 2px 4px -1px rgba(0, 0, 0, 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-  html:not(.light):not(.dark) .glass-panel {
-    background: rgba(17, 24, 39, 0.85);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.3),
-      0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  }
 }
 
 .premium-shadow {

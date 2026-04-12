@@ -7,24 +7,22 @@ import {
   BarChart3,
   BellRing,
   CalendarCheck2,
+  ChevronRight,
   Check,
-  CloudUpload,
-  Menu,
+  FileText,
   Moon,
   QrCode,
-  Settings,
+  Rocket,
   Sun,
   Users,
   UserPlus,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { Logo } from "@/components/Logo";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
-  { href: "#how-it-works", label: "How It Works" },
+  { href: "#onboarding", label: "Onboarding" },
   { href: "#about", label: "About" },
   { href: "#contact", label: "Contact Us" },
 ];
@@ -153,6 +151,14 @@ export default function LandingPage() {
     setIsDarkMode((prev) => !prev);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("theme");
 
@@ -168,7 +174,7 @@ export default function LandingPage() {
       return;
     }
 
-    setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    setIsDarkMode(false);
     setIsThemeReady(true);
   }, []);
 
@@ -189,6 +195,45 @@ export default function LandingPage() {
     root.classList.add("light");
     window.localStorage.setItem("theme", "light");
   }, [isDarkMode, isThemeReady]);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const handleBreakpointChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    mediaQuery.addEventListener("change", handleBreakpointChange);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      mediaQuery.removeEventListener("change", handleBreakpointChange);
+    };
+  }, []);
 
   const goToFeature = (index: number) => {
     setActiveFeatureIndex(wrapIndex(index, FEATURE_CARDS.length));
@@ -248,43 +293,39 @@ export default function LandingPage() {
   }, [isFeaturePaused]);
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
+    <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 dark:border-blue-900/40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
         <nav
           className="relative mx-auto w-full px-6 sm:px-10 lg:px-16"
           aria-label="Global"
         >
-          <div className="flex items-center justify-between py-4 lg:py-5">
-            <div className="flex items-center">
-              <div className="lg:hidden">
-                <Link href="/" aria-label="TertiaryFree home">
-                  <Image
-                    src="/logo - Copy.png"
-                    alt="TertiaryFree Logo"
-                    width={60}
-                    height={50}
-                    priority
-                    className="h-auto w-auto"
-                  />
-                </Link>
-              </div>
-
-              <div className="hidden lg:block">
-                <Logo
-                  size="sm"
-                  className="origin-left scale-125 sm:scale-150 lg:scale-[2]"
+          <div className="flex h-16 items-center justify-between lg:h-20">
+            <div className="flex shrink-0 items-center">
+              <Link
+                href="/"
+                aria-label="TertiaryFree home"
+                className="flex items-center"
+              >
+                <Image
+                  src="/logo.png"
+                  alt="TertiaryFree Logo"
+                  width={180}
+                  height={49}
+                  priority
+                  className="block h-9 w-auto object-contain md:hidden"
                 />
-              </div>
+                <Image
+                  src="/logo.png"
+                  alt="TertiaryFree Logo"
+                  width={272}
+                  height={74}
+                  priority
+                  className="hidden h-10 w-auto object-contain md:block lg:h-12"
+                />
+              </Link>
             </div>
 
-            {/* Building Mode - Centered */}
-            <div className="hidden lg:flex lg:absolute lg:left-1/2 lg:-translate-x-1/2">
-              <p className="inline-flex items-center rounded-full border border-red-300 bg-red-600 px-4 py-1 text-sm font-medium text-white">
-                Building Mode
-              </p>
-            </div>
-
-            <div className="hidden lg:flex lg:items-center lg:gap-6">
+            <div className="hidden md:flex md:items-center md:gap-4 lg:gap-6">
               <button
                 onClick={toggleDarkMode}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 dark:border-blue-900/40 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)]"
@@ -297,12 +338,12 @@ export default function LandingPage() {
                 )}
               </button>
 
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-4 lg:gap-8">
                 {NAV_LINKS.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="text-sm font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-primary)]"
+                    className="text-sm font-semibold text-[var(--color-text)] dark:text-slate-100 transition-colors hover:text-[var(--color-primary)] dark:hover:text-blue-300"
                   >
                     {link.label}
                   </Link>
@@ -317,116 +358,108 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="flex items-center lg:hidden">
-              {/* Mobile Menu Button */}
+            <div className="md:hidden">
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="relative z-[60] inline-flex text-[var(--color-primary)] transition-colors"
-                aria-label="Toggle menu"
+                onClick={toggleMobileMenu}
+                type="button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-900 transition-all duration-300 ease-in-out hover:bg-gray-100 hover:opacity-80 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 dark:text-white dark:hover:bg-white/10 dark:focus-visible:ring-offset-slate-900"
+                aria-label="Toggle Menu"
+                aria-controls="mobile-navigation"
+                aria-expanded={isMenuOpen}
               >
-                {isMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
+                <span className="relative flex h-4 w-7 flex-col items-center justify-center gap-1.5">
+                  <span
+                    className={`h-[2px] w-7 rounded-full bg-gray-900 transition-all duration-300 ease-in-out dark:bg-white ${
+                      isMenuOpen ? "translate-y-[4px] rotate-45" : ""
+                    }`}
+                  />
+                  <span
+                    className={`h-[2px] w-7 rounded-full bg-gray-900 transition-all duration-300 ease-in-out dark:bg-white ${
+                      isMenuOpen ? "-translate-y-[4px] -rotate-45" : ""
+                    }`}
+                  />
+                </span>
               </button>
-
-              {/* Mobile Menu Overlay & Drawer */}
-              <div
-                className={`fixed inset-0 z-50 lg:hidden transition-all duration-500 ${isMenuOpen ? "visible" : "invisible"}`}
-              >
-                {/* Backdrop with Blur */}
-                <div
-                  className={`absolute inset-0 bg-slate-950/40 backdrop-blur-md transition-opacity duration-500 ${isMenuOpen ? "opacity-100" : "opacity-0"}`}
-                  onClick={() => setIsMenuOpen(false)}
-                />
-
-                {/* Drawer */}
-                <div
-                  className={`absolute right-0 top-0 h-full w-1/2 bg-white transition-transform duration-500 ease-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}
-                >
-                  <div className="flex h-full flex-col p-8 pt-32">
-                    <nav className="flex flex-col gap-y-2" aria-label="Mobile">
-                      {NAV_LINKS.map((link) => (
-                        <Link
-                          key={`mobile-${link.label}`}
-                          href={link.href}
-                          onClick={() => setIsMenuOpen(false)}
-                          className="text-lg font-bold tracking-tight text-[var(--color-text)] transition-colors hover:text-[var(--color-primary)]"
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-
-                      <div className="flex flex-col gap-3">
-                        <Link
-                          href="/get-started"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="btn-brand mt-4 w-full py-3 text-center text-base"
-                        >
-                          Get Started
-                        </Link>
-                        <Link
-                          href="/login"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-100 w-full text-center"
-                        >
-                          Sign in
-                        </Link>
-                      </div>
-                    </nav>
-
-                    <div className="mt-auto pt-10 text-center">
-                      <p className="text-sm font-bold uppercase tracking-widest text-[var(--color-text)]/30">
-                        TertiaryFree
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </nav>
       </header>
 
-      <main
-        className={`pt-32 sm:pt-40 transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+      <div
+        id="mobile-navigation"
+        aria-label="Mobile menu"
+        className={`fixed inset-x-0 top-16 z-40 w-full border-t border-blue-100/80 bg-white shadow-lg transition-all duration-300 ease-in-out dark:border-blue-900/40 dark:bg-slate-900 md:hidden ${
+          isMenuOpen
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-[10px] pointer-events-none opacity-0"
+        }`}
       >
-        <section id="home" className="relative overflow-hidden">
+        <nav className="flex flex-col gap-4 p-5" aria-label="Mobile">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={`mobile-${link.label}`}
+              href={link.href}
+              onClick={closeMobileMenu}
+              className="text-base font-semibold tracking-tight text-[var(--color-text)] dark:text-slate-100 transition-colors hover:text-[var(--color-primary)] dark:hover:text-blue-300"
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <div className="flex flex-col gap-3 pt-1">
+            <Link
+              href="/get-started"
+              onClick={closeMobileMenu}
+              className="btn-brand w-full py-3 text-center text-base"
+            >
+              Get Started
+            </Link>
+            <Link
+              href="/login"
+              onClick={closeMobileMenu}
+              className="inline-flex w-full items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+            >
+              Sign in
+            </Link>
+          </div>
+        </nav>
+      </div>
+
+      <main className="pt-32 sm:pt-40">
+        <section id="home" className="relative overflow-x-hidden">
           <div
             className="absolute inset-x-0 top-[-160px] -z-10 h-[540px] bg-[radial-gradient(circle_at_top_left,#60A5FA33,transparent_50%),radial-gradient(circle_at_top_right,#2563EB22,transparent_45%)]"
             aria-hidden="true"
           />
 
-          <div className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8 lg:pb-32">
-            <div className="text-center">
-              <p className="inline-flex items-center rounded-full border border-blue-200 bg-[var(--color-secondary-bg)] px-4 py-1 text-sm font-medium text-[var(--color-primary)]">
-                Built for students and lecturers
-              </p>
+          <div className="mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 sm:pt-16 lg:px-8 lg:pb-32">
+            <div className="mx-auto max-w-md text-center sm:max-w-none">
               <h1
-                className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl"
+                className="text-[2.15rem] font-extrabold leading-[1.08] tracking-tight sm:mt-6 sm:text-5xl lg:text-7xl"
                 style={{ color: "var(--hero-text-color, #111827)" }}
               >
-                Never Miss a Lecture Again
+                Empower Your Academic <br />
+                Journey
               </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
+              <p className="mx-auto mt-5 max-w-[22rem] text-base leading-8 text-slate-600 dark:text-slate-300 sm:mt-6 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Personalized timetables, real-time updates, and smart
                 notifications for students and lecturers.
               </p>
 
-              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row sm:items-center">
+              <div className="mt-8 flex justify-center sm:mt-9 sm:flex-row sm:items-center">
                 <Link
                   href="/get-started"
-                  className="btn-brand px-8 py-3 text-sm font-semibold shadow-lg shadow-blue-200"
+                  className="inline-flex w-full max-w-[17.5rem] items-center justify-center gap-1.5 rounded-2xl bg-[var(--color-primary)] px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-blue-700 sm:w-auto sm:max-w-none sm:rounded-full sm:px-8 sm:py-3 sm:text-sm"
                 >
                   Get Started
+                  <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
 
-            <div id="how-it-works" className="mt-16 sm:mt-24">
+            <div className="mt-16 sm:mt-24">
               <div className="relative mx-auto max-w-none border-none bg-transparent p-0 shadow-none">
-                <div className="relative aspect-[21/11] overflow-hidden rounded-[2rem] bg-[var(--color-secondary-bg)] shadow-2xl shadow-blue-100 dark:shadow-none sm:rounded-[4rem]">
+                <div className="relative aspect-[21/11] overflow-hidden rounded-[2rem] bg-[var(--color-secondary-bg)] sm:rounded-[4rem]">
                   {HERO_IMAGES.map((item, index) => (
                     <div
                       key={item.url}
@@ -444,7 +477,6 @@ export default function LandingPage() {
                         alt={`app screenshot ${index + 1}`}
                         className="h-full w-full object-cover object-center"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent" />
 
                       <div
                         className={`absolute inset-x-0 bottom-16 sm:bottom-20 px-6 text-center transition-all duration-1000 delay-300 ${
@@ -479,13 +511,16 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div id="features" className="mt-16 sm:mt-20 lg:mt-24">
+            <div
+              id="features"
+              className="relative z-10 mt-20 scroll-mt-24 pt-6 sm:mt-24 sm:scroll-mt-32 sm:pt-8 lg:mt-28 lg:scroll-mt-40"
+            >
               <div className="text-center">
                 <h2 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
-                  Everything You Need For
+                  Everything You Need To
                 </h2>
                 <p className="mt-3 text-2xl font-semibold tracking-tight text-[var(--color-primary)] sm:text-3xl">
-                  Smarter Campus Attendance
+                  Manage Your Academic Life Seamlessly
                 </p>
                 <p className="mx-auto mt-4 max-w-3xl text-base text-slate-600 sm:text-lg">
                   TertiaryFree brings attendance, timetable flow, lecturer
@@ -494,7 +529,7 @@ export default function LandingPage() {
               </div>
 
               <div
-                className="relative mt-14 h-[620px] touch-pan-y overflow-hidden select-none sm:h-[600px]"
+                className="relative mt-14 min-h-[620px] touch-pan-y overflow-visible pt-10 select-none sm:min-h-[610px] sm:pt-12"
                 onMouseEnter={() => setIsFeaturePaused(true)}
                 onMouseLeave={() => setIsFeaturePaused(false)}
                 onFocusCapture={() => setIsFeaturePaused(true)}
@@ -599,11 +634,11 @@ export default function LandingPage() {
                       }}
                       className={`group absolute left-1/2 top-0 flex flex-col w-[min(90vw,25.5rem)] min-h-[480px] overflow-hidden rounded-3xl border bg-[var(--color-secondary-bg)] p-7 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                         card.featured
-                          ? "border-[var(--color-primary)] shadow-xl shadow-blue-100/80 dark:shadow-none"
+                          ? "border-[var(--color-primary)]"
                           : "border-blue-100/80"
                       } ${
                         isVisible
-                          ? "pointer-events-auto cursor-pointer shadow-2xl shadow-blue-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-4 dark:shadow-none"
+                          ? "pointer-events-auto cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-4"
                           : "pointer-events-none"
                       }`}
                     >
@@ -615,7 +650,7 @@ export default function LandingPage() {
 
                       <div className="mb-5 flex justify-center">
                         <div
-                          className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-105 ${card.iconClassName}`}
+                          className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:scale-105 ${card.iconClassName}`}
                         >
                           <Icon className="h-7 w-7" />
                         </div>
@@ -644,7 +679,7 @@ export default function LandingPage() {
                   );
                 })}
 
-                <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-2.5 rounded-full border border-blue-100/80 bg-white/80 px-4 py-2 backdrop-blur">
+                <div className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 gap-2.5 rounded-full border border-blue-100/80 bg-white/85 px-4 py-2 shadow-sm backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-black/30">
                   {FEATURE_CARDS.map((card, index) => (
                     <button
                       key={`feature-dot-${card.title}`}
@@ -653,7 +688,7 @@ export default function LandingPage() {
                       className={`h-2 rounded-full transition-all duration-300 ${
                         index === activeFeatureIndex
                           ? "w-8 bg-[var(--color-primary)]"
-                          : "w-2 bg-blue-200 hover:bg-blue-300"
+                          : "w-2 bg-blue-200 hover:bg-blue-300 dark:bg-slate-500 dark:hover:bg-slate-400"
                       }`}
                     />
                   ))}
@@ -661,117 +696,125 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div id="how-it-works" className="mt-20 sm:mt-28 lg:mt-32">
+            <div
+              id="onboarding"
+              className="mt-24 scroll-mt-24 pt-12 sm:mt-28 sm:scroll-mt-32 sm:pt-12 lg:mt-32 lg:scroll-mt-40 lg:pt-16"
+            >
               <div className="text-center">
-                <p className="inline-flex items-center rounded-full border border-blue-100/80 bg-blue-50 px-4 py-1 text-sm font-semibold text-[var(--color-primary)]">
+                <p className="inline-flex items-center rounded-full border border-blue-100/80 bg-blue-50 px-4 py-1 text-sm font-semibold text-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
                   SIMPLE PROCESS
                 </p>
                 <h2 className="mt-6 text-4xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-5xl">
-                  How It
+                  EASY
                 </h2>
                 <p className="text-4xl font-extrabold tracking-tight text-[var(--color-primary)] sm:text-5xl">
-                  WORKS
+                  ONBOARDING
                 </p>
-                <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
+                <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 dark:text-slate-300 sm:text-lg">
                   Get started in minutes, not days
                 </p>
               </div>
 
-              <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                <div key="step-1" className="relative">
+              <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
+                <div key="step-1" className="relative h-full">
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
                       1
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
                     <div className="mb-6 flex justify-center">
                       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <UserPlus className="h-10 w-10 text-[var(--color-primary)]" />
+                        <Rocket className="h-10 w-10 text-[var(--color-primary)]" />
                       </div>
                     </div>
-                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      Set Up Institution
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      GET STARTED
                     </h3>
-                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
-                      Quick registration with your school details and admin
-                      account
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Click the get started or create account to begin your
+                      journey with TertiaryFree
                     </p>
                   </div>
                 </div>
 
-                <div key="step-2" className="relative">
+                <div key="step-2" className="relative h-full">
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
                       2
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
                     <div className="mb-6 flex justify-center">
                       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <CloudUpload className="h-10 w-10 text-[var(--color-primary)]" />
+                        <Users className="h-10 w-10 text-[var(--color-primary)]" />
                       </div>
                     </div>
-                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      Add Students & Lecturers
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      STUDENT OR LECTURE
                     </h3>
-                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
-                      Import via Excel spreadsheet or add users manually in bulk
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Select whether you're a student or lecturer to get a
+                      personalized experience
                     </p>
                   </div>
                 </div>
 
-                <div key="step-3" className="relative">
+                <div key="step-3" className="relative h-full">
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
                       3
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
                     <div className="mb-6 flex justify-center">
                       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <Settings className="h-10 w-10 text-[var(--color-primary)]" />
+                        <FileText className="h-10 w-10 text-[var(--color-primary)]" />
                       </div>
                     </div>
-                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      Configure Attendance
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      INPUT YOUR DETAILS
                     </h3>
-                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
-                      Choose between QR codes, mobile device, or manual tracking
-                      methods
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Fill in your details to set up your account and start
+                      exploring the features of TertiaryFree
                     </p>
                   </div>
                 </div>
 
-                <div key="step-4" className="relative">
+                <div key="step-4" className="relative h-full">
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
                       4
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
                     <div className="mb-6 flex justify-center">
                       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <Check className="h-10 w-10 text-[var(--color-primary)]" />
+                        <UserPlus className="h-10 w-10 text-[var(--color-primary)]" />
                       </div>
                     </div>
-                    <h3 className="text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      Start Tracking
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      CREATE ACCOUNT
                     </h3>
-                    <p className="mt-3 text-center text-sm leading-6 text-slate-600">
-                      Begin attendance sessions and monitor participation in
-                      real-time
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Click create account and start exploring your personalized
+                      dashboard with real-time updates, timetables, and
+                      attendance tracking
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div id="about" className="mt-20 sm:mt-28 lg:mt-32">
+            <div
+              id="about"
+              className="mt-20 scroll-mt-24 pt-10 sm:mt-28 sm:scroll-mt-32 sm:pt-12 lg:mt-32 lg:scroll-mt-40 lg:pt-16"
+            >
               <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[var(--color-primary)] to-blue-600 px-6 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
                 <div className="relative z-10 mx-auto max-w-3xl text-center">
                   <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -803,9 +846,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <div
-        className={`transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
-      >
+      <div>
         <Footer />
       </div>
     </div>

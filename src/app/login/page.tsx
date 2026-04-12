@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { TextInput, PasswordInput } from "@mantine/core";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -43,7 +41,12 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout userType="login" subtitle="Sign in to access your unified academic dashboard">
+    <AuthLayout
+      userType="login"
+      title="Sign into your account"
+      subtitle="Sign in to access your unified academic dashboard"
+      centerHeader
+    >
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         <TextInput
           id="login-email"
@@ -80,7 +83,7 @@ export default function LoginPage() {
         />
 
         {/* Forgot Password */}
-        <div className="flex justify-end -mt-3 sm:-mt-4">
+        <div className="flex justify-center -mt-3 sm:-mt-4">
           <button
             type="button"
             className="border-none bg-transparent text-xs font-semibold text-[#0a0f5c] hover:underline cursor-pointer sm:text-sm dark:text-[#5eead4]"
@@ -93,7 +96,7 @@ export default function LoginPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`btn-brand mt-2 w-full flex justify-center py-3 sm:py-3.5 text-base ${
+          className={`btn-brand mt-2 flex w-full items-center justify-center gap-2 px-6 py-3 text-base sm:py-3.5 ${
             !isFormValid || loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={!isFormValid || loading}

@@ -1,13 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Moon, Sun } from "lucide-react";
 import { Logo } from "./Logo";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
+  title?: string;
   subtitle: string;
   userType?: "student" | "lecturer" | "login";
+  centerHeader?: boolean;
 }
 
 const ROLE_IMAGES = {
@@ -19,9 +22,51 @@ const ROLE_IMAGES = {
 
 export function AuthLayout({
   children,
+  title,
   subtitle,
   userType = "student",
+  centerHeader = false,
 }: AuthLayoutProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isThemeReady, setIsThemeReady] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      setIsDarkMode(true);
+      setIsThemeReady(true);
+      return;
+    }
+
+    if (savedTheme === "light") {
+      setIsDarkMode(false);
+      setIsThemeReady(true);
+      return;
+    }
+
+    setIsDarkMode(false);
+    setIsThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isThemeReady) {
+      return;
+    }
+
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+
+    if (isDarkMode) {
+      root.classList.add("dark");
+      window.localStorage.setItem("theme", "dark");
+      return;
+    }
+
+    root.classList.add("light");
+    window.localStorage.setItem("theme", "light");
+  }, [isDarkMode, isThemeReady]);
+
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
       {/* Left pane - Image */}
@@ -30,13 +75,34 @@ export function AuthLayout({
         <img
           src={ROLE_IMAGES[userType]}
           alt={userType === "student" ? "Students" : "Lecturer"}
-          className="h-full w-full object-cover"
+          className={`h-full w-full object-cover ${userType === "lecturer" ? "scale-x-[-1]" : ""}`}
         />
       </div>
 
       {/* Right pane - Form Content (Previously Left) */}
-      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-[500px] xl:w-[600px] lg:px-12 xl:px-24 py-12 relative">
-        <div className="absolute top-8 left-8 sm:left-12 xl:left-24">
+      <div className="relative flex flex-1 flex-col justify-start px-4 pb-12 pt-16 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
+        <header className="fixed inset-x-0 top-0 z-40 border-b border-blue-100/80 bg-white/95 backdrop-blur-md dark:border-blue-900/40 dark:bg-slate-900/95 lg:hidden">
+          <div className="mx-auto flex h-16 w-full max-w-md items-center justify-between px-4 sm:max-w-none sm:px-6">
+            <div className="origin-left scale-105">
+              <Logo size="sm" />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setIsDarkMode((prev) => !prev)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)] dark:border-blue-900/40"
+              aria-label="Toggle dark mode"
+            >
+              {isDarkMode ? (
+                <Moon className="h-5 w-5" />
+              ) : (
+                <Sun className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+        </header>
+
+        <div className="absolute left-8 top-8 hidden sm:left-12 xl:left-24 lg:block">
           <Link
             href="/"
             className="group flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)]"
@@ -45,12 +111,21 @@ export function AuthLayout({
           </Link>
         </div>
         <div className="mx-auto w-full max-w-md lg:w-full">
-          <header className="mb-10 sm:mb-12 flex flex-col items-center">
+          <header className="mb-8 hidden w-full flex-col items-center lg:flex lg:mb-12">
             <Logo size="sm" className="scale-125 sm:scale-150 lg:scale-[2]" />
           </header>
 
-          <div className="animate-slide-up text-center">
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">
+          <div
+            className={`animate-slide-up ${centerHeader ? "text-center" : "text-left"}`}
+          >
+            {title && (
+              <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl">
+                {title}
+              </h1>
+            )}
+            <p
+              className={`${title ? "mt-3" : "mt-2"} text-sm text-slate-500 dark:text-slate-300`}
+            >
               {subtitle}
             </p>
           </div>

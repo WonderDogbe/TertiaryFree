@@ -75,7 +75,7 @@ export function AuthLayout({
         <img
           src={ROLE_IMAGES[userType]}
           alt={userType === "student" ? "Students" : "Lecturer"}
-          className={`h-full w-full object-cover ${userType === "lecturer" ? "scale-x-[-1]" : ""}`}
+          className={`h-full w-full object-cover ${userType === "lecturer" || userType === "login" ? "scale-x-[-1]" : ""}`}
         />
       </div>
 

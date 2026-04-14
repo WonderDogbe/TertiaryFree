@@ -479,13 +479,18 @@ export default function LandingPage() {
                       />
 
                       <div
+                        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40"
+                        aria-hidden="true"
+                      />
+
+                      <div
                         className={`absolute inset-x-0 bottom-16 sm:bottom-20 px-6 text-center transition-all duration-1000 delay-300 ${
                           index === currentImageIndex
                             ? "translate-y-0 opacity-100"
                             : "translate-y-4 opacity-0"
                         }`}
                       >
-                        <p className="mx-auto max-w-3xl text-xl font-medium tracking-tight text-white sm:text-3xl md:text-4xl">
+                        <p className="mx-auto max-w-3xl text-xl font-medium tracking-tight text-white drop-shadow-lg sm:text-3xl md:text-4xl">
                           {item.label}
                         </p>
                       </div>
@@ -591,7 +596,7 @@ export default function LandingPage() {
                     FEATURE_CARDS.length,
                   );
                   const absOffset = Math.abs(offset);
-                  const isVisible = absOffset <= 2;
+                  const isVisible = absOffset <= 1;
                   const scale =
                     absOffset === 0 ? 1.1 : absOffset === 1 ? 0.86 : 0.74;
                   const opacity =
@@ -805,6 +810,98 @@ export default function LandingPage() {
                       Click create account and start exploring your personalized
                       dashboard with real-time updates, timetables, and
                       attendance tracking
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-5" className="relative h-full">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      5
+                    </div>
+                  </div>
+
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <Check className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      VERIFY IDENTITY
+                    </h3>
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Complete email or phone verification to secure your account
+                      and gain full access to all TertiaryFree features
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-6" className="relative h-full">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      6
+                    </div>
+                  </div>
+
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <Users className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      CONNECT WITH CLASSES
+                    </h3>
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Join or create classes, add your courses, and connect with
+                      instructors and classmates in your academic community
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-7" className="relative h-full">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      7
+                    </div>
+                  </div>
+
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <CalendarCheck2 className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      SYNC YOUR TIMETABLE
+                    </h3>
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Import or manually create your class schedule and keep it
+                      updated for seamless planning and timely notifications
+                    </p>
+                  </div>
+                </div>
+
+                <div key="step-8" className="relative h-full">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
+                      8
+                    </div>
+                  </div>
+
+                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+                        <Rocket className="h-10 w-10 text-[var(--color-primary)]" />
+                      </div>
+                    </div>
+                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
+                      START USING FEATURES
+                    </h3>
+                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      Begin checking in with QR codes, track attendance, receive
+                      notifications, and manage your academic journey seamlessly
                     </p>
                   </div>
                 </div>

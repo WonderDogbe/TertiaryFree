@@ -168,7 +168,9 @@ export default function LandingPage() {
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyThemePreference = () => {
-      const shouldFollowSystemTheme = mobileViewportQuery.matches;
+      const savedTheme = window.localStorage.getItem("theme");
+      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
+      const shouldFollowSystemTheme = mobileViewportQuery.matches && !hasSavedTheme;
       setIsMobileSystemTheme(shouldFollowSystemTheme);
 
       if (shouldFollowSystemTheme) {
@@ -176,8 +178,6 @@ export default function LandingPage() {
         setIsThemeReady(true);
         return;
       }
-
-      const savedTheme = window.localStorage.getItem("theme");
 
       if (savedTheme === "dark") {
         setIsDarkMode(true);

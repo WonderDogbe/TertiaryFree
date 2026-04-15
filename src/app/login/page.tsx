@@ -30,28 +30,35 @@ export default function LoginPage() {
 
   const inputStyles = {
     input: {
-      backgroundColor: "#ffffff",
-      color: "#0f172a",
-      borderColor: "#dbeafe",
+      backgroundColor: "var(--color-secondary-bg)",
+      color: "var(--color-text)",
+      borderColor: "rgba(148, 163, 184, 0.35)",
+      minHeight: "54px",
     },
     label: {
       color: "var(--color-text)",
-      fontWeight: 500,
+      fontWeight: 700,
+      fontSize: "0.76rem",
+      letterSpacing: "0.08em",
+      textTransform: "uppercase" as const,
+      marginBottom: "0.42rem",
+    },
+    section: {
+      color: "#94a3b8",
     },
   };
 
   return (
     <AuthLayout
       userType="login"
-      title="Sign into your account"
-      subtitle="Sign in to access your unified academic dashboard"
-      centerHeader
+      title="Sign In"
+      subtitle="Enter your credentials to continue"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
         <TextInput
           id="login-email"
-          label="Email Address"
-          placeholder="e.g. john@university.edu"
+          label="Email or Phone Number"
+          placeholder="Email or Phone Number"
           size="md"
           leftSection={<Mail size={18} className="text-slate-400" />}
           value={formData.email}
@@ -61,14 +68,14 @@ export default function LoginPage() {
           styles={inputStyles}
           classNames={{
             input:
-              "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
+              "focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]",
           }}
         />
 
         <PasswordInput
           id="login-password"
           label="Password"
-          placeholder="Enter your password"
+          placeholder="Enter password"
           size="md"
           leftSection={<Lock size={18} className="text-slate-400" />}
           value={formData.password}
@@ -78,15 +85,15 @@ export default function LoginPage() {
           styles={inputStyles}
           classNames={{
             input:
-              "focus:border-[#0a0f5c] focus:ring-1 focus:ring-[#0a0f5c] dark:focus:border-[#2dd4a8] dark:focus:ring-[#2dd4a8]",
+              "focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]",
           }}
         />
 
         {/* Forgot Password */}
-        <div className="flex justify-center -mt-3 sm:-mt-4">
+        <div className="-mt-2 flex justify-end">
           <button
             type="button"
-            className="border-none bg-transparent text-xs font-semibold text-[#0a0f5c] hover:underline cursor-pointer sm:text-sm dark:text-[#5eead4]"
+            className="cursor-pointer border-none bg-transparent text-xs font-semibold uppercase tracking-[0.06em] text-[var(--color-primary)] hover:underline"
             id="forgot-password-link"
           >
             Forgot password?
@@ -96,7 +103,7 @@ export default function LoginPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`btn-brand mt-2 flex w-full items-center justify-center gap-2 px-6 py-3 text-base sm:py-3.5 ${
+          className={`btn-brand mt-1 flex w-full items-center justify-center gap-2 px-6 py-3 text-base sm:py-3.5 ${
             !isFormValid || loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           disabled={!isFormValid || loading}

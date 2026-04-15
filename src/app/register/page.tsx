@@ -136,12 +136,17 @@ export default function RegisterPage({
   const inputStyles = {
     label: {
       color: "var(--color-text)",
-      fontWeight: 500,
+      fontWeight: 700,
+      fontSize: "0.76rem",
+      letterSpacing: "0.08em",
+      textTransform: "uppercase" as const,
+      marginBottom: "0.42rem",
     },
     input: {
-      backgroundColor: "#ffffff",
-      color: "#0f172a",
-      borderColor: "#dbeafe",
+      backgroundColor: "var(--color-secondary-bg)",
+      color: "var(--color-text)",
+      borderColor: "rgba(148, 163, 184, 0.35)",
+      minHeight: "54px",
     },
     section: {
       color: "#94a3b8",

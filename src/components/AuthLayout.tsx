@@ -36,7 +36,9 @@ export function AuthLayout({
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyThemePreference = () => {
-      const shouldFollowSystemTheme = mobileViewportQuery.matches;
+      const savedTheme = window.localStorage.getItem("theme");
+      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
+      const shouldFollowSystemTheme = mobileViewportQuery.matches && !hasSavedTheme;
       setIsMobileSystemTheme(shouldFollowSystemTheme);
 
       if (shouldFollowSystemTheme) {
@@ -44,8 +46,6 @@ export function AuthLayout({
         setIsThemeReady(true);
         return;
       }
-
-      const savedTheme = window.localStorage.getItem("theme");
 
       if (savedTheme === "dark") {
         setIsDarkMode(true);
@@ -117,7 +117,7 @@ export function AuthLayout({
       </div>
 
       {/* Right pane - Form Content (Previously Left) */}
-      <div className="relative flex flex-1 flex-col justify-start px-4 pb-12 pt-16 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
+      <div className="relative flex flex-1 flex-col justify-start px-5 pb-14 pt-28 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
         <header className="fixed inset-x-0 top-0 z-40 border-b border-blue-100/80 bg-white/95 backdrop-blur-md dark:border-blue-900/40 dark:bg-slate-900/95 lg:hidden">
           <div className="mx-auto flex h-16 w-full max-w-md items-center justify-between px-4 sm:max-w-none sm:px-6">
             <div className="origin-left scale-105">
@@ -127,13 +127,9 @@ export function AuthLayout({
             <button
               type="button"
               onClick={() => {
-                if (isMobileSystemTheme) {
-                  return;
-                }
-
+                setIsMobileSystemTheme(false);
                 setIsDarkMode((prev) => !prev);
               }}
-              disabled={isMobileSystemTheme}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)] dark:border-blue-900/40"
               aria-label="Toggle dark mode"
             >
@@ -145,6 +141,16 @@ export function AuthLayout({
             </button>
           </div>
         </header>
+
+        <div className="mb-6 lg:hidden">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-base font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)] dark:text-slate-300"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back</span>
+          </Link>
+        </div>
 
         <div className="absolute left-8 top-8 hidden sm:left-12 xl:left-24 lg:block">
           <Link
@@ -174,7 +180,7 @@ export function AuthLayout({
             </p>
           </div>
 
-          <div className="mt-8 animate-slide-up delay-100 bg-[var(--color-secondary-bg)] sm:mt-10 sm:rounded-2xl sm:border sm:border-blue-100/70 sm:p-8 sm:shadow-lg dark:border-blue-900/40">
+          <div className="mt-8 animate-slide-up delay-100 bg-transparent sm:mt-10 sm:rounded-2xl sm:border sm:border-blue-100/70 sm:bg-[var(--color-secondary-bg)] sm:p-8 sm:shadow-lg dark:border-blue-900/40">
             {children}
           </div>
         </div>

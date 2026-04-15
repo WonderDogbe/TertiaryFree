@@ -145,6 +145,7 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeReady, setIsThemeReady] = useState(false);
+  const [dashboardParallaxOffset, setDashboardParallaxOffset] = useState(0);
   const featureSwipeStartX = useRef<number | null>(null);
 
   const toggleDarkMode = () => {
@@ -292,6 +293,33 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, [isFeaturePaused]);
 
+  useEffect(() => {
+    let isTicking = false;
+    const maxOffset = 72;
+
+    const updateParallax = () => {
+      const nextOffset = Math.min(maxOffset, window.scrollY * 0.12);
+      setDashboardParallaxOffset(nextOffset);
+      isTicking = false;
+    };
+
+    const handleScroll = () => {
+      if (isTicking) {
+        return;
+      }
+
+      isTicking = true;
+      window.requestAnimationFrame(updateParallax);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 dark:border-blue-900/40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
@@ -304,7 +332,7 @@ export default function LandingPage() {
               <Link
                 href="/"
                 aria-label="TertiaryFree home"
-                className="flex items-center"
+                className="group flex items-center"
               >
                 <Image
                   src="/logo.png"
@@ -312,7 +340,7 @@ export default function LandingPage() {
                   width={180}
                   height={49}
                   priority
-                  className="block h-9 w-auto object-contain md:hidden"
+                  className="block h-9 w-auto object-contain transition-transform duration-500 ease-out group-hover:-rotate-2 group-hover:scale-105 md:hidden"
                 />
                 <Image
                   src="/logo.png"
@@ -320,7 +348,7 @@ export default function LandingPage() {
                   width={272}
                   height={74}
                   priority
-                  className="hidden h-10 w-auto object-contain md:block lg:h-12"
+                  className="hidden h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:-rotate-2 group-hover:scale-105 md:block lg:h-12"
                 />
               </Link>
             </div>
@@ -701,6 +729,59 @@ export default function LandingPage() {
               </div>
             </div>
 
+            <section
+              id="dashboard-preview"
+              className="mt-24 scroll-mt-24 pt-6 sm:mt-28 sm:scroll-mt-32 sm:pt-10 lg:mt-32 lg:scroll-mt-40"
+            >
+              <div className="text-center">
+                <p className="text-2xl font-semibold tracking-tight text-slate-700 dark:text-slate-300 sm:text-4xl">
+                  Find, compare and navigate with ease
+                </p>
+                <h2 className="mt-2 text-5xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-6xl lg:text-7xl">
+                  Student Dashboard
+                </h2>
+                <p className="mx-auto mt-5 max-w-3xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+                  A single workspace where students can view timetables,
+                  attendance, notifications, and class updates at a glance.
+                </p>
+              </div>
+
+              <div className="mx-auto mt-10 max-w-6xl sm:mt-14">
+                <div className="rounded-[2.2rem] border border-slate-900/20 bg-[var(--color-secondary-bg)] p-3 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.75)] sm:p-5 dark:border-white/10 dark:shadow-[0_35px_90px_-45px_rgba(2,6,23,0.95)]">
+                  <div className="rounded-[1.8rem] border border-slate-200/80 bg-[var(--color-background)] p-3 sm:p-4 dark:border-slate-700/90">
+                    <div className="mb-3 flex items-center gap-2 px-1 sm:mb-4 sm:px-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                      <span className="ml-3 inline-flex flex-1 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:bg-slate-800 dark:text-slate-300 sm:text-[11px]">
+                        tertiaryfree dashboard preview
+                      </span>
+                    </div>
+
+                    <div className="overflow-hidden rounded-[1.25rem] border border-slate-200/80 dark:border-slate-700/90">
+                      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-900">
+                        <Image
+                          src="/dashboard.png"
+                          alt="TertiaryFree student dashboard preview"
+                          fill
+                          sizes="(min-width: 1280px) 1100px, (min-width: 1024px) 90vw, (min-width: 640px) 95vw, 100vw"
+                          className="object-cover object-top will-change-transform"
+                          style={{
+                            transform: `translate3d(0, ${-dashboardParallaxOffset}px, 0) scale(1.08)`,
+                            transition: "transform 120ms linear",
+                          }}
+                        />
+                        <div
+                          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <div
               id="onboarding"
               className="mt-24 scroll-mt-24 pt-12 sm:mt-28 sm:scroll-mt-32 sm:pt-12 lg:mt-32 lg:scroll-mt-40 lg:pt-16"
@@ -814,97 +895,6 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <div key="step-5" className="relative h-full">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
-                      5
-                    </div>
-                  </div>
-
-                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
-                    <div className="mb-6 flex justify-center">
-                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <Check className="h-10 w-10 text-[var(--color-primary)]" />
-                      </div>
-                    </div>
-                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      VERIFY IDENTITY
-                    </h3>
-                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
-                      Complete email or phone verification to secure your account
-                      and gain full access to all TertiaryFree features
-                    </p>
-                  </div>
-                </div>
-
-                <div key="step-6" className="relative h-full">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
-                      6
-                    </div>
-                  </div>
-
-                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
-                    <div className="mb-6 flex justify-center">
-                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <Users className="h-10 w-10 text-[var(--color-primary)]" />
-                      </div>
-                    </div>
-                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      CONNECT WITH CLASSES
-                    </h3>
-                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
-                      Join or create classes, add your courses, and connect with
-                      instructors and classmates in your academic community
-                    </p>
-                  </div>
-                </div>
-
-                <div key="step-7" className="relative h-full">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
-                      7
-                    </div>
-                  </div>
-
-                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
-                    <div className="mb-6 flex justify-center">
-                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <CalendarCheck2 className="h-10 w-10 text-[var(--color-primary)]" />
-                      </div>
-                    </div>
-                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      SYNC YOUR TIMETABLE
-                    </h3>
-                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
-                      Import or manually create your class schedule and keep it
-                      updated for seamless planning and timely notifications
-                    </p>
-                  </div>
-                </div>
-
-                <div key="step-8" className="relative h-full">
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg font-bold text-white shadow-lg shadow-blue-200/70">
-                      8
-                    </div>
-                  </div>
-
-                  <div className="flex h-full min-h-[22rem] flex-col rounded-2xl border border-blue-100/80 bg-[var(--color-secondary-bg)] p-8 pt-10">
-                    <div className="mb-6 flex justify-center">
-                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
-                        <Rocket className="h-10 w-10 text-[var(--color-primary)]" />
-                      </div>
-                    </div>
-                    <h3 className="flex min-h-[3.5rem] items-center justify-center text-center text-lg font-bold tracking-tight text-slate-900 dark:text-[#E5E7EB]">
-                      START USING FEATURES
-                    </h3>
-                    <p className="mt-3 flex-grow text-center text-sm leading-6 text-slate-600 dark:text-slate-300">
-                      Begin checking in with QR codes, track attendance, receive
-                      notifications, and manage your academic journey seamlessly
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -912,31 +902,119 @@ export default function LandingPage() {
               id="about"
               className="mt-20 scroll-mt-24 pt-10 sm:mt-28 sm:scroll-mt-32 sm:pt-12 lg:mt-32 lg:scroll-mt-40 lg:pt-16"
             >
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[var(--color-primary)] to-blue-600 px-6 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
-                <div className="relative z-10 mx-auto max-w-3xl text-center">
-                  <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                    Transform Your Tertiary Experience
-                  </h2>
-                  <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg sm:leading-8">
-                    Streamline attendance tracking, empower your students and
-                    lecturers, and build a smarter campus experience with
-                    TertiaryFree.
-                  </p>
+              <div className="mb-8 text-center sm:mb-10">
+                <p className="inline-flex items-center rounded-full border border-blue-100/80 bg-blue-50 px-4 py-1 text-sm font-semibold text-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
+                  BUILT FOR STUDENT SUCCESS
+                </p>
+                <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-4xl lg:text-5xl">
+                  Everything you need, all in one student flow
+                </h2>
+              </div>
 
-                  <div className="mt-10 flex flex-col items-center justify-center">
-                    <Link
-                      href="/get-started"
-                      className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[var(--color-primary)] transition-all hover:bg-blue-50 hover:-translate-y-0.5 shadow-lg"
-                    >
-                      Create Account
-                    </Link>
+              <div className="grid gap-5 lg:grid-cols-3">
+                <article
+                  className="group relative isolate overflow-hidden rounded-[1.9rem] border border-blue-100/80 p-7 shadow-[0_18px_45px_-35px_rgba(15,23,42,0.9)] sm:p-10 lg:col-span-2 lg:min-h-[340px] dark:border-slate-700/80"
+                  style={{
+                    backgroundColor: "var(--color-secondary-bg)",
+                    backgroundImage:
+                      "linear-gradient(130deg, rgba(15, 23, 42, 0.62), rgba(30, 64, 175, 0.32)), linear-gradient(160deg, var(--color-primary), var(--color-secondary-bg))",
+                  }}
+                >
+                  <div className="relative z-10 max-w-xl">
+                    <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-100/90">
+                      TRUSTED TERTIARYFREE NETWORK
+                    </p>
+                    <h3 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                      Verified classes and lecturers only
+                    </h3>
+                    <p className="mt-5 max-w-lg text-base leading-8 text-blue-100/95 sm:text-lg">
+                      Every timetable slot, class channel, and attendance flow is
+                      validated for quality so students and lecturers can focus
+                      on learning, not confusion.
+                    </p>
                   </div>
-                </div>
 
-                <div className="absolute inset-0 overflow-hidden rounded-3xl">
-                  <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-400/10 blur-3xl" />
-                  <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-white/5 blur-3xl" />
-                </div>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[35%] overflow-hidden rounded-l-3xl border-l border-white/20 sm:block">
+                    <Image
+                      src="/graduate-students-wearing-cap-gown.jpg"
+                      alt="Students celebrating graduation"
+                      fill
+                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 300px, 0px"
+                      className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:-translate-y-1"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/30 transition-colors duration-500 group-hover:bg-slate-950/20" />
+                  </div>
+                </article>
+
+                <article
+                  className="group relative isolate overflow-hidden rounded-[1.9rem] border border-blue-100/80 p-7 shadow-[0_18px_45px_-35px_rgba(15,23,42,0.9)] sm:p-10 lg:min-h-[340px] dark:border-slate-700/80"
+                  style={{
+                    backgroundColor: "var(--color-secondary-bg)",
+                    backgroundImage:
+                      "linear-gradient(140deg, rgba(37, 99, 235, 0.75), rgba(14, 116, 144, 0.46)), linear-gradient(160deg, var(--color-primary), var(--color-background))",
+                  }}
+                >
+                  <div className="relative z-10 max-w-sm">
+                    <h3 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-[2.35rem]">
+                      Campus-close scheduling
+                    </h3>
+                    <p className="mt-5 text-base leading-8 text-blue-100/95 sm:text-lg">
+                      Organize classes by campus, faculty, and time blocks so
+                      your academic day stays efficient and easy to follow.
+                    </p>
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[43%] overflow-hidden rounded-l-3xl border-l border-white/20 sm:block">
+                    <Image
+                      src="/image4.jpg"
+                      alt="Students in a classroom"
+                      fill
+                      sizes="(min-width: 1024px) 260px, (min-width: 640px) 220px, 0px"
+                      className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:-translate-y-1"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/25 transition-colors duration-500 group-hover:bg-slate-950/15" />
+                  </div>
+                </article>
+
+                <article
+                  className="group relative isolate overflow-hidden rounded-[1.9rem] border border-blue-100/80 p-7 shadow-[0_18px_45px_-35px_rgba(15,23,42,0.9)] sm:p-10 lg:col-span-3 lg:min-h-[330px] dark:border-slate-700/80"
+                  style={{
+                    backgroundColor: "var(--color-secondary-bg)",
+                    backgroundImage:
+                      "linear-gradient(130deg, rgba(15, 23, 42, 0.6), rgba(37, 99, 235, 0.28)), linear-gradient(160deg, var(--color-primary), var(--color-secondary-bg))",
+                  }}
+                >
+                  <div className="relative z-10 max-w-2xl">
+                    <h3 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                      Plan your semester in minutes, no hidden stress
+                    </h3>
+                    <p className="mt-5 text-base leading-8 text-blue-100/95 sm:text-lg">
+                      From QR attendance check-ins to timetable sync, progress
+                      reports, and class notifications, TertiaryFree keeps your
+                      academic journey clear from week one to finals.
+                    </p>
+
+                    <div className="mt-9">
+                      <Link
+                        href="/get-started"
+                        className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/15 px-8 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-white/25"
+                      >
+                        Create Account
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[36%] overflow-hidden rounded-l-3xl border-l border-white/20 md:block">
+                    <Image
+                      src="/img.jpg"
+                      alt="Lecturer presenting in class"
+                      fill
+                      sizes="(min-width: 1024px) 420px, (min-width: 768px) 300px, 0px"
+                      className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:-translate-y-1"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/28 transition-colors duration-500 group-hover:bg-slate-950/18" />
+                  </div>
+                </article>
               </div>
             </div>
           </div>

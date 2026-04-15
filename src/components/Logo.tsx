@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 
 interface LogoProps {
@@ -17,7 +18,8 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
   const { width, height } = sizeMap[size];
 
   return (
-    <div
+    <Link
+      href="/"
       className={`inline-flex items-center no-underline group ${className}`}
       id="brand-logo"
     >
@@ -29,6 +31,6 @@ export function Logo({ size = "md", className = "" }: LogoProps) {
         priority
         className="h-auto w-auto"
       />
-    </div>
+    </Link>
   );
 }

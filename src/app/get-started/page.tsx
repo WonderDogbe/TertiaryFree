@@ -39,12 +39,10 @@ export default function GetStartedPage() {
     <main className="min-h-screen bg-[var(--color-background)] px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-6xl flex-col">
         <header className="flex items-center justify-between">
-          <Link href="/" aria-label="Go back to home">
-            <Logo
-              size="sm"
-              className="origin-left scale-125 sm:scale-150 lg:scale-[2]"
-            />
-          </Link>
+          <Logo
+            size="sm"
+            className="origin-left scale-125 sm:scale-150 lg:scale-[2]"
+          />
 
           <Link
             href="/login"

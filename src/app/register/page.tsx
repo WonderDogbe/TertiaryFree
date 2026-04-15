@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { TextInput, PasswordInput, Select } from "@mantine/core";
 import {
   Mail,
@@ -19,9 +18,15 @@ import {
 } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 
-export default function RegisterPage() {
-  const searchParams = useSearchParams();
-  const [userType, setUserType] = useState<"student" | "lecturer">("student");
+export default function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ role?: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = use(searchParams);
+  const rawRole = resolvedSearchParams.role;
+  const role = Array.isArray(rawRole) ? rawRole[0] : rawRole;
+  const userType = role === "lecturer" ? "lecturer" : "student";
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
@@ -39,14 +44,6 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const totalSteps = 4;
-
-  useEffect(() => {
-    const role = searchParams.get("role");
-
-    if (role === "student" || role === "lecturer") {
-      setUserType(role);
-    }
-  }, [searchParams]);
 
   const validateStep = (step: number) => {
     const newErrors: Record<string, string> = {};

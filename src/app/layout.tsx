@@ -3,7 +3,7 @@ import { MantineProvider } from "@mantine/core";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TertiaryFree — ",
+  title: "TertiaryFree",
   description:
     "Simplify university life. Centralize timetables, course materials, announcements, attendance, and payments into one premium platform.",
   keywords: [

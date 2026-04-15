@@ -29,24 +29,60 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeReady, setIsThemeReady] = useState(false);
+  const [isMobileSystemTheme, setIsMobileSystemTheme] = useState(false);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem("theme");
+    const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
+    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      setIsThemeReady(true);
-      return;
-    }
+    const applyThemePreference = () => {
+      const shouldFollowSystemTheme = mobileViewportQuery.matches;
+      setIsMobileSystemTheme(shouldFollowSystemTheme);
 
-    if (savedTheme === "light") {
+      if (shouldFollowSystemTheme) {
+        setIsDarkMode(systemThemeQuery.matches);
+        setIsThemeReady(true);
+        return;
+      }
+
+      const savedTheme = window.localStorage.getItem("theme");
+
+      if (savedTheme === "dark") {
+        setIsDarkMode(true);
+        setIsThemeReady(true);
+        return;
+      }
+
+      if (savedTheme === "light") {
+        setIsDarkMode(false);
+        setIsThemeReady(true);
+        return;
+      }
+
       setIsDarkMode(false);
       setIsThemeReady(true);
-      return;
-    }
+    };
 
-    setIsDarkMode(false);
-    setIsThemeReady(true);
+    const handleViewportChange = () => {
+      applyThemePreference();
+    };
+
+    const handleSystemThemeChange = (event: MediaQueryListEvent) => {
+      if (!mobileViewportQuery.matches) {
+        return;
+      }
+
+      setIsDarkMode(event.matches);
+    };
+
+    applyThemePreference();
+    mobileViewportQuery.addEventListener("change", handleViewportChange);
+    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
+
+    return () => {
+      mobileViewportQuery.removeEventListener("change", handleViewportChange);
+      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -59,13 +95,14 @@ export function AuthLayout({
 
     if (isDarkMode) {
       root.classList.add("dark");
-      window.localStorage.setItem("theme", "dark");
-      return;
+    } else {
+      root.classList.add("light");
     }
 
-    root.classList.add("light");
-    window.localStorage.setItem("theme", "light");
-  }, [isDarkMode, isThemeReady]);
+    if (!isMobileSystemTheme) {
+      window.localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode, isThemeReady, isMobileSystemTheme]);
 
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
@@ -89,7 +126,14 @@ export function AuthLayout({
 
             <button
               type="button"
-              onClick={() => setIsDarkMode((prev) => !prev)}
+              onClick={() => {
+                if (isMobileSystemTheme) {
+                  return;
+                }
+
+                setIsDarkMode((prev) => !prev);
+              }}
+              disabled={isMobileSystemTheme}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)] dark:border-blue-900/40"
               aria-label="Toggle dark mode"
             >

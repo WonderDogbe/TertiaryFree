@@ -10,20 +10,19 @@ import {
   ChevronRight,
   Check,
   FileText,
-  Moon,
   QrCode,
   Rocket,
-  Sun,
   Users,
   UserPlus,
   type LucideIcon,
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { LandingHeader } from "@/components/LandingHeader";
 
 const NAV_LINKS = [
+  { href: "#about", label: "About" },
   { href: "#features", label: "Features" },
   { href: "#onboarding", label: "Onboarding" },
-  { href: "#about", label: "About" },
   { href: "#contact", label: "Contact Us" },
 ];
 
@@ -145,8 +144,12 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeReady, setIsThemeReady] = useState(false);
+  const [isMobileSystemTheme, setIsMobileSystemTheme] = useState(false);
   const [dashboardParallaxOffset, setDashboardParallaxOffset] = useState(0);
+  const [dashboardTiltX, setDashboardTiltX] = useState(0);
+  const [isMobileDashboardView, setIsMobileDashboardView] = useState(false);
   const featureSwipeStartX = useRef<number | null>(null);
+  const dashboardFrameRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDarkMode = () => {
     setIsDarkMode((prev) => !prev);
@@ -161,22 +164,57 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem("theme");
+    const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
+    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-      setIsThemeReady(true);
-      return;
-    }
+    const applyThemePreference = () => {
+      const shouldFollowSystemTheme = mobileViewportQuery.matches;
+      setIsMobileSystemTheme(shouldFollowSystemTheme);
 
-    if (savedTheme === "light") {
+      if (shouldFollowSystemTheme) {
+        setIsDarkMode(systemThemeQuery.matches);
+        setIsThemeReady(true);
+        return;
+      }
+
+      const savedTheme = window.localStorage.getItem("theme");
+
+      if (savedTheme === "dark") {
+        setIsDarkMode(true);
+        setIsThemeReady(true);
+        return;
+      }
+
+      if (savedTheme === "light") {
+        setIsDarkMode(false);
+        setIsThemeReady(true);
+        return;
+      }
+
       setIsDarkMode(false);
       setIsThemeReady(true);
-      return;
-    }
+    };
 
-    setIsDarkMode(false);
-    setIsThemeReady(true);
+    const handleViewportChange = () => {
+      applyThemePreference();
+    };
+
+    const handleSystemThemeChange = (event: MediaQueryListEvent) => {
+      if (!mobileViewportQuery.matches) {
+        return;
+      }
+
+      setIsDarkMode(event.matches);
+    };
+
+    applyThemePreference();
+    mobileViewportQuery.addEventListener("change", handleViewportChange);
+    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
+
+    return () => {
+      mobileViewportQuery.removeEventListener("change", handleViewportChange);
+      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -189,13 +227,14 @@ export default function LandingPage() {
 
     if (isDarkMode) {
       root.classList.add("dark");
-      window.localStorage.setItem("theme", "dark");
-      return;
+    } else {
+      root.classList.add("light");
     }
 
-    root.classList.add("light");
-    window.localStorage.setItem("theme", "light");
-  }, [isDarkMode, isThemeReady]);
+    if (!isMobileSystemTheme) {
+      window.localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode, isThemeReady, isMobileSystemTheme]);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -294,11 +333,26 @@ export default function LandingPage() {
   }, [isFeaturePaused]);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    const updateMobileState = () => {
+      setIsMobileDashboardView(mediaQuery.matches);
+    };
+
+    updateMobileState();
+    mediaQuery.addEventListener("change", updateMobileState);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateMobileState);
+    };
+  }, []);
+
+  useEffect(() => {
     let isTicking = false;
-    const maxOffset = 72;
+    const maxOffset = isMobileDashboardView ? 28 : 72;
+    const offsetMultiplier = isMobileDashboardView ? 0.07 : 0.12;
 
     const updateParallax = () => {
-      const nextOffset = Math.min(maxOffset, window.scrollY * 0.12);
+      const nextOffset = Math.min(maxOffset, window.scrollY * offsetMultiplier);
       setDashboardParallaxOffset(nextOffset);
       isTicking = false;
     };
@@ -318,140 +372,66 @@ export default function LandingPage() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isMobileDashboardView]);
+
+  useEffect(() => {
+    if (isMobileDashboardView) {
+      setDashboardTiltX(0);
+      return;
+    }
+
+    let isTicking = false;
+    const maxTilt = 7;
+
+    const updateTilt = () => {
+      const dashboardFrame = dashboardFrameRef.current;
+
+      if (!dashboardFrame) {
+        isTicking = false;
+        return;
+      }
+
+      const rect = dashboardFrame.getBoundingClientRect();
+      const viewportCenter = window.innerHeight / 2;
+      const frameCenter = rect.top + rect.height / 2;
+      const normalizedOffset = Math.max(
+        -1,
+        Math.min(1, (frameCenter - viewportCenter) / (window.innerHeight * 0.65)),
+      );
+
+      setDashboardTiltX(-normalizedOffset * maxTilt);
+      isTicking = false;
+    };
+
+    const handleScroll = () => {
+      if (isTicking) {
+        return;
+      }
+
+      isTicking = true;
+      window.requestAnimationFrame(updateTilt);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [isMobileDashboardView]);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 dark:border-blue-900/40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
-        <nav
-          className="relative mx-auto w-full px-6 sm:px-10 lg:px-16"
-          aria-label="Global"
-        >
-          <div className="flex h-16 items-center justify-between lg:h-20">
-            <div className="flex shrink-0 items-center">
-              <Link
-                href="/"
-                aria-label="TertiaryFree home"
-                className="group flex items-center"
-              >
-                <Image
-                  src="/logo.png"
-                  alt="TertiaryFree Logo"
-                  width={180}
-                  height={49}
-                  priority
-                  className="block h-9 w-auto object-contain transition-transform duration-500 ease-out group-hover:-rotate-2 group-hover:scale-105 md:hidden"
-                />
-                <Image
-                  src="/logo.png"
-                  alt="TertiaryFree Logo"
-                  width={272}
-                  height={74}
-                  priority
-                  className="hidden h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:-rotate-2 group-hover:scale-105 md:block lg:h-12"
-                />
-              </Link>
-            </div>
-
-            <div className="hidden md:flex md:items-center md:gap-4 lg:gap-6">
-              <button
-                onClick={toggleDarkMode}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 dark:border-blue-900/40 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)]"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Sun className="h-5 w-5" />
-                )}
-              </button>
-
-              <div className="flex items-center gap-4 lg:gap-8">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="text-sm font-semibold text-[var(--color-text)] dark:text-slate-100 transition-colors hover:text-[var(--color-primary)] dark:hover:text-blue-300"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700"
-              >
-                Sign in
-              </Link>
-            </div>
-
-            <div className="md:hidden">
-              <button
-                onClick={toggleMobileMenu}
-                type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-900 transition-all duration-300 ease-in-out hover:bg-gray-100 hover:opacity-80 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 dark:text-white dark:hover:bg-white/10 dark:focus-visible:ring-offset-slate-900"
-                aria-label="Toggle Menu"
-                aria-controls="mobile-navigation"
-                aria-expanded={isMenuOpen}
-              >
-                <span className="relative flex h-4 w-7 flex-col items-center justify-center gap-1.5">
-                  <span
-                    className={`h-[2px] w-7 rounded-full bg-gray-900 transition-all duration-300 ease-in-out dark:bg-white ${
-                      isMenuOpen ? "translate-y-[4px] rotate-45" : ""
-                    }`}
-                  />
-                  <span
-                    className={`h-[2px] w-7 rounded-full bg-gray-900 transition-all duration-300 ease-in-out dark:bg-white ${
-                      isMenuOpen ? "-translate-y-[4px] -rotate-45" : ""
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
-          </div>
-        </nav>
-      </header>
-
-      <div
-        id="mobile-navigation"
-        aria-label="Mobile menu"
-        className={`fixed inset-x-0 top-16 z-40 w-full border-t border-blue-100/80 bg-white shadow-lg transition-all duration-300 ease-in-out dark:border-blue-900/40 dark:bg-slate-900 md:hidden ${
-          isMenuOpen
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-[10px] pointer-events-none opacity-0"
-        }`}
-      >
-        <nav className="flex flex-col gap-4 p-5" aria-label="Mobile">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={`mobile-${link.label}`}
-              href={link.href}
-              onClick={closeMobileMenu}
-              className="text-base font-semibold tracking-tight text-[var(--color-text)] dark:text-slate-100 transition-colors hover:text-[var(--color-primary)] dark:hover:text-blue-300"
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          <div className="flex flex-col gap-3 pt-1">
-            <Link
-              href="/get-started"
-              onClick={closeMobileMenu}
-              className="btn-brand w-full py-3 text-center text-base"
-            >
-              Get Started
-            </Link>
-            <Link
-              href="/login"
-              onClick={closeMobileMenu}
-              className="inline-flex w-full items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-8 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
-            >
-              Sign in
-            </Link>
-          </div>
-        </nav>
-      </div>
+      <LandingHeader
+        navLinks={NAV_LINKS}
+        isDarkMode={isDarkMode}
+        isMenuOpen={isMenuOpen}
+        onToggleDarkMode={toggleDarkMode}
+        onToggleMobileMenu={toggleMobileMenu}
+        onCloseMobileMenu={closeMobileMenu}
+      />
 
       <main className="pt-32 sm:pt-40">
         <section id="home" className="relative overflow-x-hidden">
@@ -667,7 +647,7 @@ export default function LandingPage() {
                       }}
                       className={`group absolute left-1/2 top-0 flex flex-col w-[min(90vw,25.5rem)] min-h-[480px] overflow-hidden rounded-3xl border bg-[var(--color-secondary-bg)] p-7 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                         card.featured
-                          ? "border-[var(--color-primary)]"
+                          ? "border-[var(--color-primary)] dark:border-blue-100/80"
                           : "border-blue-100/80"
                       } ${
                         isVisible
@@ -675,12 +655,6 @@ export default function LandingPage() {
                           : "pointer-events-none"
                       }`}
                     >
-                      {card.featured && (
-                        <span className="pointer-events-none absolute right-[-42px] top-5 rotate-45 bg-[var(--color-primary)] px-12 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white">
-                          Most Popular
-                        </span>
-                      )}
-
                       <div className="mb-5 flex justify-center">
                         <div
                           className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:scale-105 ${card.iconClassName}`}
@@ -693,7 +667,7 @@ export default function LandingPage() {
                         {card.title}
                       </h3>
 
-                      <p className="mt-3 flex-grow text-base leading-7 text-slate-600">
+                      <p className="mt-3 flex-grow text-base leading-7 text-slate-600 dark:text-slate-300">
                         {card.description}
                       </p>
 
@@ -701,7 +675,7 @@ export default function LandingPage() {
                         {card.points.map((point) => (
                           <li
                             key={point}
-                            className="flex items-start gap-2.5 text-sm font-medium text-slate-700"
+                            className="flex items-start gap-2.5 text-sm font-medium text-slate-700 dark:text-slate-300"
                           >
                             <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
                             <span>{point}</span>
@@ -746,9 +720,21 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="mx-auto mt-10 max-w-6xl sm:mt-14">
-                <div className="rounded-[2.2rem] border border-slate-900/20 bg-[var(--color-secondary-bg)] p-3 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.75)] sm:p-5 dark:border-white/10 dark:shadow-[0_35px_90px_-45px_rgba(2,6,23,0.95)]">
-                  <div className="rounded-[1.8rem] border border-slate-200/80 bg-[var(--color-background)] p-3 sm:p-4 dark:border-slate-700/90">
+              <div
+                className="mx-auto mt-10 max-w-6xl sm:mt-14"
+                style={{ perspective: isMobileDashboardView ? "1300px" : "1800px" }}
+              >
+                <div
+                  ref={dashboardFrameRef}
+                  className="rounded-[2.2rem] border border-black bg-[var(--color-secondary-bg)] p-2 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.75)] sm:p-5 dark:border-black dark:shadow-[0_35px_90px_-45px_rgba(2,6,23,0.95)]"
+                  style={{
+                    transform: `rotateX(${dashboardTiltX}deg)`,
+                    transformStyle: "preserve-3d",
+                    transition: "transform 120ms linear",
+                    willChange: "transform",
+                  }}
+                >
+                  <div className="rounded-[1.8rem] border border-slate-200/80 bg-[var(--color-background)] p-2 sm:p-4 dark:border-slate-700/90">
                     <div className="mb-3 flex items-center gap-2 px-1 sm:mb-4 sm:px-2">
                       <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
                       <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
@@ -759,7 +745,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className="overflow-hidden rounded-[1.25rem] border border-slate-200/80 dark:border-slate-700/90">
-                      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-900">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 sm:aspect-[16/10] dark:bg-slate-900">
                         <Image
                           src="/dashboard.png"
                           alt="TertiaryFree student dashboard preview"
@@ -767,7 +753,7 @@ export default function LandingPage() {
                           sizes="(min-width: 1280px) 1100px, (min-width: 1024px) 90vw, (min-width: 640px) 95vw, 100vw"
                           className="object-cover object-top will-change-transform"
                           style={{
-                            transform: `translate3d(0, ${-dashboardParallaxOffset}px, 0) scale(1.08)`,
+                            transform: `translate3d(0, ${-dashboardParallaxOffset}px, 0) scale(${isMobileDashboardView ? 1.02 : 1.08})`,
                             transition: "transform 120ms linear",
                           }}
                         />
@@ -920,7 +906,7 @@ export default function LandingPage() {
                       "linear-gradient(130deg, rgba(15, 23, 42, 0.62), rgba(30, 64, 175, 0.32)), linear-gradient(160deg, var(--color-primary), var(--color-secondary-bg))",
                   }}
                 >
-                  <div className="relative z-10 max-w-xl">
+                  <div className="relative z-10 max-w-xl lg:pr-20">
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-100/90">
                       TRUSTED TERTIARYFREE NETWORK
                     </p>
@@ -963,17 +949,6 @@ export default function LandingPage() {
                       your academic day stays efficient and easy to follow.
                     </p>
                   </div>
-
-                  <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[43%] overflow-hidden rounded-l-3xl border-l border-white/20 sm:block">
-                    <Image
-                      src="/image4.jpg"
-                      alt="Students in a classroom"
-                      fill
-                      sizes="(min-width: 1024px) 260px, (min-width: 640px) 220px, 0px"
-                      className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:-translate-y-1"
-                    />
-                    <div className="absolute inset-0 bg-slate-950/25 transition-colors duration-500 group-hover:bg-slate-950/15" />
-                  </div>
                 </article>
 
                 <article
@@ -984,7 +959,7 @@ export default function LandingPage() {
                       "linear-gradient(130deg, rgba(15, 23, 42, 0.6), rgba(37, 99, 235, 0.28)), linear-gradient(160deg, var(--color-primary), var(--color-secondary-bg))",
                   }}
                 >
-                  <div className="relative z-10 max-w-2xl">
+                  <div className="relative z-10 max-w-2xl lg:pr-20">
                     <h3 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
                       Plan your semester in minutes, no hidden stress
                     </h3>

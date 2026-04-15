@@ -33,15 +33,15 @@ body {
 }
 
 :root.dark {
-  --color-primary: #3b82f6;
-  --color-background: #0b0f19;
-  --color-secondary-bg: #111827;
-  --color-text: #e5e7eb;
-  --color-accent: #60a5fa;
-  --hero-text-color: #ffffff;
-  --logo-bg: #3b82f6;
-  --logo-icon: #ffffff;
-  --logo-text: #e5e7eb;
+  --color-primary: #2f2fe4;
+  --color-background: #080616;
+  --color-secondary-bg: #1a1953;
+  --color-text: #f2f3ff;
+  --color-accent: #162e93;
+  --hero-text-color: #f2f3ff;
+  --logo-bg: #2f2fe4;
+  --logo-icon: #f2f3ff;
+  --logo-text: #f2f3ff;
 }
 
 html.light,
@@ -52,8 +52,8 @@ html.light body {
 
 html.dark,
 html.dark body {
-  background-color: #0b0f19;
-  color: #e5e7eb;
+  background-color: #080616;
+  color: #f2f3ff;
 }
 
 /* Keep light mode as first-visit default; dark mode is only applied via explicit user toggle. */
@@ -100,8 +100,8 @@ html.dark body {
 }
 
 html.dark .glass-panel {
-  background: rgba(17, 24, 39, 0.85);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: rgba(26, 25, 83, 0.84);
+  border: 1px solid rgba(47, 47, 228, 0.3);
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.3),
     0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -187,4 +187,13 @@ html.dark .glass-panel {
 }
 .btn-brand:active {
   transform: translateY(0);
+}
+
+:root.dark .btn-brand {
+  background-color: #2f2fe4;
+}
+
+:root.dark .btn-brand:hover {
+  background-color: #162e93;
+  box-shadow: 0 10px 15px -3px rgba(47, 47, 228, 0.35);
 }

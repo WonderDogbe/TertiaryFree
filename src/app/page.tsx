@@ -164,13 +164,12 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyThemePreference = () => {
       const savedTheme = window.localStorage.getItem("theme");
       const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
-      const shouldFollowSystemTheme = mobileViewportQuery.matches && !hasSavedTheme;
+      const shouldFollowSystemTheme = !hasSavedTheme;
       setIsMobileSystemTheme(shouldFollowSystemTheme);
 
       if (shouldFollowSystemTheme) {
@@ -195,12 +194,11 @@ export default function LandingPage() {
       setIsThemeReady(true);
     };
 
-    const handleViewportChange = () => {
-      applyThemePreference();
-    };
-
     const handleSystemThemeChange = (event: MediaQueryListEvent) => {
-      if (!mobileViewportQuery.matches) {
+      const savedTheme = window.localStorage.getItem("theme");
+      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
+
+      if (hasSavedTheme) {
         return;
       }
 
@@ -208,11 +206,9 @@ export default function LandingPage() {
     };
 
     applyThemePreference();
-    mobileViewportQuery.addEventListener("change", handleViewportChange);
     systemThemeQuery.addEventListener("change", handleSystemThemeChange);
 
     return () => {
-      mobileViewportQuery.removeEventListener("change", handleViewportChange);
       systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
     };
   }, []);
@@ -910,10 +906,10 @@ export default function LandingPage() {
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-100/90">
                       TRUSTED TERTIARYFREE NETWORK
                     </p>
-                    <h3 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                    <h3 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
                       Verified classes and lecturers only
                     </h3>
-                    <p className="mt-5 max-w-lg text-base leading-8 text-blue-100/95 sm:text-lg">
+                    <p className="mt-5 max-w-lg text-sm leading-7 text-blue-100/95 sm:text-lg sm:leading-8">
                       Every timetable slot, class channel, and attendance flow is
                       validated for quality so students and lecturers can focus
                       on learning, not confusion.
@@ -941,10 +937,10 @@ export default function LandingPage() {
                   }}
                 >
                   <div className="relative z-10 max-w-sm">
-                    <h3 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-[2.35rem]">
+                    <h3 className="text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-[2.35rem]">
                       Campus-close scheduling
                     </h3>
-                    <p className="mt-5 text-base leading-8 text-blue-100/95 sm:text-lg">
+                    <p className="mt-5 text-sm leading-7 text-blue-100/95 sm:text-lg sm:leading-8">
                       Organize classes by campus, faculty, and time blocks so
                       your academic day stays efficient and easy to follow.
                     </p>
@@ -960,10 +956,10 @@ export default function LandingPage() {
                   }}
                 >
                   <div className="relative z-10 max-w-2xl lg:pr-20">
-                    <h3 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                    <h3 className="text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
                       Plan your semester in minutes, no hidden stress
                     </h3>
-                    <p className="mt-5 text-base leading-8 text-blue-100/95 sm:text-lg">
+                    <p className="mt-5 text-sm leading-7 text-blue-100/95 sm:text-lg sm:leading-8">
                       From QR attendance check-ins to timetable sync, progress
                       reports, and class notifications, TertiaryFree keeps your
                       academic journey clear from week one to finals.

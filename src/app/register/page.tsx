@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TextInput, PasswordInput, Select } from "@mantine/core";
 import {
   Mail,
@@ -23,6 +24,7 @@ export default function RegisterPage({
 }: {
   searchParams: Promise<{ role?: string | string[] | undefined }>;
 }) {
+  const router = useRouter();
   const resolvedSearchParams = use(searchParams);
   const rawRole = resolvedSearchParams.role;
   const role = Array.isArray(rawRole) ? rawRole[0] : rawRole;
@@ -131,6 +133,13 @@ export default function RegisterPage({
     setLoading(false);
     // For now, just log. Later connect to auth backend.
     console.log("Register submitted:", { userType, ...formData });
+
+    if (userType === "student") {
+      router.push("/dashboard");
+      return;
+    }
+
+    router.push("/login");
   };
 
   const inputStyles = {

@@ -2,6 +2,26 @@ import type { Metadata } from "next";
 import { MantineProvider } from "@mantine/core";
 import "./globals.css";
 
+const themeInitScript = `
+(() => {
+  try {
+    const savedTheme = window.localStorage.getItem("theme");
+    const resolvedTheme =
+      savedTheme === "light" || savedTheme === "dark"
+        ? savedTheme
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(resolvedTheme);
+  } catch {
+    // Theme initialization should fail gracefully.
+  }
+})();
+`;
+
 export const metadata: Metadata = {
   title: "TertiaryFree",
   description:
@@ -24,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -36,7 +57,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="min-h-full flex flex-col"
+        className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-950 dark:text-gray-100"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
         <MantineProvider defaultColorScheme="auto">{children}</MantineProvider>

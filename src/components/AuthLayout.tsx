@@ -32,13 +32,12 @@ export function AuthLayout({
   const [isMobileSystemTheme, setIsMobileSystemTheme] = useState(false);
 
   useEffect(() => {
-    const mobileViewportQuery = window.matchMedia("(max-width: 767px)");
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyThemePreference = () => {
       const savedTheme = window.localStorage.getItem("theme");
       const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
-      const shouldFollowSystemTheme = mobileViewportQuery.matches && !hasSavedTheme;
+      const shouldFollowSystemTheme = !hasSavedTheme;
       setIsMobileSystemTheme(shouldFollowSystemTheme);
 
       if (shouldFollowSystemTheme) {
@@ -63,12 +62,11 @@ export function AuthLayout({
       setIsThemeReady(true);
     };
 
-    const handleViewportChange = () => {
-      applyThemePreference();
-    };
-
     const handleSystemThemeChange = (event: MediaQueryListEvent) => {
-      if (!mobileViewportQuery.matches) {
+      const savedTheme = window.localStorage.getItem("theme");
+      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
+
+      if (hasSavedTheme) {
         return;
       }
 
@@ -76,11 +74,9 @@ export function AuthLayout({
     };
 
     applyThemePreference();
-    mobileViewportQuery.addEventListener("change", handleViewportChange);
     systemThemeQuery.addEventListener("change", handleSystemThemeChange);
 
     return () => {
-      mobileViewportQuery.removeEventListener("change", handleViewportChange);
       systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
     };
   }, []);
@@ -117,7 +113,7 @@ export function AuthLayout({
       </div>
 
       {/* Right pane - Form Content (Previously Left) */}
-      <div className="relative flex flex-1 flex-col justify-start px-5 pb-14 pt-28 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
+      <div className="relative flex flex-1 flex-col justify-center px-5 pb-10 pt-24 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
         <header className="fixed inset-x-0 top-0 z-40 border-b border-blue-100/80 bg-white/95 backdrop-blur-md dark:border-blue-900/40 dark:bg-slate-900/95 lg:hidden">
           <div className="mx-auto flex h-16 w-full max-w-md items-center justify-between px-4 sm:max-w-none sm:px-6">
             <div className="origin-left scale-105">
@@ -142,7 +138,7 @@ export function AuthLayout({
           </div>
         </header>
 
-        <div className="mb-6 lg:hidden">
+        <div className="absolute left-5 top-20 lg:hidden sm:left-6">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-base font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)] dark:text-slate-300"

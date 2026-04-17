@@ -53,7 +53,9 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     id: "attendance",
     label: "Attendance",
     icon: ChartNoAxesColumn,
-    href: "/dashboard#attendance",
+    href: "/dashboard/attendance",
+    activePathname: "/dashboard/attendance",
+    activeMatchMode: "prefix",
     group: "general",
   },
   {
@@ -85,9 +87,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
     pathname.startsWith("/dashboard/timetable") ||
     pathname.startsWith("/dashboard/exam-timetable");
   const isMyCoursesRoute = pathname.startsWith("/dashboard/my-courses");
+  const isAttendanceRoute = pathname.startsWith("/dashboard/attendance");
 
   const pageTitle = pathname.startsWith("/dashboard/settings")
     ? "Settings"
+    : isAttendanceRoute
+      ? "Attendance"
     : isMyCoursesRoute
       ? "My Courses"
     : isTimetableRoute

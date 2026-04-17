@@ -18,6 +18,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
+import { registerUserAccount } from "@/lib/auth-storage";
 
 export default function RegisterPage({
   searchParams,
@@ -44,6 +45,7 @@ export default function RegisterPage({
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
 
   const totalSteps = 4;
 
@@ -128,18 +130,40 @@ export default function RegisterPage({
     if (!validateStep(currentStep)) return;
 
     setLoading(true);
-    // Simulate API call — will connect to backend later
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
-    // For now, just log. Later connect to auth backend.
-    console.log("Register submitted:", { userType, ...formData });
+    setSubmitError("");
 
-    if (userType === "student") {
-      router.push("/dashboard");
+    const registrationResult = registerUserAccount({
+      role: userType,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      school: formData.school,
+      department: formData.department,
+      programme: userType === "student" ? formData.programme : undefined,
+      level: userType === "student" ? formData.level : undefined,
+      title: userType === "lecturer" ? formData.title : undefined,
+      courseLectured:
+        userType === "lecturer" ? formData.courseLectured : undefined,
+    });
+
+    setLoading(false);
+
+    if (!registrationResult.success) {
+      setSubmitError(registrationResult.message);
+
+      if (registrationResult.field === "email") {
+        setCurrentStep(1);
+        setErrors((prev) => ({
+          ...prev,
+          email: registrationResult.message,
+        }));
+      }
+
       return;
     }
 
-    router.push("/login");
+    const encodedEmail = encodeURIComponent(registrationResult.user.email);
+    router.push(`/login?registered=1&email=${encodedEmail}`);
   };
 
   const inputStyles = {
@@ -232,6 +256,7 @@ export default function RegisterPage({
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, email: e.target.value }));
                 if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+                if (submitError) setSubmitError("");
               }}
               error={errors.email}
               styles={inputStyles}
@@ -392,6 +417,7 @@ export default function RegisterPage({
                 setFormData((prev) => ({ ...prev, password: e.target.value }));
                 if (errors.password)
                   setErrors((prev) => ({ ...prev, password: "" }));
+                if (submitError) setSubmitError("");
               }}
               error={errors.password}
               styles={inputStyles}
@@ -411,6 +437,7 @@ export default function RegisterPage({
                 }));
                 if (errors.confirmPassword)
                   setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+                if (submitError) setSubmitError("");
               }}
               error={errors.confirmPassword}
               styles={inputStyles}
@@ -466,6 +493,15 @@ export default function RegisterPage({
             </button>
           )}
         </div>
+
+        {submitError && (
+          <p
+            role="alert"
+            className="-mt-2 text-sm font-medium text-red-600 dark:text-red-400"
+          >
+            {submitError}
+          </p>
+        )}
 
         {/* Login Link */}
         <p className="mt-3 text-center text-sm text-slate-500 dark:text-slate-300 sm:text-sm">

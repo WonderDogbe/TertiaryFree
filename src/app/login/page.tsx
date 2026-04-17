@@ -1,17 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { TextInput, PasswordInput } from "@mantine/core";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
+import { authenticateUser } from "@/lib/auth-storage";
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: "",
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    email?: string | string[] | undefined;
+    registered?: string | string[] | undefined;
+  }>;
+}) {
+  const router = useRouter();
+  const resolvedSearchParams = use(searchParams);
+  const rawEmail = resolvedSearchParams.email;
+  const emailFromQuery = Array.isArray(rawEmail) ? rawEmail[0] : rawEmail;
+  const rawRegistered = resolvedSearchParams.registered;
+  const accountCreated =
+    (Array.isArray(rawRegistered) ? rawRegistered[0] : rawRegistered) === "1";
+  const [formData, setFormData] = useState(() => ({
+    email: emailFromQuery || "",
     password: "",
-  });
+  }));
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
+  const authNotice = accountCreated
+    ? "Account created. Sign in with your new credentials."
+    : "";
 
   const isFormValid =
     formData.email.trim() !== "" && formData.password.trim() !== "";
@@ -21,11 +41,18 @@ export default function LoginPage() {
     if (!isFormValid) return;
 
     setLoading(true);
-    // Simulate API call — will connect to backend later
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setAuthError("");
+
+    const loginResult = authenticateUser(formData.email, formData.password);
+
     setLoading(false);
-    // For now, just log. Later connect to auth backend.
-    console.log("Login submitted:", formData);
+
+    if (!loginResult.success) {
+      setAuthError(loginResult.message);
+      return;
+    }
+
+    router.push("/dashboard");
   };
 
   const inputStyles = {
@@ -57,14 +84,15 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 sm:gap-6">
         <TextInput
           id="login-email"
-          label="Email or Phone Number"
-          placeholder="Email or Phone Number"
+          label="Email Address"
+          placeholder="Enter your email"
           size="md"
           leftSection={<Mail size={18} className="text-slate-400" />}
           value={formData.email}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, email: e.target.value }))
-          }
+          onChange={(e) => {
+            setFormData((prev) => ({ ...prev, email: e.target.value }));
+            if (authError) setAuthError("");
+          }}
           styles={inputStyles}
           classNames={{
             input:
@@ -79,15 +107,31 @@ export default function LoginPage() {
           size="md"
           leftSection={<Lock size={18} className="text-slate-400" />}
           value={formData.password}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, password: e.target.value }))
-          }
+          onChange={(e) => {
+            setFormData((prev) => ({ ...prev, password: e.target.value }));
+            if (authError) setAuthError("");
+          }}
           styles={inputStyles}
           classNames={{
             input:
               "focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]",
           }}
         />
+
+        {authNotice && (
+          <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/20 dark:text-emerald-300">
+            {authNotice}
+          </p>
+        )}
+
+        {authError && (
+          <p
+            role="alert"
+            className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300"
+          >
+            {authError}
+          </p>
+        )}
 
         {/* Forgot Password */}
         <div className="-mt-2 flex justify-end">

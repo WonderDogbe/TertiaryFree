@@ -240,7 +240,10 @@ export default function RegisterPage({
       password: formData.password,
       school: formData.school,
       department: formData.department,
-      gender: userType === "student" ? formData.gender : undefined,
+      gender:
+        userType === "student" && isKnownGender(formData.gender)
+          ? formData.gender
+          : undefined,
       indexNumber: userType === "student" ? formData.indexNumber : undefined,
       programme: userType === "student" ? formData.programme : undefined,
       level: userType === "student" ? formData.level : undefined,
@@ -383,7 +386,10 @@ export default function RegisterPage({
                 data={GENDER_OPTIONS}
                 value={formData.gender}
                 onChange={(value) => {
-                  setFormData((prev) => ({ ...prev, gender: value || "" }));
+                  setFormData((prev) => ({
+                    ...prev,
+                    gender: isKnownGender(value) ? value : "",
+                  }));
                   if (errors.gender)
                     setErrors((prev) => ({ ...prev, gender: "" }));
                 }}

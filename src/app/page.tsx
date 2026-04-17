@@ -145,6 +145,7 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeReady, setIsThemeReady] = useState(false);
+  const [isPageScrolled, setIsPageScrolled] = useState(false);
   const [dashboardParallaxOffset, setDashboardParallaxOffset] = useState(0);
   const featureSwipeStartX = useRef<number | null>(null);
 
@@ -298,6 +299,7 @@ export default function LandingPage() {
     const maxOffset = 72;
 
     const updateParallax = () => {
+      setIsPageScrolled(window.scrollY > 8);
       const nextOffset = Math.min(maxOffset, window.scrollY * 0.12);
       setDashboardParallaxOffset(nextOffset);
       isTicking = false;
@@ -322,7 +324,13 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 dark:border-blue-900/40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 border-b border-blue-100/80 bg-white/95 backdrop-blur-md transition-shadow duration-300 dark:border-blue-900/40 dark:bg-[var(--color-background)] ${
+          isPageScrolled
+            ? "shadow-[0_8px_24px_-18px_rgba(15,23,42,0.28)] dark:shadow-[0_10px_24px_-18px_rgba(2,6,23,0.95)]"
+            : "shadow-none"
+        }`}
+      >
         <nav
           className="relative mx-auto w-full px-6 sm:px-10 lg:px-16"
           aria-label="Global"
@@ -416,7 +424,7 @@ export default function LandingPage() {
       <div
         id="mobile-navigation"
         aria-label="Mobile menu"
-        className={`fixed inset-x-0 top-16 z-40 w-full border-t border-blue-100/80 bg-white shadow-lg transition-all duration-300 ease-in-out dark:border-blue-900/40 dark:bg-slate-900 md:hidden ${
+        className={`fixed inset-x-0 top-16 z-40 w-full border-t border-blue-100/80 bg-white shadow-lg transition-all duration-300 ease-in-out dark:border-blue-900/40 dark:bg-[var(--color-background)] md:hidden ${
           isMenuOpen
             ? "translate-y-0 opacity-100"
             : "-translate-y-[10px] pointer-events-none opacity-0"

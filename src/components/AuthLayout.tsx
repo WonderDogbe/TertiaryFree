@@ -29,6 +29,7 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isThemeReady, setIsThemeReady] = useState(false);
+  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("theme");
@@ -67,6 +68,19 @@ export function AuthLayout({
     window.localStorage.setItem("theme", "light");
   }, [isDarkMode, isThemeReady]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsHeaderScrolled(window.scrollY > 8);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
       {/* Left pane - Image */}
@@ -81,7 +95,13 @@ export function AuthLayout({
 
       {/* Right pane - Form Content (Previously Left) */}
       <div className="relative flex flex-1 flex-col justify-start px-4 pb-12 pt-16 sm:px-6 sm:pt-24 lg:flex-none lg:w-[500px] lg:justify-center lg:px-12 lg:py-12 xl:w-[600px] xl:px-24">
-        <header className="fixed inset-x-0 top-0 z-40 border-b border-blue-100/80 bg-white/95 backdrop-blur-md dark:border-blue-900/40 dark:bg-slate-900/95 lg:hidden">
+        <header
+          className={`fixed inset-x-0 top-0 z-40 border-b border-blue-100/80 bg-white/95 backdrop-blur-md transition-shadow duration-300 dark:border-blue-900/40 dark:bg-[var(--color-background)] lg:hidden ${
+            isHeaderScrolled
+              ? "shadow-[0_8px_24px_-18px_rgba(15,23,42,0.28)] dark:shadow-[0_10px_24px_-18px_rgba(2,6,23,0.95)]"
+              : "shadow-none"
+          }`}
+        >
           <div className="mx-auto flex h-16 w-full max-w-md items-center justify-between px-4 sm:max-w-none sm:px-6">
             <div className="origin-left scale-105">
               <Logo size="sm" />

@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="scroll-mt-24 border-t border-slate-200 bg-[var(--color-secondary-bg)] dark:border-slate-700/70 sm:scroll-mt-32 lg:scroll-mt-40"
+      className="scroll-mt-24 border-t border-slate-200 bg-[var(--color-secondary-bg)] transition-shadow duration-300 dark:border-slate-700/70 dark:bg-[var(--color-background)] dark:shadow-[0_-14px_28px_-24px_rgba(2,6,23,0.95)] sm:scroll-mt-32 lg:scroll-mt-40"
     >
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">

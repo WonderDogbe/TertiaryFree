@@ -1,4 +1,4 @@
-import { Bell, ChartNoAxesColumn, Clock3, XCircle } from "lucide-react";
+import { Bell, ChartNoAxesColumn, Clock3 } from "lucide-react";
 import {
   AssignmentsDeadlines,
   type AssignmentItem,
@@ -129,13 +129,6 @@ export default function DashboardPage() {
       icon: Clock3,
     },
     {
-      id: "canceled-classes",
-      title: "Canceled Classes",
-      value: "1",
-      detail: "Software Engineering moved to Thursday",
-      icon: XCircle,
-    },
-    {
       id: "attendance-rate",
       title: "Attendance %",
       value: "84%",
@@ -167,21 +160,20 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <TodayOverview items={overviewItems} />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div id="timetable" className="scroll-mt-24">
+      <section className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div id="timetable" className="h-full scroll-mt-24">
           <Timetable lectures={timetableLectures} />
         </div>
-        <div id="notifications" className="scroll-mt-24">
+        <div id="notifications" className="h-full scroll-mt-24">
           <NotificationsFeed items={NOTIFICATION_ITEMS} />
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div id="attendance" className="scroll-mt-24">
+        <div id="attendance" className="h-full scroll-mt-24">
           <AttendanceStats courses={ATTENDANCE_COURSES} />
         </div>
-        <AssignmentsDeadlines assignments={ASSIGNMENTS} />
-      </div>
+        <div className="h-full">
+          <AssignmentsDeadlines assignments={ASSIGNMENTS} />
+        </div>
+      </section>
     </div>
   );
 }

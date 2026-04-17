@@ -1,0 +1,82 @@
+[
+  {
+    "id": "accounting-finance",
+    "name": "Accounting and Finance"
+  },
+  {
+    "id": "agricultural-engineering",
+    "name": "Agricultural Engineering"
+  },
+  {
+    "id": "agricultural-sciences-technology",
+    "name": "Agricultural Sciences and Technology"
+  },
+  {
+    "id": "applied-modern-languages-communication",
+    "name": "Applied Modern Languages & Communication"
+  },
+  {
+    "id": "architectural-real-estate-management",
+    "name": "Architectural & Real Estate Management"
+  },
+  {
+    "id": "building-technology",
+    "name": "Building Technology"
+  },
+  {
+    "id": "civil-engineering",
+    "name": "Civil Engineering"
+  },
+  {
+    "id": "computer-science",
+    "name": "Computer Science"
+  },
+  {
+    "id": "electrical-electronic-engineering",
+    "name": "Electrical/ Electronic Engineering"
+  },
+  {
+    "id": "environmental-science",
+    "name": "Environmental Science"
+  },
+  {
+    "id": "fashion-design-textiles",
+    "name": "Fashion Design & Textiles"
+  },
+  {
+    "id": "food-science-technology",
+    "name": "Food Science & Technology"
+  },
+  {
+    "id": "hospitality-tourism-management",
+    "name": "Hospitality & Tourism Management"
+  },
+  {
+    "id": "industrial-art",
+    "name": "Industrial Art"
+  },
+  {
+    "id": "logistics-supply-chain-management",
+    "name": "Logistics & Supply Chain Management"
+  },
+  {
+    "id": "management-sciences",
+    "name": "Management Sciences"
+  },
+  {
+    "id": "marketing",
+    "name": "Marketing"
+  },
+  {
+    "id": "mathematics-statistics",
+    "name": "Mathematics & Statistics"
+  },
+  {
+    "id": "mechanical-engineering",
+    "name": "Mechanical Engineering"
+  },
+  {
+    "id": "multidisciplinary-studi",
+    "name": "Multidisciplinary Studi"
+  }
+]

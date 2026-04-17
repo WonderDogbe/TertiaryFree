@@ -8,6 +8,7 @@ import {
   Mail,
   Lock,
   User,
+  Hash,
   UserPlus,
   BookOpen,
   GraduationCap,
@@ -19,25 +20,113 @@ import {
 } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 import { registerUserAccount } from "@/lib/auth-storage";
+import {
+  getCourseOptions,
+  getDepartmentOptions,
+  getGenderOptions,
+  getLecturerTitleOptions,
+  getLevelOptions,
+  getProgrammeOptions,
+  isKnownDepartmentName,
+  isKnownGender,
+  isKnownLevel,
+} from "@/lib/local-db";
+
+const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
+
+type StudentSignupPrefill = {
+  name: string;
+  indexNumber: string;
+  gender: "" | "male" | "female" | "other";
+  level: string;
+  department: string;
+};
+
+const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {
+  name: "",
+  indexNumber: "",
+  gender: "",
+  level: "",
+  department: "",
+};
+
+const GENDER_OPTIONS = getGenderOptions();
+const LEVEL_OPTIONS = getLevelOptions();
+const DEPARTMENT_SELECT_OPTIONS = getDepartmentOptions().map((department) => ({
+  value: department.name,
+  label: department.name,
+}));
+const PROGRAMME_SELECT_OPTIONS = getProgrammeOptions().map((programme) => ({
+  value: programme.name,
+  label: programme.name,
+}));
+const LECTURER_TITLE_OPTIONS = getLecturerTitleOptions();
+const COURSE_SELECT_OPTIONS = getCourseOptions();
+
+function readStoredStudentSignupPrefill(): StudentSignupPrefill {
+  if (typeof window === "undefined") {
+    return EMPTY_STUDENT_SIGNUP_PREFILL;
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(
+      SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
+    );
+
+    if (!storedValue) {
+      return EMPTY_STUDENT_SIGNUP_PREFILL;
+    }
+
+    const parsed = JSON.parse(storedValue) as unknown;
+
+    if (!parsed || typeof parsed !== "object") {
+      return EMPTY_STUDENT_SIGNUP_PREFILL;
+    }
+
+    const candidate = parsed as Record<string, unknown>;
+
+    return {
+      name: typeof candidate.name === "string" ? candidate.name : "",
+      indexNumber:
+        typeof candidate.indexNumber === "string" ? candidate.indexNumber : "",
+      gender: isKnownGender(candidate.gender) ? candidate.gender : "",
+      level: isKnownLevel(candidate.level) ? candidate.level : "",
+      department:
+        isKnownDepartmentName(candidate.department) ? candidate.department : "",
+    };
+  } catch {
+    return EMPTY_STUDENT_SIGNUP_PREFILL;
+  }
+}
 
 export default function RegisterPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string | string[] | undefined }>;
+  searchParams: Promise<{
+    role?: string | string[] | undefined;
+    institution?: string | string[] | undefined;
+  }>;
 }) {
   const router = useRouter();
   const resolvedSearchParams = use(searchParams);
   const rawRole = resolvedSearchParams.role;
+  const rawInstitution = resolvedSearchParams.institution;
   const role = Array.isArray(rawRole) ? rawRole[0] : rawRole;
+  const institution = Array.isArray(rawInstitution)
+    ? rawInstitution[0]
+    : rawInstitution;
   const userType = role === "lecturer" ? "lecturer" : "student";
+  const [studentSignupPrefill] = useState(readStoredStudentSignupPrefill);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    name: "",
+    name: userType === "student" ? studentSignupPrefill.name : "",
+    gender: userType === "student" ? studentSignupPrefill.gender : "",
     email: "",
-    school: "",
+    school: institution || "",
     programme: "",
-    department: "",
-    level: "",
+    indexNumber: userType === "student" ? studentSignupPrefill.indexNumber : "",
+    level: userType === "student" ? studentSignupPrefill.level : "",
+    department: userType === "student" ? studentSignupPrefill.department : "",
     title: "",
     courseLectured: "",
     password: "",
@@ -57,10 +146,15 @@ export default function RegisterPage({
       if (formData.email.trim() === "") newErrors.email = "Email is required";
       if (!formData.email.includes("@"))
         newErrors.email = "Invalid email address";
+      if (userType === "student" && formData.gender.trim() === "") {
+        newErrors.gender = "Gender is required";
+      }
     } else if (step === 2) {
       if (userType === "student") {
         if (formData.programme.trim() === "")
           newErrors.programme = "Programme is required";
+        if (formData.indexNumber.trim() === "")
+          newErrors.indexNumber = "Index number is required";
         if (formData.level.trim() === "") newErrors.level = "Level is required";
       } else {
         if (formData.title.trim() === "") newErrors.title = "Title is required";
@@ -89,14 +183,21 @@ export default function RegisterPage({
 
   const isCurrentStepValid = () => {
     if (currentStep === 1) {
-      return (
+      const hasBasicInfo =
         formData.name.trim() !== "" &&
         formData.email.trim() !== "" &&
-        formData.email.includes("@")
-      );
+        formData.email.includes("@");
+
+      return userType === "student"
+        ? hasBasicInfo && formData.gender.trim() !== ""
+        : hasBasicInfo;
     } else if (currentStep === 2) {
       if (userType === "student") {
-        return formData.programme.trim() !== "" && formData.level.trim() !== "";
+        return (
+          formData.programme.trim() !== "" &&
+          formData.indexNumber.trim() !== "" &&
+          formData.level.trim() !== ""
+        );
       } else {
         return (
           formData.title.trim() !== "" && formData.courseLectured.trim() !== ""
@@ -139,6 +240,8 @@ export default function RegisterPage({
       password: formData.password,
       school: formData.school,
       department: formData.department,
+      gender: userType === "student" ? formData.gender : undefined,
+      indexNumber: userType === "student" ? formData.indexNumber : undefined,
       programme: userType === "student" ? formData.programme : undefined,
       level: userType === "student" ? formData.level : undefined,
       title: userType === "lecturer" ? formData.title : undefined,
@@ -160,6 +263,14 @@ export default function RegisterPage({
       }
 
       return;
+    }
+
+    if (userType === "student") {
+      try {
+        window.localStorage.removeItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY);
+      } catch {
+        // Ignore cleanup failures.
+      }
     }
 
     const encodedEmail = encodeURIComponent(registrationResult.user.email);
@@ -261,6 +372,25 @@ export default function RegisterPage({
               error={errors.email}
               styles={inputStyles}
             />
+
+            {userType === "student" && (
+              <Select
+                id="register-gender"
+                label="Gender"
+                placeholder="Select your gender"
+                size="md"
+                leftSection={<User size={18} className="text-slate-400" />}
+                data={GENDER_OPTIONS}
+                value={formData.gender}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, gender: value || "" }));
+                  if (errors.gender)
+                    setErrors((prev) => ({ ...prev, gender: "" }));
+                }}
+                error={errors.gender}
+                styles={inputStyles}
+              />
+            )}
           </>
         )}
 
@@ -269,24 +399,44 @@ export default function RegisterPage({
           <>
             {userType === "student" ? (
               <>
-                <TextInput
+                <Select
                   id="register-programme"
                   label="Programme"
-                  placeholder="e.g. B.Sc. Computer Science"
+                  placeholder="Select your programme"
                   size="md"
                   leftSection={
                     <BookOpen size={18} className="text-slate-400" />
                   }
+                  data={PROGRAMME_SELECT_OPTIONS}
                   value={formData.programme}
-                  onChange={(e) => {
+                  onChange={(value) => {
                     setFormData((prev) => ({
                       ...prev,
-                      programme: e.target.value,
+                      programme: value || "",
                     }));
                     if (errors.programme)
                       setErrors((prev) => ({ ...prev, programme: "" }));
                   }}
                   error={errors.programme}
+                  styles={inputStyles}
+                />
+
+                <TextInput
+                  id="register-index-number"
+                  label="Index Number"
+                  placeholder="e.g. UEB3214024"
+                  size="md"
+                  leftSection={<Hash size={18} className="text-slate-400" />}
+                  value={formData.indexNumber}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      indexNumber: e.target.value,
+                    }));
+                    if (errors.indexNumber)
+                      setErrors((prev) => ({ ...prev, indexNumber: "" }));
+                  }}
+                  error={errors.indexNumber}
                   styles={inputStyles}
                 />
 
@@ -298,16 +448,7 @@ export default function RegisterPage({
                   leftSection={
                     <GraduationCap size={18} className="text-slate-400" />
                   }
-                  data={[
-                    { value: "100-1", label: "Level 100 (1st Semester)" },
-                    { value: "100-2", label: "Level 100 (2nd Semester)" },
-                    { value: "200-1", label: "Level 200 (1st Semester)" },
-                    { value: "200-2", label: "Level 200 (2nd Semester)" },
-                    { value: "300-1", label: "Level 300 (1st Semester)" },
-                    { value: "300-2", label: "Level 300 (2nd Semester)" },
-                    { value: "400-1", label: "Level 400 (1st Semester)" },
-                    { value: "400-2", label: "Level 400 (2nd Semester)" },
-                  ]}
+                  data={LEVEL_OPTIONS}
                   value={formData.level}
                   onChange={(value) => {
                     setFormData((prev) => ({ ...prev, level: value || "" }));
@@ -320,17 +461,18 @@ export default function RegisterPage({
               </>
             ) : (
               <>
-                <TextInput
+                <Select
                   id="register-title"
                   label="Title"
-                  placeholder="e.g. Dr., Prof., Mr., Ms."
+                  placeholder="Select title"
                   size="md"
                   leftSection={
                     <Briefcase size={18} className="text-slate-400" />
                   }
+                  data={LECTURER_TITLE_OPTIONS}
                   value={formData.title}
-                  onChange={(e) => {
-                    setFormData((prev) => ({ ...prev, title: e.target.value }));
+                  onChange={(value) => {
+                    setFormData((prev) => ({ ...prev, title: value || "" }));
                     if (errors.title)
                       setErrors((prev) => ({ ...prev, title: "" }));
                   }}
@@ -338,19 +480,20 @@ export default function RegisterPage({
                   styles={inputStyles}
                 />
 
-                <TextInput
+                <Select
                   id="register-course"
                   label="Course Lectured"
-                  placeholder="e.g. Advanced Data Structures"
+                  placeholder="Select a course"
                   size="md"
                   leftSection={
                     <BookOpen size={18} className="text-slate-400" />
                   }
+                  data={COURSE_SELECT_OPTIONS}
                   value={formData.courseLectured}
-                  onChange={(e) => {
+                  onChange={(value) => {
                     setFormData((prev) => ({
                       ...prev,
-                      courseLectured: e.target.value,
+                      courseLectured: value || "",
                     }));
                     if (errors.courseLectured)
                       setErrors((prev) => ({ ...prev, courseLectured: "" }));
@@ -382,17 +525,18 @@ export default function RegisterPage({
               styles={inputStyles}
             />
 
-            <TextInput
+            <Select
               id="register-department"
               label="Department"
-              placeholder="e.g. Mathematical Sciences"
+              placeholder="Select department"
               size="md"
               leftSection={<Building2 size={18} className="text-slate-400" />}
+              data={DEPARTMENT_SELECT_OPTIONS}
               value={formData.department}
-              onChange={(e) => {
+              onChange={(value) => {
                 setFormData((prev) => ({
                   ...prev,
-                  department: e.target.value,
+                  department: value || "",
                 }));
                 if (errors.department)
                   setErrors((prev) => ({ ...prev, department: "" }));

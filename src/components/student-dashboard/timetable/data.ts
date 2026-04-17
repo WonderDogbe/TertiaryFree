@@ -1,70 +1,12 @@
 import type { WeekDay, WeeklyLecture } from "./LectureCard";
+import { getWeeklyLectures } from "@/lib/local-db";
 
-export const WEEKLY_LECTURES: WeeklyLecture[] = [
-  {
-    id: "wk-1",
-    day: "Monday",
-    course: "Math 101",
-    lecturer: "Dr. Smith",
-    venue: "Room A2",
-    startTime: "09:00",
-    endTime: "10:50",
-  },
-  {
-    id: "wk-2",
-    day: "Monday",
-    course: "Data Structures",
-    lecturer: "Dr. Mensah",
-    venue: "Lab C",
-    startTime: "13:00",
-    endTime: "14:50",
-  },
-  {
-    id: "wk-3",
-    day: "Tuesday",
-    course: "Physics 201",
-    lecturer: "Prof. Lee",
-    venue: "Hall B1",
-    startTime: "11:00",
-    endTime: "12:50",
-  },
-  {
-    id: "wk-4",
-    day: "Tuesday",
-    course: "UI Design",
-    lecturer: "Ms. Ofori",
-    venue: "Studio 4",
-    startTime: "15:00",
-    endTime: "16:50",
-  },
-  {
-    id: "wk-5",
-    day: "Wednesday",
-    course: "Software Engineering",
-    lecturer: "Dr. Boateng",
-    venue: "Room D3",
-    startTime: "07:00",
-    endTime: "08:50",
-  },
-  {
-    id: "wk-6",
-    day: "Thursday",
-    course: "Database Systems",
-    lecturer: "Dr. Chen",
-    venue: "Lab A1",
-    startTime: "17:00",
-    endTime: "18:50",
-  },
-  {
-    id: "wk-7",
-    day: "Friday",
-    course: "Networks",
-    lecturer: "Mr. Johnson",
-    venue: "Room C5",
-    startTime: "19:00",
-    endTime: "20:50",
-  },
-];
+export const WEEKLY_LECTURES: WeeklyLecture[] = getWeeklyLectures().map(
+  (lecture) => ({
+    ...lecture,
+    day: lecture.day as WeekDay,
+  }),
+);
 
 const WEEKDAY_INDEX: Record<WeekDay, number> = {
   Monday: 0,

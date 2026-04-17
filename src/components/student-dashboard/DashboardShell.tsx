@@ -1,12 +1,14 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Bell,
   BookOpen,
   CalendarDays,
   ChartNoAxesColumn,
+  FileText,
   Home,
+  MessageSquare,
   Settings,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -44,8 +46,8 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     id: "my-courses",
     label: "My Courses",
     icon: BookOpen,
-    href: "/dashboard/my-courses",
-    activePathname: "/dashboard/my-courses",
+    href: "/dashboard/courses",
+    activePathname: "/dashboard/courses",
     activeMatchMode: "prefix",
     group: "general",
   },
@@ -57,6 +59,24 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     activePathname: "/dashboard/attendance",
     activeMatchMode: "prefix",
     group: "general",
+  },
+  {
+    id: "quiz-midsem",
+    label: "Quizzes/Midsem",
+    icon: FileText,
+    href: "/dashboard/quiz-midsem",
+    activePathname: "/dashboard/quiz-midsem",
+    activeMatchMode: "prefix",
+    group: "classroom-connect",
+  },
+  {
+    id: "chat",
+    label: "Chats",
+    icon: MessageSquare,
+    href: "/dashboard/chat",
+    activePathname: "/dashboard/chat",
+    activeMatchMode: "prefix",
+    group: "classroom-connect",
   },
   {
     id: "notifications",
@@ -81,16 +101,55 @@ interface DashboardShellProps {
 
 export function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
+  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+
+    const handleScreenSizeChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleScreenSizeChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleScreenSizeChange);
+    };
+  }, []);
+
+  const handleSidebarToggle = () => {
+    const isDesktopScreen = window.matchMedia("(min-width: 768px)").matches;
+
+    if (isDesktopScreen) {
+      setIsDesktopSidebarCollapsed((previousState) => !previousState);
+      return;
+    }
+
+    setIsMobileSidebarOpen((previousState) => !previousState);
+  };
 
   const isTimetableRoute =
     pathname.startsWith("/dashboard/timetable") ||
     pathname.startsWith("/dashboard/exam-timetable");
-  const isMyCoursesRoute = pathname.startsWith("/dashboard/my-courses");
+  const isMyCoursesRoute =
+    pathname.startsWith("/dashboard/courses") ||
+    pathname.startsWith("/dashboard/my-courses");
   const isAttendanceRoute = pathname.startsWith("/dashboard/attendance");
+  const isQuizMidsemRoute = pathname.startsWith("/dashboard/quiz-midsem");
+  const isChatRoute = pathname.startsWith("/dashboard/chat");
+  const isProfileRoute = pathname.startsWith("/dashboard/profile");
 
   const pageTitle = pathname.startsWith("/dashboard/settings")
     ? "Settings"
+    : isProfileRoute
+      ? "Student Profile"
+    : isChatRoute
+      ? "Chat"
+    : isQuizMidsemRoute
+      ? "Quiz/Midsem"
     : isAttendanceRoute
       ? "Attendance"
     : isMyCoursesRoute
@@ -105,7 +164,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         <button
           type="button"
           onClick={() => setIsMobileSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-gray-900/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
           aria-label="Close sidebar overlay"
         />
       )}
@@ -113,6 +172,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       <div className="flex min-h-screen">
         <Sidebar
           items={SIDEBAR_ITEMS}
+          isDesktopCollapsed={isDesktopSidebarCollapsed}
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
@@ -120,7 +180,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         <div className="flex min-w-0 flex-1 flex-col">
           <TopNavbar
             title={pageTitle}
-            onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+            onToggleSidebar={handleSidebarToggle}
           />
 
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>

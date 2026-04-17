@@ -4,6 +4,7 @@ export interface WeeklyLecture {
   id: string;
   day: WeekDay;
   course: string;
+  code: string;
   lecturer: string;
   venue: string;
   startTime: string;
@@ -28,6 +29,9 @@ export function LectureCard({ lecture, className }: LectureCardProps) {
       )}
     >
       <p className="font-semibold leading-snug">{lecture.course}</p>
+      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-blue-800/90 dark:text-blue-100/90">
+        {lecture.code}
+      </p>
       <p className="mt-1 text-xs font-medium text-blue-800/90 dark:text-blue-100/90">
         {lecture.lecturer}
       </p>

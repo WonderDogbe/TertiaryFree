@@ -15,11 +15,11 @@ interface TodayOverviewProps {
 
 export function TodayOverview({ items }: TodayOverviewProps) {
   return (
-    <section>
+    <section className="space-y-6">
       <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
         Today Overview
       </h2>
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => {
           const Icon = item.icon;
           const isAttendanceCard = item.id === "attendance-rate";
@@ -32,8 +32,8 @@ export function TodayOverview({ items }: TodayOverviewProps) {
             attendancePercentage >= 50;
 
           const attendanceCardClasses = hasGoodAttendance
-            ? "border border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20"
-            : "border border-rose-200 bg-rose-50 dark:border-rose-800 dark:bg-rose-900/20";
+            ? "border border-emerald-200 dark:border-emerald-700"
+            : "border border-rose-200 dark:border-rose-700";
 
           const attendanceIconClasses = hasGoodAttendance
             ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
@@ -44,50 +44,54 @@ export function TodayOverview({ items }: TodayOverviewProps) {
               key={item.id}
               className={isAttendanceCard ? attendanceCardClasses : undefined}
             >
-              <div className="flex items-start justify-between gap-3">
-                <p
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    isAttendanceCard
-                      ? hasGoodAttendance
-                        ? "text-emerald-700 dark:text-emerald-300"
-                        : "text-rose-700 dark:text-rose-300"
-                      : "text-gray-500 dark:text-gray-300"
-                  }`}
-                >
-                  {item.title}
-                </p>
-                <span
-                  className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-300 ${
-                    isAttendanceCard
-                      ? attendanceIconClasses
-                      : "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                </span>
+              <div className="flex h-full flex-col justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
+                  <p
+                    className={`text-sm font-medium transition-colors duration-300 ${
+                      isAttendanceCard
+                        ? hasGoodAttendance
+                          ? "text-emerald-700 dark:text-emerald-300"
+                          : "text-rose-700 dark:text-rose-300"
+                        : "text-gray-500 dark:text-gray-300"
+                    }`}
+                  >
+                    {item.title}
+                  </p>
+                  <span
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-300 ${
+                      isAttendanceCard
+                        ? attendanceIconClasses
+                        : "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p
+                    className={`text-2xl font-semibold transition-colors duration-300 ${
+                      isAttendanceCard
+                        ? hasGoodAttendance
+                          ? "text-emerald-700 dark:text-emerald-300"
+                          : "text-rose-700 dark:text-rose-300"
+                        : "text-gray-900 dark:text-gray-100"
+                    }`}
+                  >
+                    {item.value}
+                  </p>
+                  <p
+                    className={`text-sm transition-colors duration-300 ${
+                      isAttendanceCard
+                        ? hasGoodAttendance
+                          ? "text-emerald-700/90 dark:text-emerald-300/90"
+                          : "text-rose-700/90 dark:text-rose-300/90"
+                        : "text-gray-500 dark:text-gray-300"
+                    }`}
+                  >
+                    {item.detail}
+                  </p>
+                </div>
               </div>
-              <p
-                className={`mt-3 text-2xl font-semibold transition-colors duration-300 ${
-                  isAttendanceCard
-                    ? hasGoodAttendance
-                      ? "text-emerald-700 dark:text-emerald-300"
-                      : "text-rose-700 dark:text-rose-300"
-                    : "text-gray-900 dark:text-gray-100"
-                }`}
-              >
-                {item.value}
-              </p>
-              <p
-                className={`mt-1 text-sm transition-colors duration-300 ${
-                  isAttendanceCard
-                    ? hasGoodAttendance
-                      ? "text-emerald-700/90 dark:text-emerald-300/90"
-                      : "text-rose-700/90 dark:text-rose-300/90"
-                    : "text-gray-500 dark:text-gray-300"
-                }`}
-              >
-                {item.detail}
-              </p>
             </Card>
           );
         })}

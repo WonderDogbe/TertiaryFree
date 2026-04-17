@@ -1,18 +1,36 @@
 export type UserRole = "student" | "lecturer";
+export type UserGender = "male" | "female" | "other";
 
 export interface RegisteredUser {
   id: string;
   role: UserRole;
   name: string;
+  gender?: UserGender;
   email: string;
   password: string;
   school: string;
   department: string;
+  indexNumber?: string;
   programme?: string;
   level?: string;
   title?: string;
   courseLectured?: string;
   createdAt: string;
+}
+
+export interface ActiveUserProfile {
+  id: string;
+  role: UserRole;
+  name: string;
+  gender?: UserGender;
+  email: string;
+  school: string;
+  department: string;
+  indexNumber?: string;
+  programme?: string;
+  level?: string;
+  title?: string;
+  courseLectured?: string;
 }
 
 interface ActiveSession {
@@ -26,10 +44,12 @@ interface ActiveSession {
 interface RegisterUserInput {
   role: UserRole;
   name: string;
+  gender?: UserGender;
   email: string;
   password: string;
   school: string;
   department: string;
+  indexNumber?: string;
   programme?: string;
   level?: string;
   title?: string;
@@ -70,11 +90,33 @@ const isRegisteredUser = (entry: unknown): entry is RegisteredUser => {
     typeof candidate.id === "string" &&
     (candidate.role === "student" || candidate.role === "lecturer") &&
     typeof candidate.name === "string" &&
+    (typeof candidate.gender === "undefined" ||
+      candidate.gender === "male" ||
+      candidate.gender === "female" ||
+      candidate.gender === "other") &&
     typeof candidate.email === "string" &&
     typeof candidate.password === "string" &&
     typeof candidate.school === "string" &&
     typeof candidate.department === "string" &&
+    (typeof candidate.indexNumber === "undefined" ||
+      typeof candidate.indexNumber === "string") &&
     typeof candidate.createdAt === "string"
+  );
+};
+
+const isActiveSession = (entry: unknown): entry is ActiveSession => {
+  if (!entry || typeof entry !== "object") {
+    return false;
+  }
+
+  const candidate = entry as Record<string, unknown>;
+
+  return (
+    typeof candidate.userId === "string" &&
+    typeof candidate.email === "string" &&
+    (candidate.role === "student" || candidate.role === "lecturer") &&
+    typeof candidate.name === "string" &&
+    typeof candidate.loggedInAt === "string"
   );
 };
 
@@ -133,6 +175,63 @@ const setActiveSession = (user: RegisteredUser) => {
   }
 };
 
+const readActiveSession = (): ActiveSession | null => {
+  if (!isBrowser()) {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as unknown;
+
+    if (!isActiveSession(parsed)) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const mapRegisteredUserToProfile = (
+  user: RegisteredUser
+): ActiveUserProfile => ({
+  id: user.id,
+  role: user.role,
+  name: user.name,
+  gender: user.gender,
+  email: user.email,
+  school: user.school,
+  department: user.department,
+  indexNumber: user.indexNumber,
+  programme: user.programme,
+  level: user.level,
+  title: user.title,
+  courseLectured: user.courseLectured,
+});
+
+export const getActiveUserProfile = (): ActiveUserProfile | null => {
+  const session = readActiveSession();
+
+  if (!session) {
+    return null;
+  }
+
+  const users = readUsers();
+  const matchedUser = users.find((entry) => entry.id === session.userId);
+
+  if (!matchedUser) {
+    return null;
+  }
+
+  return mapRegisteredUserToProfile(matchedUser);
+};
+
 export const registerUserAccount = (
   input: RegisterUserInput
 ): RegisterUserResult => {
@@ -168,10 +267,12 @@ export const registerUserAccount = (
     id: createUserId(),
     role: input.role,
     name: input.name.trim(),
+    gender: input.gender,
     email,
     password: input.password,
     school: input.school.trim(),
     department: input.department.trim(),
+    indexNumber: input.indexNumber?.trim() || undefined,
     programme: input.programme?.trim() || undefined,
     level: input.level?.trim() || undefined,
     title: input.title?.trim() || undefined,

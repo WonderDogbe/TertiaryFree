@@ -58,7 +58,7 @@ export default function CoursesPage() {
             <div className="flex flex-wrap items-center gap-3">
               <select
                 defaultValue="all"
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 sm:w-auto"
                 aria-label="Filter courses"
               >
                 <option value="all">All</option>
@@ -69,13 +69,13 @@ export default function CoursesPage() {
               <input
                 type="text"
                 placeholder="Search"
-                className="min-w-[220px] flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:placeholder:text-gray-500 sm:max-w-sm"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 dark:placeholder:text-gray-500 sm:min-w-[220px] sm:flex-1 sm:max-w-sm"
                 aria-label="Search courses"
               />
 
               <select
                 defaultValue="name"
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 sm:w-auto"
                 aria-label="Sort courses"
               >
                 <option value="name">Sort by course name</option>
@@ -85,7 +85,7 @@ export default function CoursesPage() {
 
               <select
                 defaultValue="list"
-                className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200"
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 transition-colors duration-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-200 sm:w-auto"
                 aria-label="Toggle course view"
               >
                 <option value="list">List</option>

@@ -97,7 +97,7 @@ export function Sidebar({
   return (
     <>
       <aside
-        className={`hidden flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out md:flex dark:border-gray-800 dark:bg-gray-900 ${
+        className={`hidden flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex dark:border-gray-800 dark:bg-gray-900 ${
           isDesktopCollapsed ? "w-16" : "w-64"
         }`}
       >

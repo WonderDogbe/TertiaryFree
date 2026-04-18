@@ -327,3 +327,15 @@ export const authenticateUser = (
     user,
   };
 };
+
+export const logoutActiveSession = () => {
+  if (!isBrowser()) {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(SESSION_STORAGE_KEY);
+  } catch {
+    // Ignore cleanup failures.
+  }
+};

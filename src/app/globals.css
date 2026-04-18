@@ -213,3 +213,22 @@ html.dark .glass-panel {
   background-color: rgba(37, 99, 235, 0.24);
   color: var(--color-text);
 }
+
+/* Global clickable cursor hints */
+a[href],
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+summary,
+select {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}

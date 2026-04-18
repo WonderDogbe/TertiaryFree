@@ -177,7 +177,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div
+          className={`flex min-w-0 flex-1 flex-col transition-[margin] duration-300 ease-in-out ${
+            isDesktopSidebarCollapsed ? "md:ml-16" : "md:ml-64"
+          }`}
+        >
           <TopNavbar
             title={pageTitle}
             onToggleSidebar={handleSidebarToggle}

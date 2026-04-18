@@ -142,7 +142,7 @@ export function LandingHeader({
 
           <div className="flex flex-col gap-3 pt-1">
             <Link
-              href="/signup/institution"
+              href="/signup/institution?startOver=1"
               onClick={onCloseMobileMenu}
               className="btn-brand w-full py-3 text-center text-base"
             >

@@ -360,6 +360,14 @@ export default function RegisterPage({
       borderColor: "rgba(148, 163, 184, 0.35)",
       minHeight: "54px",
     },
+    dropdown: {
+      backgroundColor: "var(--color-secondary-bg)",
+      borderColor: "rgba(148, 163, 184, 0.35)",
+    },
+    option: {
+      color: "var(--color-text)",
+      backgroundColor: "transparent",
+    },
     section: {
       color: "#94a3b8",
     },

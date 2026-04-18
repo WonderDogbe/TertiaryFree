@@ -170,7 +170,7 @@ export default function LoginPage({
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-300 sm:text-sm">
           Don&apos;t have an account?{" "}
           <Link
-            href="/signup/institution"
+            href="/signup/institution?startOver=1"
             className="font-semibold text-[#0a0f5c] transition-colors hover:underline dark:text-[#5eead4]"
             id="register-link"
           >

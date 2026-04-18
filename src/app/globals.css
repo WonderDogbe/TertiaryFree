@@ -197,3 +197,19 @@ html.dark .glass-panel {
   background-color: #162e93;
   box-shadow: 0 10px 15px -3px rgba(47, 47, 228, 0.35);
 }
+
+/* Mantine Combobox/Select readability overrides */
+[data-combobox-option] {
+  color: var(--color-text);
+}
+
+[data-combobox-option]:where(:not([data-combobox-selected], [data-combobox-disabled])):hover,
+[data-combobox-option][data-combobox-active]:where(:not([data-combobox-selected], [data-combobox-disabled])) {
+  background-color: rgba(37, 99, 235, 0.18);
+  color: var(--color-text);
+}
+
+[data-combobox-option][data-combobox-selected] {
+  background-color: rgba(37, 99, 235, 0.24);
+  color: var(--color-text);
+}

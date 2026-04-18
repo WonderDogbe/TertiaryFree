@@ -452,7 +452,7 @@ export default function LandingPage() {
 
               <div className="mt-8 flex justify-center sm:mt-9 sm:flex-row sm:items-center">
                 <Link
-                  href="/signup/institution"
+                  href="/signup/institution?startOver=1"
                   className="inline-flex w-full max-w-[17.5rem] items-center justify-center gap-1.5 rounded-2xl bg-[var(--color-primary)] px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-blue-700 sm:w-auto sm:max-w-none sm:rounded-full sm:px-8 sm:py-3 sm:text-sm"
                 >
                   Get Started
@@ -967,7 +967,7 @@ export default function LandingPage() {
 
                     <div className="mt-9">
                       <Link
-                        href="/signup/institution"
+                        href="/signup/institution?startOver=1"
                         className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/15 px-8 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-white/25"
                       >
                         Create Account

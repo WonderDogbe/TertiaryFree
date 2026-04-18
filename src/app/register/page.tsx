@@ -26,10 +26,14 @@ import {
   getGenderOptions,
   getLecturerTitleOptions,
   getLevelOptions,
+  getProgrammeOptionsForFacultyAndType,
+  getProgrammeTypeOptions,
   getProgrammeOptions,
-  isKnownDepartmentName,
+  isKnownFacultyName,
   isKnownGender,
   isKnownLevel,
+  isKnownProgrammeName,
+  isKnownProgrammeType,
 } from "@/lib/local-db";
 
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
@@ -40,6 +44,8 @@ type StudentSignupPrefill = {
   gender: "" | "male" | "female" | "other";
   level: string;
   department: string;
+  programmeType: "" | "degree" | "hnd";
+  programme: string;
 };
 
 const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {
@@ -48,6 +54,8 @@ const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {
   gender: "",
   level: "",
   department: "",
+  programmeType: "",
+  programme: "",
 };
 
 const GENDER_OPTIONS = getGenderOptions();
@@ -56,10 +64,7 @@ const DEPARTMENT_SELECT_OPTIONS = getDepartmentOptions().map((department) => ({
   value: department.name,
   label: department.name,
 }));
-const PROGRAMME_SELECT_OPTIONS = getProgrammeOptions().map((programme) => ({
-  value: programme.name,
-  label: programme.name,
-}));
+const PROGRAMME_TYPE_SELECT_OPTIONS = getProgrammeTypeOptions();
 const LECTURER_TITLE_OPTIONS = getLecturerTitleOptions();
 const COURSE_SELECT_OPTIONS = getCourseOptions();
 
@@ -85,14 +90,36 @@ function readStoredStudentSignupPrefill(): StudentSignupPrefill {
 
     const candidate = parsed as Record<string, unknown>;
 
+    const department =
+      isKnownFacultyName(candidate.department) ? candidate.department : "";
+    const programmeType = isKnownProgrammeType(candidate.programmeType)
+      ? candidate.programmeType
+      : "";
+
+    const prefilledProgrammeOptions =
+      department && programmeType
+        ? getProgrammeOptionsForFacultyAndType(department, programmeType)
+        : [];
+
+    const programme =
+      typeof candidate.programme === "string" &&
+      isKnownProgrammeName(candidate.programme) &&
+      (prefilledProgrammeOptions.length === 0 ||
+        prefilledProgrammeOptions.some(
+          (option) => option.name === candidate.programme,
+        ))
+        ? candidate.programme
+        : "";
+
     return {
       name: typeof candidate.name === "string" ? candidate.name : "",
       indexNumber:
         typeof candidate.indexNumber === "string" ? candidate.indexNumber : "",
       gender: isKnownGender(candidate.gender) ? candidate.gender : "",
       level: isKnownLevel(candidate.level) ? candidate.level : "",
-      department:
-        isKnownDepartmentName(candidate.department) ? candidate.department : "",
+      department,
+      programmeType,
+      programme,
     };
   } catch {
     return EMPTY_STUDENT_SIGNUP_PREFILL;
@@ -123,7 +150,9 @@ export default function RegisterPage({
     gender: userType === "student" ? studentSignupPrefill.gender : "",
     email: "",
     school: institution || "",
-    programme: "",
+    programmeType:
+      userType === "student" ? studentSignupPrefill.programmeType : "",
+    programme: userType === "student" ? studentSignupPrefill.programme : "",
     indexNumber: userType === "student" ? studentSignupPrefill.indexNumber : "",
     level: userType === "student" ? studentSignupPrefill.level : "",
     department: userType === "student" ? studentSignupPrefill.department : "",
@@ -135,6 +164,28 @@ export default function RegisterPage({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
+
+  const studentProgrammeRecords = (() => {
+    if (userType !== "student" || !isKnownProgrammeType(formData.programmeType)) {
+      return [];
+    }
+
+    if (isKnownFacultyName(formData.department)) {
+      return getProgrammeOptionsForFacultyAndType(
+        formData.department,
+        formData.programmeType,
+      );
+    }
+
+    return getProgrammeOptions().filter(
+      (programme) => programme.programmeType === formData.programmeType,
+    );
+  })();
+
+  const studentProgrammeSelectOptions = studentProgrammeRecords.map((programme) => ({
+    value: programme.name,
+    label: programme.name,
+  }));
 
   const totalSteps = 4;
 
@@ -151,8 +202,18 @@ export default function RegisterPage({
       }
     } else if (step === 2) {
       if (userType === "student") {
+        if (formData.programmeType.trim() === "")
+          newErrors.programmeType = "Programme type is required";
         if (formData.programme.trim() === "")
           newErrors.programme = "Programme is required";
+        if (
+          formData.programme.trim() !== "" &&
+          !studentProgrammeRecords.some(
+            (programme) => programme.name === formData.programme,
+          )
+        ) {
+          newErrors.programme = "Select a valid programme";
+        }
         if (formData.indexNumber.trim() === "")
           newErrors.indexNumber = "Index number is required";
         if (formData.level.trim() === "") newErrors.level = "Level is required";
@@ -165,7 +226,7 @@ export default function RegisterPage({
       if (formData.school.trim() === "")
         newErrors.school = "School is required";
       if (formData.department.trim() === "")
-        newErrors.department = "Department is required";
+        newErrors.department = "Faculty is required";
     } else if (step === 4) {
       if (formData.password.trim() === "")
         newErrors.password = "Password is required";
@@ -194,7 +255,11 @@ export default function RegisterPage({
     } else if (currentStep === 2) {
       if (userType === "student") {
         return (
+          formData.programmeType.trim() !== "" &&
           formData.programme.trim() !== "" &&
+          studentProgrammeRecords.some(
+            (programme) => programme.name === formData.programme,
+          ) &&
           formData.indexNumber.trim() !== "" &&
           formData.level.trim() !== ""
         );
@@ -406,15 +471,45 @@ export default function RegisterPage({
             {userType === "student" ? (
               <>
                 <Select
-                  id="register-programme"
-                  label="Programme"
-                  placeholder="Select your programme"
+                  id="register-programme-type"
+                  label="Programme Type"
+                  placeholder="Select programme type"
                   size="md"
                   leftSection={
                     <BookOpen size={18} className="text-slate-400" />
                   }
-                  data={PROGRAMME_SELECT_OPTIONS}
+                  data={PROGRAMME_TYPE_SELECT_OPTIONS}
+                  value={formData.programmeType}
+                  onChange={(value) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      programmeType: isKnownProgrammeType(value) ? value : "",
+                      programme: "",
+                    }));
+                    if (errors.programmeType)
+                      setErrors((prev) => ({ ...prev, programmeType: "" }));
+                    if (errors.programme)
+                      setErrors((prev) => ({ ...prev, programme: "" }));
+                  }}
+                  error={errors.programmeType}
+                  styles={inputStyles}
+                />
+
+                <Select
+                  id="register-programme"
+                  label="Programme"
+                  placeholder={
+                    isKnownProgrammeType(formData.programmeType)
+                      ? "Select your programme"
+                      : "Select programme type first"
+                  }
+                  size="md"
+                  leftSection={
+                    <BookOpen size={18} className="text-slate-400" />
+                  }
+                  data={studentProgrammeSelectOptions}
                   value={formData.programme}
+                  disabled={!isKnownProgrammeType(formData.programmeType)}
                   onChange={(value) => {
                     setFormData((prev) => ({
                       ...prev,
@@ -426,6 +521,13 @@ export default function RegisterPage({
                   error={errors.programme}
                   styles={inputStyles}
                 />
+
+                {isKnownProgrammeType(formData.programmeType) &&
+                  studentProgrammeSelectOptions.length === 0 && (
+                    <p className="-mt-2 text-xs font-medium text-amber-600 dark:text-amber-400">
+                      No programmes match the selected faculty and programme type.
+                    </p>
+                  )}
 
                 <TextInput
                   id="register-index-number"
@@ -532,9 +634,9 @@ export default function RegisterPage({
             />
 
             <Select
-              id="register-department"
-              label="Department"
-              placeholder="Select department"
+              id="register-faculty"
+              label="Faculty"
+              placeholder="Select faculty"
               size="md"
               leftSection={<Building2 size={18} className="text-slate-400" />}
               data={DEPARTMENT_SELECT_OPTIONS}
@@ -543,6 +645,7 @@ export default function RegisterPage({
                 setFormData((prev) => ({
                   ...prev,
                   department: value || "",
+                  programme: "",
                 }));
                 if (errors.department)
                   setErrors((prev) => ({ ...prev, department: "" }));

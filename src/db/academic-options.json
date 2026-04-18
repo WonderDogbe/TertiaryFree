@@ -116,7 +116,7 @@
     {
       "value": "student",
       "title": "Student",
-      "description": "Enter your student details first, then select your level and department before registration."
+      "description": "For HTU, select faculty and programme first, then enter details, choose level, and set your password."
     },
     {
       "value": "lecturer",

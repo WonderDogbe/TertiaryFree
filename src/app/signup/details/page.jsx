@@ -8,10 +8,15 @@ import { getSignupRoleOptions } from "@/lib/local-db";
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const ROLE_OPTIONS = getSignupRoleOptions();
+const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 const ROLE_ICON_BY_VALUE = {
   student: GraduationCap,
   lecturer: Presentation,
 };
+
+function isHtuInstitution(institutionName) {
+  return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
+}
 
 function readStoredInstitutionName() {
   if (typeof window === "undefined") {
@@ -50,7 +55,11 @@ export default function SignupDetailsPage() {
     }
 
     if (selectedRole === "student") {
-      router.push("/signup/student");
+      if (isHtuInstitution(institutionName)) {
+        router.push("/signup/student/department");
+      } else {
+        router.push("/signup/student");
+      }
       return;
     }
 

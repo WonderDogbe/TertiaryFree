@@ -1,7 +1,8 @@
 import academicOptionsJson from "@/db/academic-options.json";
 import courseCatalogJson from "@/db/course-catalog.json";
-import departmentsJson from "@/db/departments.json";
+import facultyJson from "@/db/faculty.json";
 import institutionsJson from "@/db/institutions.json";
+import programmesJson from "@/db/programmes.json";
 import weeklyLecturesJson from "@/db/weekly-lectures.json";
 
 export interface InstitutionRecord {
@@ -22,16 +23,21 @@ export interface LevelOption extends SelectOption {
   semester: string;
 }
 
-export interface DepartmentRecord {
+export interface FacultyRecord {
   id: string;
   name: string;
 }
 
+export type DepartmentRecord = FacultyRecord;
+
 export interface ProgrammeRecord {
   id: string;
   name: string;
-  departmentId: string;
+  facultyId: string;
+  programmeType: ProgrammeTypeValue;
 }
+
+export type ProgrammeTypeValue = "degree" | "hnd";
 
 export type UserRoleValue = "student" | "lecturer";
 
@@ -45,7 +51,6 @@ interface AcademicOptionsPayload {
   genders: SelectOption[];
   semesters: SemesterOption[];
   levels: LevelOption[];
-  programmes: ProgrammeRecord[];
   signupRoles: SignupRoleOption[];
   lecturerTitles: SelectOption[];
 }
@@ -95,7 +100,8 @@ export interface WeeklyLectureRecord {
 
 const INSTITUTIONS = institutionsJson as InstitutionRecord[];
 const ACADEMIC_OPTIONS = academicOptionsJson as AcademicOptionsPayload;
-const DEPARTMENTS = departmentsJson as DepartmentRecord[];
+const FACULTIES = facultyJson as FacultyRecord[];
+const PROGRAMMES = programmesJson as ProgrammeRecord[];
 const COURSE_CATALOG = courseCatalogJson as CourseCatalogEntry[];
 const WEEKLY_LECTURES_JSON = weeklyLecturesJson as WeeklyLectureJsonRecord[];
 
@@ -111,7 +117,15 @@ const WEEKDAY_SET = new Set<WeekDayValue>(WEEKDAY_VALUES);
 const INSTITUTION_NAMES = new Set(INSTITUTIONS.map((item) => item.name));
 const GENDER_VALUES = new Set(ACADEMIC_OPTIONS.genders.map((item) => item.value));
 const LEVEL_VALUES = new Set(ACADEMIC_OPTIONS.levels.map((item) => item.value));
-const DEPARTMENT_NAMES = new Set(DEPARTMENTS.map((item) => item.name));
+const PROGRAMME_NAMES = new Set(PROGRAMMES.map((item) => item.name));
+const PROGRAMME_TYPE_VALUES: ProgrammeTypeValue[] = ["degree", "hnd"];
+const PROGRAMME_TYPE_SET = new Set<ProgrammeTypeValue>(PROGRAMME_TYPE_VALUES);
+const PROGRAMME_TYPE_OPTIONS: SelectOption[] = [
+  { value: "degree", label: "Bachelor Degree" },
+  { value: "hnd", label: "HND" },
+];
+const FACULTY_NAMES = new Set(FACULTIES.map((item) => item.name));
+const FACULTY_BY_NAME = new Map(FACULTIES.map((item) => [item.name, item]));
 const USER_ROLE_VALUES = new Set(
   ACADEMIC_OPTIONS.signupRoles.map((item) => item.value),
 );
@@ -123,6 +137,10 @@ export function getInstitutions(): InstitutionRecord[] {
 
 export function isKnownInstitutionName(institutionName: string): boolean {
   return INSTITUTION_NAMES.has(institutionName);
+}
+
+export function findFacultyByName(facultyName: string): FacultyRecord | null {
+  return FACULTY_BY_NAME.get(facultyName) || null;
 }
 
 export function findInstitutionByName(
@@ -166,16 +184,62 @@ export function getLecturerTitleOptions(): SelectOption[] {
   return ACADEMIC_OPTIONS.lecturerTitles;
 }
 
+export function getFacultyOptions(): FacultyRecord[] {
+  return FACULTIES;
+}
+
+export function isKnownFacultyName(value: unknown): value is string {
+  return typeof value === "string" && FACULTY_NAMES.has(value);
+}
+
 export function getDepartmentOptions(): DepartmentRecord[] {
-  return DEPARTMENTS;
+  return getFacultyOptions();
 }
 
 export function isKnownDepartmentName(value: unknown): value is string {
-  return typeof value === "string" && DEPARTMENT_NAMES.has(value);
+  return isKnownFacultyName(value);
+}
+
+export function getProgrammeTypeOptions(): SelectOption[] {
+  return PROGRAMME_TYPE_OPTIONS;
+}
+
+export function isKnownProgrammeType(value: unknown): value is ProgrammeTypeValue {
+  return (
+    typeof value === "string" &&
+    PROGRAMME_TYPE_SET.has(value as ProgrammeTypeValue)
+  );
 }
 
 export function getProgrammeOptions(): ProgrammeRecord[] {
-  return ACADEMIC_OPTIONS.programmes;
+  return PROGRAMMES;
+}
+
+export function getProgrammeOptionsForFacultyAndType(
+  facultyName: string,
+  programmeType?: ProgrammeTypeValue,
+): ProgrammeRecord[] {
+  const matchedFaculty = findFacultyByName(facultyName);
+
+  if (!matchedFaculty) {
+    return [];
+  }
+
+  return PROGRAMMES.filter((programme) => {
+    if (programme.facultyId !== matchedFaculty.id) {
+      return false;
+    }
+
+    if (programmeType && programme.programmeType !== programmeType) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+export function isKnownProgrammeName(value: unknown): value is string {
+  return typeof value === "string" && PROGRAMME_NAMES.has(value);
 }
 
 export function getCourseCatalog(): CourseCatalogEntry[] {

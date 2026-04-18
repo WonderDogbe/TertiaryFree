@@ -6,9 +6,9 @@ import { useState } from "react";
 import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import {
-  getLevelOptions,
-  getSemesterOptions,
-  isKnownDepartmentName,
+  getProgrammeOptionsForFacultyAndType,
+  getProgrammeTypeOptions,
+  isKnownFacultyName,
   isKnownGender,
   isKnownLevel,
   isKnownProgrammeName,
@@ -19,50 +19,10 @@ const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
-const LEVEL_OPTIONS = getLevelOptions();
-const SEMESTER_OPTIONS = getSemesterOptions();
-const LEVEL_NUMBER_OPTIONS = Array.from(
-  new Set(LEVEL_OPTIONS.map((option) => option.level)),
-).map((levelValue) => ({
-  value: levelValue,
-  label: `Level ${levelValue}`,
-}));
+const PROGRAMME_TYPE_OPTIONS = getProgrammeTypeOptions();
 
 function isHtuInstitution(institutionName) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
-}
-
-function getStoredLevelSelection(storedLevel) {
-  if (!isKnownLevel(storedLevel)) {
-    return {
-      level: "",
-      semester: "",
-    };
-  }
-
-  const matchedOption = LEVEL_OPTIONS.find(
-    (option) => option.value === storedLevel,
-  );
-
-  if (!matchedOption) {
-    return {
-      level: "",
-      semester: "",
-    };
-  }
-
-  return {
-    level: matchedOption.level,
-    semester: matchedOption.semester,
-  };
-}
-
-function buildLevelValue(level, semester) {
-  const matchedOption = LEVEL_OPTIONS.find(
-    (option) => option.level === level && option.semester === semester,
-  );
-
-  return matchedOption?.value || "";
 }
 
 function readStoredInstitutionName() {
@@ -152,7 +112,7 @@ function readStoredStudentDetails() {
         : "";
     const department =
       typeof parsed.department === "string" &&
-      isKnownDepartmentName(parsed.department)
+      isKnownFacultyName(parsed.department)
         ? parsed.department
         : "";
     const programmeType =
@@ -190,17 +150,17 @@ function readStoredStudentDetails() {
   }
 }
 
-export default function StudentLevelPage() {
+export default function StudentProgrammePage() {
   const router = useRouter();
   const [institutionName] = useState(readStoredInstitutionName);
   const [studentDetails] = useState(readStoredStudentDetails);
-  const requiresFacultyAndProgrammeSelection = isHtuInstitution(institutionName);
-  const initialLevelSelection = getStoredLevelSelection(studentDetails.level);
-  const [selectedLevel, setSelectedLevel] = useState(initialLevelSelection.level);
-  const [selectedSemester, setSelectedSemester] = useState(
-    initialLevelSelection.semester,
-  );
+  const [programmeType, setProgrammeType] = useState(studentDetails.programmeType);
+  const [programme, setProgramme] = useState(studentDetails.programme);
   const [error, setError] = useState("");
+  const requiresProgrammeSelection = isHtuInstitution(institutionName);
+
+  const hasRequiredStudentDetails =
+    !requiresProgrammeSelection || isKnownFacultyName(studentDetails.department);
 
   const inputStyles = {
     label: {
@@ -226,25 +186,43 @@ export default function StudentLevelPage() {
     },
   };
 
-  const level = buildLevelValue(selectedLevel, selectedSemester);
-  const hasValidLevelSelection = isKnownLevel(level);
+  const programmeOptions =
+    hasRequiredStudentDetails && isKnownProgrammeType(programmeType)
+      ? getProgrammeOptionsForFacultyAndType(
+          studentDetails.department,
+          programmeType,
+        )
+      : [];
 
-  const hasRequiredStudentDetails =
-    studentDetails.name.trim() !== "" &&
-    studentDetails.email.trim() !== "" &&
-    studentDetails.email.includes("@") &&
-    studentDetails.indexNumber.trim() !== "" &&
-    isKnownGender(studentDetails.gender) &&
-    (!requiresFacultyAndProgrammeSelection ||
-      (isKnownDepartmentName(studentDetails.department) &&
-        isKnownProgrammeType(studentDetails.programmeType) &&
-        isKnownProgrammeName(studentDetails.programme)));
+  const hasValidProgrammeSelection =
+    !requiresProgrammeSelection ||
+    (isKnownProgrammeType(programmeType) &&
+      programmeOptions.some((option) => option.name === programme));
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!hasValidLevelSelection) {
-      setError("Level and semester are required");
+    if (!requiresProgrammeSelection) {
+      window.localStorage.setItem(
+        SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
+        JSON.stringify({
+          ...studentDetails,
+          programmeType: "",
+          programme: "",
+        }),
+      );
+
+      router.push("/signup/student");
+      return;
+    }
+
+    if (!isKnownProgrammeType(programmeType)) {
+      setError("Programme type is required");
+      return;
+    }
+
+    if (!programmeOptions.some((option) => option.name === programme)) {
+      setError("Programme is required");
       return;
     }
 
@@ -252,11 +230,12 @@ export default function StudentLevelPage() {
       SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
       JSON.stringify({
         ...studentDetails,
-        level,
+        programmeType,
+        programme,
       }),
     );
 
-    router.push("/signup/student/password");
+    router.push("/signup/student");
   };
 
   if (!institutionName) {
@@ -288,18 +267,18 @@ export default function StudentLevelPage() {
       <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
         <section className="w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-            Complete Student Details First
+            Complete Previous Steps First
           </h1>
           <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Complete programme and student details before selecting your level.
+            Select your faculty before choosing your programme.
           </p>
           <div className="mt-6">
             <Link
-              href="/signup/student"
+              href="/signup/student/department"
               className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Student Details
+              Back to Faculty Selection
             </Link>
           </div>
         </section>
@@ -314,47 +293,76 @@ export default function StudentLevelPage() {
           Student Signup
         </p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-          Select Your Level and Semester
+          Select Your Programme
         </h1>
-        <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-          Choose your current level and semester before setting your password.
-        </p>
+        {requiresProgrammeSelection ? (
+          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
+            Choose your study type and programme under {studentDetails.department}.
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
+            Programme selection is currently available only for HTU. Continue to student details.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <Select
-            id="student-level"
-            label="Level"
-            placeholder="Select your level"
-            data={LEVEL_NUMBER_OPTIONS}
-            value={selectedLevel}
-            onChange={(value) => {
-              setSelectedLevel(value || "");
-              if (error) {
-                setError("");
-              }
-            }}
-            styles={inputStyles}
-          />
+          {requiresProgrammeSelection && (
+            <Select
+              id="student-programme-type"
+              label="Study Type"
+              placeholder="Select study type"
+              data={PROGRAMME_TYPE_OPTIONS}
+              value={programmeType}
+              onChange={(value) => {
+                setProgrammeType(value || "");
+                setProgramme("");
+                if (error) {
+                  setError("");
+                }
+              }}
+              styles={inputStyles}
+            />
+          )}
 
-          <Select
-            id="student-semester"
-            label="Semester"
-            placeholder="Select your semester"
-            data={SEMESTER_OPTIONS}
-            value={selectedSemester}
-            onChange={(value) => {
-              setSelectedSemester(value || "");
-              if (error) {
-                setError("");
+          {requiresProgrammeSelection && (
+            <Select
+              id="student-programme"
+              label="Programme"
+              placeholder={
+                isKnownProgrammeType(programmeType)
+                  ? "Select your programme"
+                  : "Select study type first"
               }
-            }}
-            error={error}
-            styles={inputStyles}
-          />
+              data={programmeOptions.map((option) => ({
+                value: option.name,
+                label: option.name,
+              }))}
+              value={programme}
+              onChange={(value) => {
+                setProgramme(value || "");
+                if (error) {
+                  setError("");
+                }
+              }}
+              disabled={!isKnownProgrammeType(programmeType)}
+              searchable
+              nothingFoundMessage="No matching programme"
+              styles={inputStyles}
+              error={error}
+            />
+          )}
+
+          {requiresProgrammeSelection &&
+            isKnownProgrammeType(programmeType) &&
+            programmeOptions.length === 0 && (
+            <p className="-mt-2 text-xs font-medium text-amber-600 dark:text-amber-400">
+              No programmes are currently listed for this faculty and study type.
+            </p>
+            )}
 
           <div className="pt-2 sm:flex sm:items-center sm:justify-between">
             <Link
-              href="/signup/student"
+              href={requiresProgrammeSelection ? "/signup/student/department" : "/signup/details"}
               className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -363,13 +371,13 @@ export default function StudentLevelPage() {
             <button
               type="submit"
               className={`mt-4 w-full rounded-lg px-5 py-3 text-sm font-semibold text-white transition-colors sm:mt-0 sm:w-auto ${
-                hasValidLevelSelection
+                hasValidProgrammeSelection
                   ? "bg-blue-600 hover:bg-blue-700"
                   : "cursor-not-allowed bg-blue-300"
               }`}
-              disabled={!hasValidLevelSelection}
+              disabled={!hasValidProgrammeSelection}
             >
-              Continue to Password Setup
+              Continue to Student Details
             </button>
           </div>
         </form>

@@ -102,21 +102,19 @@ export function Sidebar({
         }`}
       >
         <div
-          className={`border-b border-gray-200 transition-all duration-300 ease-in-out dark:border-gray-800 ${
-            isDesktopCollapsed ? "p-3" : "p-6"
+          className={`flex h-16 items-center border-b border-gray-200 transition-all duration-300 ease-in-out dark:border-gray-800 ${
+            isDesktopCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
           {isDesktopCollapsed ? (
-            <div className="flex items-center justify-center">
-              <span
-                className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white"
-                aria-label="TertiaryFree"
-              >
-                TF
-              </span>
-            </div>
+            <span
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white"
+              aria-label="TertiaryFree"
+            >
+              TF
+            </span>
           ) : (
-            <div className="flex flex-col items-start">
+            <div className="flex items-center">
               <Logo size="sm" className="origin-left" />
             </div>
           )}
@@ -208,8 +206,8 @@ export function Sidebar({
         }`}
         aria-label="Mobile sidebar"
       >
-        <div className="border-b border-gray-200 p-5 transition-colors duration-300 dark:border-gray-800">
-          <div className="flex flex-col items-start">
+        <div className="flex h-16 items-center border-b border-gray-200 px-4 transition-colors duration-300 dark:border-gray-800">
+          <div className="flex items-center">
             <Logo size="sm" className="origin-left" />
           </div>
         </div>

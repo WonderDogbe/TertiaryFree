@@ -1,16 +1,8 @@
-import { Bell, ChartNoAxesColumn, Clock3 } from "lucide-react";
+import { Clock3 } from "lucide-react";
 import {
   AssignmentsDeadlines,
   type AssignmentItem,
 } from "@/components/student-dashboard/AssignmentsDeadlines";
-import {
-  AttendanceStats,
-  type AttendanceCourse,
-} from "@/components/student-dashboard/AttendanceStats";
-import {
-  NotificationsFeed,
-  type NotificationItem,
-} from "@/components/student-dashboard/NotificationsFeed";
 import {
   Timetable,
   type TimetableLecture,
@@ -28,66 +20,6 @@ import {
 } from "@/components/student-dashboard/timetable/data";
 
 export const dynamic = "force-dynamic";
-
-const NOTIFICATION_ITEMS: NotificationItem[] = [
-  {
-    id: "note-1",
-    title: "Lecture Canceled",
-    detail: "CSC 410 has been canceled for today by the lecturer.",
-    time: "2h ago",
-  },
-  {
-    id: "note-2",
-    title: "Assignment Posted",
-    detail: "New software architecture assignment is now available.",
-    time: "4h ago",
-  },
-  {
-    id: "note-3",
-    title: "Attendance Reminder",
-    detail: "Check in to Operating Systems before 10:45 AM.",
-    time: "6h ago",
-  },
-  {
-    id: "note-4",
-    title: "Lab Venue Update",
-    detail: "Network Security lab moved from Lab A to Lab C.",
-    time: "1d ago",
-  },
-  {
-    id: "note-5",
-    title: "New Material Uploaded",
-    detail: "Database systems slides for week 8 are now available.",
-    time: "1d ago",
-  },
-];
-
-const ATTENDANCE_COURSES: AttendanceCourse[] = [
-  {
-    id: "att-1",
-    course: "CSC 355",
-    percentage: 92,
-    barWidthClass: "w-[92%]",
-  },
-  {
-    id: "att-2",
-    course: "CSC 399",
-    percentage: 81,
-    barWidthClass: "w-[81%]",
-  },
-  {
-    id: "att-3",
-    course: "CSC 325",
-    percentage: 75,
-    barWidthClass: "w-3/4",
-  },
-  {
-    id: "att-4",
-    course: "CSC 301",
-    percentage: 88,
-    barWidthClass: "w-[88%]",
-  },
-];
 
 const ASSIGNMENTS: AssignmentItem[] = [
   {
@@ -115,6 +47,30 @@ export default function DashboardPage() {
   const todayWeekDay = getWeekDayFromDate(now);
   const nextLectureResult = getNextLecture(now);
   const todayLectures = getTodayLectures(now);
+  const nextLectureToday =
+    todayWeekDay !== null &&
+    nextLectureResult !== null &&
+    nextLectureResult.lecture.day === todayWeekDay
+      ? nextLectureResult.lecture
+      : null;
+
+  const orderedTodayLectures =
+    nextLectureToday === null
+      ? todayLectures
+      : (() => {
+          const nextLectureIndex = todayLectures.findIndex(
+            (lecture) => lecture.id === nextLectureToday.id,
+          );
+
+          if (nextLectureIndex <= 0) {
+            return todayLectures;
+          }
+
+          return [
+            ...todayLectures.slice(nextLectureIndex),
+            ...todayLectures.slice(0, nextLectureIndex),
+          ];
+        })();
 
   const overviewItems: OverviewItem[] = [
     {
@@ -128,47 +84,23 @@ export default function DashboardPage() {
         : "No class is currently scheduled.",
       icon: Clock3,
     },
-    {
-      id: "attendance-rate",
-      title: "Attendance %",
-      value: "84%",
-      detail: "You are above faculty threshold",
-      icon: ChartNoAxesColumn,
-    },
-    {
-      id: "new-notifications",
-      title: "New Notifications",
-      value: "5",
-      detail: "2 require your response today",
-      icon: Bell,
-    },
   ];
 
-  const timetableLectures: TimetableLecture[] = todayLectures.map((lecture) => ({
+  const timetableLectures: TimetableLecture[] = orderedTodayLectures.map((lecture) => ({
     id: lecture.id,
     course: lecture.course,
     time: formatLectureTimeRange(lecture),
     room: lecture.venue,
-    isHighlighted:
-      todayWeekDay !== null &&
-      nextLectureResult !== null &&
-      nextLectureResult.lecture.day === todayWeekDay &&
-      nextLectureResult.lecture.id === lecture.id,
+    isHighlighted: nextLectureToday !== null && nextLectureToday.id === lecture.id,
   }));
 
   return (
     <div className="space-y-6">
       <TodayOverview items={overviewItems} />
 
-      <section className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <section className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2">
         <div id="timetable" className="h-full scroll-mt-24">
           <Timetable lectures={timetableLectures} />
-        </div>
-        <div id="notifications" className="h-full scroll-mt-24">
-          <NotificationsFeed items={NOTIFICATION_ITEMS} />
-        </div>
-        <div id="attendance" className="h-full scroll-mt-24">
-          <AttendanceStats courses={ATTENDANCE_COURSES} />
         </div>
         <div className="h-full">
           <AssignmentsDeadlines assignments={ASSIGNMENTS} />

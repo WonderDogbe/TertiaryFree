@@ -2,15 +2,22 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Bell, Menu } from "lucide-react";
+import { Bell, Menu, MessageSquare } from "lucide-react";
 import { getActiveUserProfile } from "@/lib/auth-storage";
 
 interface TopNavbarProps {
   title: string;
   onToggleSidebar: () => void;
+  isDesktopSidebarCollapsed: boolean;
+  isMobileSidebarOpen: boolean;
 }
 
-export function TopNavbar({ title, onToggleSidebar }: TopNavbarProps) {
+export function TopNavbar({
+  title,
+  onToggleSidebar,
+  isDesktopSidebarCollapsed,
+  isMobileSidebarOpen,
+}: TopNavbarProps) {
   const [displayName, setDisplayName] = useState("Student");
 
   useEffect(() => {
@@ -54,7 +61,16 @@ export function TopNavbar({ title, onToggleSidebar }: TopNavbarProps) {
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300"
             aria-label="Toggle sidebar"
           >
-            <Menu className="h-4 w-4" />
+            {isMobileSidebarOpen ? (
+              <span className="text-lg font-semibold leading-none md:hidden">&lt;</span>
+            ) : (
+              <Menu className="h-4 w-4 md:hidden" />
+            )}
+            {isDesktopSidebarCollapsed ? (
+              <Menu className="hidden h-4 w-4 md:block" />
+            ) : (
+              <span className="hidden text-lg font-semibold leading-none md:block">&lt;</span>
+            )}
           </button>
           <h1 className="text-xl font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
             {title}
@@ -62,6 +78,14 @@ export function TopNavbar({ title, onToggleSidebar }: TopNavbarProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/chat"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden"
+            aria-label="Open chat"
+          >
+            <MessageSquare className="h-4 w-4" />
+          </Link>
+
           <button
             type="button"
             className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -73,7 +97,7 @@ export function TopNavbar({ title, onToggleSidebar }: TopNavbarProps) {
 
           <Link
             href="/dashboard/profile"
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="hidden items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 md:inline-flex"
             aria-label="Open student profile"
           >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white transition-colors duration-300 dark:bg-gray-700">

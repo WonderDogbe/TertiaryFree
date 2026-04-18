@@ -23,6 +23,8 @@ export function TodayOverview({ items }: TodayOverviewProps) {
         {items.map((item) => {
           const Icon = item.icon;
           const isAttendanceCard = item.id === "attendance-rate";
+          const shouldExpandNextLectureCard =
+            item.id === "next-lecture" && items.length === 1;
           const attendancePercentage = Number.parseFloat(
             item.value.replace(/[^\d.]/g, ""),
           );
@@ -42,7 +44,12 @@ export function TodayOverview({ items }: TodayOverviewProps) {
           return (
             <Card
               key={item.id}
-              className={isAttendanceCard ? attendanceCardClasses : undefined}
+              className={[
+                isAttendanceCard ? attendanceCardClasses : undefined,
+                shouldExpandNextLectureCard ? "md:col-span-2 lg:col-span-3" : undefined,
+              ]
+                .filter(Boolean)
+                .join(" ")}
             >
               <div className="flex h-full flex-col justify-between gap-4">
                 <div className="flex items-start justify-between gap-3">

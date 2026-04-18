@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, UserRound } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { getActiveUserProfile, logoutActiveSession } from "@/lib/auth-storage";
+import { ConfirmationModal } from "./ConfirmationModal";
 
 export type SidebarItem = {
   id: string;
@@ -22,14 +26,26 @@ interface SidebarProps {
   onCloseMobile: () => void;
 }
 
+const formatDisplayName = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}`)
+    .join(" ");
+
 function SidebarLinks({
   items,
   isCollapsed = false,
+  isCompact = false,
   onNavigate,
+  labelClassName,
 }: {
   items: SidebarItem[];
   isCollapsed?: boolean;
+  isCompact?: boolean;
   onNavigate?: () => void;
+  labelClassName?: string;
 }) {
   const pathname = usePathname();
 
@@ -54,7 +70,7 @@ function SidebarLinks({
             onClick={onNavigate}
             title={isCollapsed ? item.label : undefined}
             aria-label={isCollapsed ? item.label : undefined}
-            className={`flex items-center rounded-xl text-sm font-medium transition-all duration-300 ease-in-out ${
+            className={`flex items-center rounded-xl ${isCompact ? "text-xs" : "text-sm"} font-medium transition-all duration-300 ease-in-out ${
               isActive
                 ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
                 : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -66,7 +82,18 @@ function SidebarLinks({
           >
             <Icon className="h-4 w-4" />
             {!isCollapsed && (
-              <span className="uppercase tracking-[0.08em]">{item.label}</span>
+              <span
+                className={
+                  labelClassName ??
+                  (item.id === "dashboard"
+                    ? isCompact
+                      ? "uppercase tracking-[0.06em]"
+                      : "uppercase tracking-[0.08em]"
+                    : "normal-case tracking-normal")
+                }
+              >
+                {item.label}
+              </span>
             )}
           </Link>
         );
@@ -81,6 +108,11 @@ export function Sidebar({
   isMobileOpen,
   onCloseMobile,
 }: SidebarProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [mobileProfileName, setMobileProfileName] = useState("Student");
+  const [mobileProfileLevel, setMobileProfileLevel] = useState("Level not set");
   const dashboardItem = items.find((item) => item.id === "dashboard");
   const middleItems = items.filter(
     (item) => item.id !== "dashboard" && item.id !== "settings",
@@ -94,6 +126,39 @@ export function Sidebar({
   );
   const settingsItem = items.find((item) => item.id === "settings");
 
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const activeUserProfile = getActiveUserProfile();
+
+      if (activeUserProfile?.name) {
+        setMobileProfileName(formatDisplayName(activeUserProfile.name));
+      }
+
+      const rawLevel = activeUserProfile?.level?.trim();
+
+      if (rawLevel) {
+        const levelLabel =
+          rawLevel.toLowerCase().startsWith("level")
+            ? rawLevel
+            : `Level ${rawLevel}`;
+        setMobileProfileLevel(formatDisplayName(levelLabel));
+      }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  const handleConfirmLogout = () => {
+    logoutActiveSession();
+    setIsLogoutModalOpen(false);
+    onCloseMobile();
+    router.push("/login");
+  };
+  const isMobileProfileActive =
+    pathname === "/dashboard/profile" || pathname.startsWith("/dashboard/profile/");
+
   return (
     <>
       <aside
@@ -102,7 +167,7 @@ export function Sidebar({
         }`}
       >
         <div
-          className={`flex h-16 items-center border-b border-gray-200 transition-all duration-300 ease-in-out dark:border-gray-800 ${
+          className={`flex h-16 items-center transition-all duration-300 ease-in-out ${
             isDesktopCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
@@ -195,6 +260,22 @@ export function Sidebar({
                 items={[settingsItem]}
                 isCollapsed={isDesktopCollapsed}
               />
+              <button
+                type="button"
+                onClick={() => setIsLogoutModalOpen(true)}
+                title={isDesktopCollapsed ? "Log out" : undefined}
+                aria-label={isDesktopCollapsed ? "Log out" : undefined}
+                className={`mt-2 flex items-center rounded-xl text-sm font-medium text-rose-600 transition-all duration-300 ease-in-out hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/30 ${
+                  isDesktopCollapsed
+                    ? "h-10 w-10 justify-center"
+                    : "gap-3 px-3 py-2.5 text-left"
+                }`}
+              >
+                <LogOut className="h-4 w-4" />
+                {!isDesktopCollapsed && (
+                  <span className="tracking-normal">Log Out</span>
+                )}
+              </button>
             </div>
           )}
         </div>
@@ -206,7 +287,7 @@ export function Sidebar({
         }`}
         aria-label="Mobile sidebar"
       >
-        <div className="flex h-16 items-center border-b border-gray-200 px-4 transition-colors duration-300 dark:border-gray-800">
+        <div className="flex h-16 items-center px-4 transition-colors duration-300">
           <div className="flex items-center">
             <Logo size="sm" className="origin-left" />
           </div>
@@ -214,7 +295,11 @@ export function Sidebar({
 
         <div className="flex flex-1 flex-col p-6">
           {dashboardItem && (
-            <SidebarLinks items={[dashboardItem]} onNavigate={onCloseMobile} />
+            <SidebarLinks
+              items={[dashboardItem]}
+              onNavigate={onCloseMobile}
+              isCompact
+            />
           )}
 
           {middleItems.length > 0 && (
@@ -225,7 +310,11 @@ export function Sidebar({
                     My Timetables
                   </p>
                   <div className="mt-2">
-                    <SidebarLinks items={timetableItems} onNavigate={onCloseMobile} />
+                    <SidebarLinks
+                      items={timetableItems}
+                      onNavigate={onCloseMobile}
+                      isCompact
+                    />
                   </div>
                 </div>
               )}
@@ -245,6 +334,7 @@ export function Sidebar({
                     <SidebarLinks
                       items={classroomConnectItems}
                       onNavigate={onCloseMobile}
+                      isCompact
                     />
                   </div>
                 </div>
@@ -258,7 +348,11 @@ export function Sidebar({
                       : undefined
                   }
                 >
-                  <SidebarLinks items={generalItems} onNavigate={onCloseMobile} />
+                  <SidebarLinks
+                    items={generalItems}
+                    onNavigate={onCloseMobile}
+                    isCompact
+                  />
                 </div>
               )}
             </div>
@@ -266,11 +360,50 @@ export function Sidebar({
 
           {settingsItem && (
             <div className="mt-auto pt-4">
-              <SidebarLinks items={[settingsItem]} onNavigate={onCloseMobile} />
+              <SidebarLinks
+                items={[settingsItem]}
+                onNavigate={onCloseMobile}
+                isCompact
+              />
+              <Link
+                href="/dashboard/profile"
+                onClick={onCloseMobile}
+                className={`mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 transition-all duration-300 ease-in-out ${
+                  isMobileProfileActive
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                }`}
+              >
+                <UserRound className="mt-0.5 h-4 w-4" />
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate text-xs font-medium normal-case tracking-normal">
+                    {mobileProfileName}
+                  </span>
+                  <span
+                    className={`truncate text-[11px] ${
+                      isMobileProfileActive
+                        ? "text-blue-700/80 dark:text-blue-200/80"
+                        : "text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {mobileProfileLevel}
+                  </span>
+                </span>
+              </Link>
             </div>
           )}
         </div>
       </aside>
+
+      <ConfirmationModal
+        isOpen={isLogoutModalOpen}
+        title="Log out of your account?"
+        description="You will need to sign in again to continue using your dashboard."
+        confirmLabel="Log out"
+        cancelLabel="Stay signed in"
+        onConfirm={handleConfirmLogout}
+        onCancel={() => setIsLogoutModalOpen(false)}
+      />
     </>
   );
 }

@@ -12,6 +12,10 @@ import {
   type OverviewItem,
 } from "@/components/student-dashboard/TodayOverview";
 import {
+  NotificationsFeed,
+  type NotificationItem,
+} from "@/components/student-dashboard/NotificationsFeed";
+import {
   formatLectureTimeRange,
   formatMinutesUntilStart,
   getNextLecture,
@@ -39,6 +43,30 @@ const ASSIGNMENTS: AssignmentItem[] = [
     title: "Software Engineering Reflection",
     due: "Submitted yesterday",
     status: "Submitted",
+  },
+];
+
+const LECTURE_COMMUNICATIONS: NotificationItem[] = [
+  {
+    id: "comm-1",
+    title: "CSC 301 - Dr. Mensah",
+    detail:
+      "Upload your lab report before 6:00 PM today. Late submissions will close automatically.",
+    time: "15 mins ago",
+  },
+  {
+    id: "comm-2",
+    title: "MAT 221 - Prof. Boateng",
+    detail:
+      "Tomorrow's class starts 30 minutes earlier. Please review tutorial sheet 4 before coming.",
+    time: "1 hour ago",
+  },
+  {
+    id: "comm-3",
+    title: "PHY 201 - Dr. Owusu",
+    detail:
+      "Live Q&A opens at 8:00 PM for revision. Bring one question from the previous quiz.",
+    time: "Today",
   },
 ];
 
@@ -105,6 +133,13 @@ export default function DashboardPage() {
         <div className="h-full">
           <AssignmentsDeadlines assignments={ASSIGNMENTS} />
         </div>
+      </section>
+
+      <section id="notifications" className="scroll-mt-24">
+        <NotificationsFeed
+          title="Lecture Communications"
+          items={LECTURE_COMMUNICATIONS}
+        />
       </section>
     </div>
   );

@@ -61,11 +61,20 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     group: "general",
   },
   {
-    id: "quiz-midsem",
-    label: "Quizzes/Midsem",
+    id: "quizzes",
+    label: "Quizzes",
     icon: FileText,
-    href: "/dashboard/quiz-midsem",
-    activePathname: "/dashboard/quiz-midsem",
+    href: "/dashboard/quizzes",
+    activePathname: "/dashboard/quizzes",
+    activeMatchMode: "prefix",
+    group: "classroom-connect",
+  },
+  {
+    id: "midsem",
+    label: "Midsem",
+    icon: FileText,
+    href: "/dashboard/midsem",
+    activePathname: "/dashboard/midsem",
     activeMatchMode: "prefix",
     group: "classroom-connect",
   },
@@ -138,7 +147,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
     pathname.startsWith("/dashboard/courses") ||
     pathname.startsWith("/dashboard/my-courses");
   const isAttendanceRoute = pathname.startsWith("/dashboard/attendance");
-  const isQuizMidsemRoute = pathname.startsWith("/dashboard/quiz-midsem");
+  const isQuizzesRoute =
+    pathname.startsWith("/dashboard/quizzes") ||
+    pathname.startsWith("/dashboard/quiz-midsem");
+  const isMidsemRoute = pathname.startsWith("/dashboard/midsem");
   const isChatRoute = pathname.startsWith("/dashboard/chat");
   const isProfileRoute = pathname.startsWith("/dashboard/profile");
 
@@ -148,8 +160,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
       ? "Student Profile"
     : isChatRoute
       ? "Chat"
-    : isQuizMidsemRoute
-      ? "Quiz/Midsem"
+    : isMidsemRoute
+      ? "Midsem"
+    : isQuizzesRoute
+      ? "Quizzes"
     : isAttendanceRoute
       ? "Attendance"
     : isMyCoursesRoute

@@ -25,7 +25,7 @@ type BottomNavItem = {
 const BOTTOM_NAV_ITEMS: BottomNavItem[] = [
   {
     id: "dashboard",
-    label: "Dashboard",
+    label: "Home",
     href: "/dashboard",
     icon: Home,
     activePathname: "/dashboard",
@@ -85,10 +85,10 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 z-30 h-16 min-h-[calc(4rem+env(safe-area-inset-bottom))] w-full border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
+      className="fixed bottom-0 left-0 z-30 h-14 min-h-[calc(3.5rem+env(safe-area-inset-bottom))] w-full border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
       aria-label="Bottom tab navigation"
     >
-      <div className="flex h-full items-center justify-around">
+      <div className="mx-auto flex h-full w-full max-w-md items-center justify-around px-1">
         {BOTTOM_NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -106,17 +106,17 @@ export function BottomNav() {
               key={item.id}
               href={item.href}
               aria-label={item.label}
-              className={`relative flex h-full flex-1 flex-col items-center justify-center gap-0.5 text-xs font-medium transition-all duration-200 active:scale-95 ${
+              className={`relative flex h-full flex-1 flex-col items-center justify-center gap-px text-[10px] font-medium leading-tight transition-all duration-200 active:scale-95 ${
                 isActive
                   ? "text-blue-600"
                   : "text-gray-500 active:text-blue-600"
               }`}
             >
               <span className="relative inline-flex items-center justify-center">
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
 
                 {typeof item.badgeCount === "number" && item.badgeCount > 0 && (
-                  <span className="absolute -right-2 -top-2 inline-flex min-w-[16px] items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold leading-none text-white">
+                  <span className="absolute -right-2 -top-2 inline-flex min-w-[14px] items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-semibold leading-none text-white">
                     {item.badgeCount > 99 ? "99+" : item.badgeCount}
                   </span>
                 )}

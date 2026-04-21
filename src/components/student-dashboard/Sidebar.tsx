@@ -162,7 +162,7 @@ export function Sidebar({
   return (
     <>
       <aside
-        className={`hidden flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex dark:border-gray-800 dark:bg-gray-900 ${
+        className={`hidden flex-col border-r border-gray-200 bg-white transition-all duration-300 ease-in-out md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex dark:border-gray-800 dark:bg-[#121212] ${
           isDesktopCollapsed ? "w-16" : "w-64"
         }`}
       >
@@ -282,7 +282,7 @@ export function Sidebar({
       </aside>
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out md:hidden dark:border-gray-800 dark:bg-gray-900 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out md:hidden dark:border-gray-800 dark:bg-[#121212] ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label="Mobile sidebar"

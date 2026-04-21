@@ -173,7 +173,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       : "Dashboard";
 
   return (
-    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-[#121212]">
       {isMobileSidebarOpen && (
         <button
           type="button"

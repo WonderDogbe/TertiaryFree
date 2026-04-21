@@ -34,7 +34,7 @@ body {
 
 :root.dark {
   --color-primary: #2f2fe4;
-  --color-background: #080616;
+  --color-background: #121212;
   --color-secondary-bg: #1a1953;
   --color-text: #f2f3ff;
   --color-accent: #162e93;
@@ -52,7 +52,7 @@ html.light body {
 
 html.dark,
 html.dark body {
-  background-color: #080616;
+  background-color: #121212;
   color: #f2f3ff;
 }
 

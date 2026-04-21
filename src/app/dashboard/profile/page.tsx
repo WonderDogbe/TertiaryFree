@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import {
+  CalendarDays,
   Building2,
   GraduationCap,
   Hash,
@@ -71,6 +72,16 @@ export default function StudentProfilePage() {
   const department = profile?.department || "Not available";
   const school = profile?.school || "Not available";
   const email = profile?.email || "Not available";
+  const studyModeLabel =
+    profile?.studyMode === "weekend"
+      ? "Weekend"
+      : profile?.studyMode === "custom"
+        ? "Custom"
+        : "Weekday";
+  const activeDaysLabel =
+    profile?.customStudyDays && profile.customStudyDays.length > 0
+      ? profile.customStudyDays.join(", ")
+      : "Monday, Tuesday, Wednesday, Thursday, Friday";
 
   return (
     <div className="space-y-6">
@@ -122,10 +133,25 @@ export default function StudentProfilePage() {
           value={department}
         />
         <ProfileInfoCard
+          icon={<CalendarDays className="h-4 w-4" />}
+          label="Study Mode"
+          value={studyModeLabel}
+        />
+        <ProfileInfoCard
           icon={<Building2 className="h-4 w-4" />}
           label="Institution"
           value={school}
         />
+      </section>
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900">
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
+          <CalendarDays className="h-4 w-4" />
+          Active Study Days
+        </p>
+        <p className="mt-2 text-sm font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
+          {activeDaysLabel}
+        </p>
       </section>
 
       <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900">

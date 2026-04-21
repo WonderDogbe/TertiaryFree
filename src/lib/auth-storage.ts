@@ -1,3 +1,11 @@
+import {
+  getStudyDaysForMode,
+  isKnownStudyMode,
+  normalizeCustomStudyDays,
+  type StudyModeValue,
+  type WeekDayValue,
+} from "@/lib/study-schedule";
+
 export type UserRole = "student" | "lecturer";
 export type UserGender = "male" | "female" | "other";
 
@@ -13,6 +21,8 @@ export interface RegisteredUser {
   indexNumber?: string;
   programme?: string;
   level?: string;
+  studyMode?: StudyModeValue;
+  customStudyDays?: WeekDayValue[];
   title?: string;
   courseLectured?: string;
   createdAt: string;
@@ -29,6 +39,8 @@ export interface ActiveUserProfile {
   indexNumber?: string;
   programme?: string;
   level?: string;
+  studyMode: StudyModeValue;
+  customStudyDays?: WeekDayValue[];
   title?: string;
   courseLectured?: string;
 }
@@ -52,6 +64,8 @@ interface RegisterUserInput {
   indexNumber?: string;
   programme?: string;
   level?: string;
+  studyMode?: StudyModeValue;
+  customStudyDays?: WeekDayValue[];
   title?: string;
   courseLectured?: string;
 }
@@ -100,6 +114,12 @@ const isRegisteredUser = (entry: unknown): entry is RegisteredUser => {
     typeof candidate.department === "string" &&
     (typeof candidate.indexNumber === "undefined" ||
       typeof candidate.indexNumber === "string") &&
+    (typeof candidate.studyMode === "undefined" ||
+      isKnownStudyMode(candidate.studyMode)) &&
+    (typeof candidate.customStudyDays === "undefined" ||
+      (Array.isArray(candidate.customStudyDays) &&
+        normalizeCustomStudyDays(candidate.customStudyDays).length ===
+          candidate.customStudyDays.length)) &&
     typeof candidate.createdAt === "string"
   );
 };
@@ -211,6 +231,11 @@ const mapRegisteredUserToProfile = (
   indexNumber: user.indexNumber,
   programme: user.programme,
   level: user.level,
+  studyMode: user.studyMode || "weekday",
+  customStudyDays: getStudyDaysForMode(
+    user.studyMode || "weekday",
+    normalizeCustomStudyDays(user.customStudyDays),
+  ),
   title: user.title,
   courseLectured: user.courseLectured,
 });
@@ -275,6 +300,11 @@ export const registerUserAccount = (
     indexNumber: input.indexNumber?.trim() || undefined,
     programme: input.programme?.trim() || undefined,
     level: input.level?.trim() || undefined,
+    studyMode: input.studyMode || "weekday",
+    customStudyDays: getStudyDaysForMode(
+      input.studyMode || "weekday",
+      normalizeCustomStudyDays(input.customStudyDays),
+    ),
     title: input.title?.trim() || undefined,
     courseLectured: input.courseLectured?.trim() || undefined,
     createdAt: new Date().toISOString(),

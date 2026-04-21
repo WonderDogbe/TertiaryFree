@@ -203,7 +203,7 @@ export function Sidebar({
                 <div>
                   {!isDesktopCollapsed && (
                     <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                      My Timetables
+                      Timetables
                     </p>
                   )}
                   <div className={isDesktopCollapsed ? "mt-0" : "mt-2"}>
@@ -225,7 +225,7 @@ export function Sidebar({
                 >
                   {!isDesktopCollapsed && (
                     <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                      Classroom Connect
+                      Classroom
                     </p>
                   )}
                   <div className={isDesktopCollapsed ? "mt-0" : "mt-2"}>
@@ -307,7 +307,7 @@ export function Sidebar({
               {timetableItems.length > 0 && (
                 <div>
                   <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                    My Timetables
+                    Timetables
                   </p>
                   <div className="mt-2">
                     <SidebarLinks
@@ -328,7 +328,7 @@ export function Sidebar({
                   }
                 >
                   <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                    Classroom Connect
+                    Classroom
                   </p>
                   <div className="mt-2">
                     <SidebarLinks

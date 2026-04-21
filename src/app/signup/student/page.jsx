@@ -13,6 +13,8 @@ import {
   isKnownLevel,
   isKnownProgrammeName,
   isKnownProgrammeType,
+  isKnownStudyMode,
+  isKnownWeekDay,
 } from "@/lib/local-db";
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
@@ -62,6 +64,8 @@ function readStoredStudentDetails() {
       department: "",
       programmeType: "",
       programme: "",
+      studyMode: "",
+      customStudyDays: [],
     };
   }
 
@@ -80,6 +84,8 @@ function readStoredStudentDetails() {
         department: "",
         programmeType: "",
         programme: "",
+        studyMode: "",
+        customStudyDays: [],
       };
     }
 
@@ -95,6 +101,8 @@ function readStoredStudentDetails() {
         department: "",
         programmeType: "",
         programme: "",
+        studyMode: "",
+        customStudyDays: [],
       };
     }
 
@@ -125,6 +133,13 @@ function readStoredStudentDetails() {
       isKnownProgrammeName(parsed.programme)
         ? parsed.programme
         : "";
+    const studyMode =
+      typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode)
+        ? parsed.studyMode
+        : "";
+    const customStudyDays = Array.isArray(parsed.customStudyDays)
+      ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day))
+      : [];
 
     return {
       name,
@@ -135,6 +150,8 @@ function readStoredStudentDetails() {
       department,
       programmeType,
       programme,
+      studyMode,
+      customStudyDays,
     };
   } catch {
     return {
@@ -146,6 +163,8 @@ function readStoredStudentDetails() {
       department: "",
       programmeType: "",
       programme: "",
+      studyMode: "",
+      customStudyDays: [],
     };
   }
 }
@@ -237,6 +256,8 @@ export default function SignupStudentPage() {
         department: formData.department,
         programmeType: formData.programmeType,
         programme: formData.programme,
+        studyMode: formData.studyMode,
+        customStudyDays: formData.customStudyDays,
       }),
     );
 

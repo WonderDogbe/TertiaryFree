@@ -11,8 +11,9 @@ export type QrScannerStatus =
   | "permission-denied";
 
 export interface AttendanceCheckInRecord {
-  lecture: string;
-  checkedInAt: string;
+  course: string;
+  checkInDate: string;
+  checkInTime: string;
   status: "Present";
   rawValue: string;
 }
@@ -85,6 +86,13 @@ const formatCheckInTime = () =>
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+  });
+
+const formatCheckInDate = () =>
+  new Date().toLocaleDateString([], {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
   });
 
 export function useQrScanner(options: UseQrScannerOptions = {}) {
@@ -230,8 +238,9 @@ export function useQrScanner(options: UseQrScannerOptions = {}) {
           setStatusMessage("Attendance recorded");
 
           onCheckIn?.({
-            lecture,
-            checkedInAt: formatCheckInTime(),
+            course: lecture,
+            checkInDate: formatCheckInDate(),
+            checkInTime: formatCheckInTime(),
             status: "Present",
             rawValue: decodedText,
           });

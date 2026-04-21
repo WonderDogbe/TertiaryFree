@@ -1,3 +1,4 @@
+import { BottomNav } from "@/components/student-dashboard/BottomNav";
 import { DashboardShell } from "@/components/student-dashboard/DashboardShell";
 
 export default function DashboardLayout({
@@ -5,5 +6,10 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <DashboardShell>{children}</DashboardShell>;
+  return (
+    <>
+      <DashboardShell>{children}</DashboardShell>
+      <BottomNav />
+    </>
+  );
 }

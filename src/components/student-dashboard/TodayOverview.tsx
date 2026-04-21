@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { Card } from "./Card";
+import { LiveCountdown } from "./LiveCountdown";
 
 export interface OverviewItem {
   id: string;
@@ -7,6 +8,7 @@ export interface OverviewItem {
   value: string;
   detail: string;
   icon: LucideIcon;
+  countdownTargetIso?: string;
 }
 
 interface TodayOverviewProps {
@@ -25,6 +27,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
           const isAttendanceCard = item.id === "attendance-rate";
           const shouldExpandNextLectureCard =
             item.id === "next-lecture" && items.length === 1;
+          const isNextLectureCard = item.id === "next-lecture";
           const attendancePercentage = Number.parseFloat(
             item.value.replace(/[^\d.]/g, ""),
           );
@@ -47,6 +50,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
               className={[
                 isAttendanceCard ? attendanceCardClasses : undefined,
                 shouldExpandNextLectureCard ? "md:col-span-2 lg:col-span-3" : undefined,
+                isNextLectureCard ? "min-h-[240px] p-8" : undefined,
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -59,6 +63,8 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                         ? hasGoodAttendance
                           ? "text-emerald-700 dark:text-emerald-300"
                           : "text-rose-700 dark:text-rose-300"
+                        : isNextLectureCard
+                          ? "text-base text-gray-600 dark:text-gray-200"
                         : "text-gray-500 dark:text-gray-300"
                     }`}
                   >
@@ -76,27 +82,34 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                 </div>
                 <div className="flex flex-col gap-1">
                   <p
-                    className={`text-2xl font-semibold transition-colors duration-300 ${
+                    className={`font-semibold transition-colors duration-300 ${
                       isAttendanceCard
                         ? hasGoodAttendance
                           ? "text-emerald-700 dark:text-emerald-300"
                           : "text-rose-700 dark:text-rose-300"
+                        : isNextLectureCard
+                          ? "text-4xl leading-tight dark:text-gray-100"
                         : "text-gray-900 dark:text-gray-100"
-                    }`}
+                    } ${isNextLectureCard ? "md:text-5xl" : "text-2xl"}`}
                   >
                     {item.value}
                   </p>
                   <p
-                    className={`text-sm transition-colors duration-300 ${
+                    className={`transition-colors duration-300 ${
                       isAttendanceCard
                         ? hasGoodAttendance
                           ? "text-emerald-700/90 dark:text-emerald-300/90"
                           : "text-rose-700/90 dark:text-rose-300/90"
-                        : "text-gray-500 dark:text-gray-300"
+                        : isNextLectureCard
+                          ? "text-base text-gray-600 dark:text-gray-300"
+                        : "text-sm text-gray-500 dark:text-gray-300"
                     }`}
                   >
                     {item.detail}
                   </p>
+                  {item.countdownTargetIso && (
+                    <LiveCountdown targetIso={item.countdownTargetIso} />
+                  )}
                 </div>
               </div>
             </Card>

@@ -34,6 +34,8 @@ import {
   isKnownLevel,
   isKnownProgrammeName,
   isKnownProgrammeType,
+  isKnownStudyMode,
+  isKnownWeekDay,
 } from "@/lib/local-db";
 
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
@@ -46,6 +48,8 @@ type StudentSignupPrefill = {
   department: string;
   programmeType: "" | "degree" | "hnd";
   programme: string;
+  studyMode: "" | "weekday" | "weekend" | "custom";
+  customStudyDays: string[];
 };
 
 const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {
@@ -56,6 +60,8 @@ const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {
   department: "",
   programmeType: "",
   programme: "",
+  studyMode: "",
+  customStudyDays: [],
 };
 
 const GENDER_OPTIONS = getGenderOptions();
@@ -110,6 +116,12 @@ function readStoredStudentSignupPrefill(): StudentSignupPrefill {
         ))
         ? candidate.programme
         : "";
+    const studyMode = isKnownStudyMode(candidate.studyMode)
+      ? candidate.studyMode
+      : "";
+    const customStudyDays = Array.isArray(candidate.customStudyDays)
+      ? candidate.customStudyDays.filter((day) => isKnownWeekDay(day))
+      : [];
 
     return {
       name: typeof candidate.name === "string" ? candidate.name : "",
@@ -120,6 +132,8 @@ function readStoredStudentSignupPrefill(): StudentSignupPrefill {
       department,
       programmeType,
       programme,
+      studyMode,
+      customStudyDays,
     };
   } catch {
     return EMPTY_STUDENT_SIGNUP_PREFILL;
@@ -153,6 +167,9 @@ export default function RegisterPage({
     programmeType:
       userType === "student" ? studentSignupPrefill.programmeType : "",
     programme: userType === "student" ? studentSignupPrefill.programme : "",
+    studyMode: userType === "student" ? studentSignupPrefill.studyMode : "",
+    customStudyDays:
+      userType === "student" ? studentSignupPrefill.customStudyDays : [],
     indexNumber: userType === "student" ? studentSignupPrefill.indexNumber : "",
     level: userType === "student" ? studentSignupPrefill.level : "",
     department: userType === "student" ? studentSignupPrefill.department : "",
@@ -312,6 +329,14 @@ export default function RegisterPage({
       indexNumber: userType === "student" ? formData.indexNumber : undefined,
       programme: userType === "student" ? formData.programme : undefined,
       level: userType === "student" ? formData.level : undefined,
+      studyMode:
+        userType === "student" && isKnownStudyMode(formData.studyMode)
+          ? formData.studyMode
+          : undefined,
+      customStudyDays:
+        userType === "student" && formData.studyMode === "custom"
+          ? formData.customStudyDays
+          : undefined,
       title: userType === "lecturer" ? formData.title : undefined,
       courseLectured:
         userType === "lecturer" ? formData.courseLectured : undefined,

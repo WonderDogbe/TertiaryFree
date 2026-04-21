@@ -27,22 +27,31 @@ export default function AttendancePage() {
         </div>
 
         {lastCheckIn ? (
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">
-                Last scanned lecture
+                Course
               </p>
               <p className="mt-2 text-sm font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
-                {lastCheckIn.lecture}
+                {lastCheckIn.course}
               </p>
             </article>
 
             <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">
-                Time of check-in
+                Date
               </p>
               <p className="mt-2 text-sm font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
-                {lastCheckIn.checkedInAt}
+                {lastCheckIn.checkInDate}
+              </p>
+            </article>
+
+            <article className="rounded-xl border border-gray-200 bg-gray-50 p-4 transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">
+                Time
+              </p>
+              <p className="mt-2 text-sm font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
+                {lastCheckIn.checkInTime}
               </p>
             </article>
 

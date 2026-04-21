@@ -1,9 +1,49 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import {
   TimetableGrid,
 } from "@/components/student-dashboard/timetable/TimetableGrid";
 import { WEEKLY_LECTURES } from "@/components/student-dashboard/timetable/data";
+import { getActiveUserProfile } from "@/lib/auth-storage";
+import {
+  getStudyDaysForMode,
+  WEEKDAY_STUDY_DAYS,
+} from "@/lib/study-schedule";
+import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 
 export default function ClassTimetablePage() {
+  const [activeDays, setActiveDays] = useState<WeekDay[]>(
+    WEEKDAY_STUDY_DAYS as WeekDay[],
+  );
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const profile = getActiveUserProfile();
+
+      if (!profile || profile.role !== "student") {
+        setActiveDays(WEEKDAY_STUDY_DAYS as WeekDay[]);
+        return;
+      }
+
+      setActiveDays(
+        getStudyDaysForMode(
+          profile.studyMode,
+          profile.customStudyDays || [],
+        ) as WeekDay[],
+      );
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  const filteredLectures = useMemo(
+    () => WEEKLY_LECTURES.filter((lecture) => activeDays.includes(lecture.day)),
+    [activeDays],
+  );
+
   return (
     <div className="space-y-6">
       <section className="rounded-2xl border border-sky-200 bg-sky-100 p-6 shadow-sm transition-colors duration-300 dark:border-sky-800/70 dark:bg-sky-900/25">
@@ -11,12 +51,11 @@ export default function ClassTimetablePage() {
           Class Timetable
         </h2>
         <p className="mt-2 text-sm text-sky-800 transition-colors duration-300 dark:text-sky-200/90">
-          View all classes by day, time, lecturer, and venue in one clear weekly
-          overview.
+          View classes for your selected study days in one clear weekly overview.
         </p>
       </section>
 
-      <TimetableGrid lectures={WEEKLY_LECTURES} />
+      <TimetableGrid lectures={filteredLectures} days={activeDays} />
     </div>
   );
 }

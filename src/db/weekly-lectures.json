@@ -61,5 +61,23 @@
     "venue": "Room C5",
     "startTime": "19:00",
     "endTime": "20:50"
+  },
+  {
+    "id": "wk-8",
+    "day": "Saturday",
+    "courseCode": "ICT 315 25/26",
+    "lecturer": "Dr. Chen",
+    "venue": "Lab A1",
+    "startTime": "09:00",
+    "endTime": "10:50"
+  },
+  {
+    "id": "wk-9",
+    "day": "Sunday",
+    "courseCode": "MTH 101 25/26",
+    "lecturer": "Dr. Smith",
+    "venue": "Room A2",
+    "startTime": "11:00",
+    "endTime": "12:50"
   }
 ]

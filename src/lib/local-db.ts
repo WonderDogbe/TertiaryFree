@@ -4,6 +4,13 @@ import facultyJson from "@/db/faculty.json";
 import institutionsJson from "@/db/institutions.json";
 import programmesJson from "@/db/programmes.json";
 import weeklyLecturesJson from "@/db/weekly-lectures.json";
+import {
+  ALL_WEEK_DAYS,
+  isKnownStudyMode as isKnownStudyModeValue,
+  isKnownWeekDayValue as isKnownWeekDayValueValue,
+  type StudyModeValue,
+  type WeekDayValue,
+} from "@/lib/study-schedule";
 
 export interface InstitutionRecord {
   id: string;
@@ -70,12 +77,9 @@ export interface CourseOption extends SelectOption {
 
 export type GenderValue = "male" | "female" | "other";
 
-export type WeekDayValue =
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday";
+export interface StudyModeOption extends SelectOption {
+  description: string;
+}
 
 interface WeeklyLectureJsonRecord {
   id: string;
@@ -105,13 +109,7 @@ const PROGRAMMES = programmesJson as ProgrammeRecord[];
 const COURSE_CATALOG = courseCatalogJson as CourseCatalogEntry[];
 const WEEKLY_LECTURES_JSON = weeklyLecturesJson as WeeklyLectureJsonRecord[];
 
-const WEEKDAY_VALUES: WeekDayValue[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-];
+const WEEKDAY_VALUES: WeekDayValue[] = [...ALL_WEEK_DAYS];
 
 const WEEKDAY_SET = new Set<WeekDayValue>(WEEKDAY_VALUES);
 const INSTITUTION_NAMES = new Set(INSTITUTIONS.map((item) => item.name));
@@ -123,6 +121,23 @@ const PROGRAMME_TYPE_SET = new Set<ProgrammeTypeValue>(PROGRAMME_TYPE_VALUES);
 const PROGRAMME_TYPE_OPTIONS: SelectOption[] = [
   { value: "degree", label: "Bachelor Degree" },
   { value: "hnd", label: "HND" },
+];
+const STUDY_MODE_OPTIONS: StudyModeOption[] = [
+  {
+    value: "weekday",
+    label: "Weekday (Mon-Fri)",
+    description: "Attend classes from Monday to Friday.",
+  },
+  {
+    value: "weekend",
+    label: "Weekend (Sat-Sun)",
+    description: "Attend classes on Saturday and Sunday.",
+  },
+  {
+    value: "custom",
+    label: "Custom",
+    description: "Select specific days that match your schedule.",
+  },
 ];
 const FACULTY_NAMES = new Set(FACULTIES.map((item) => item.name));
 const FACULTY_BY_NAME = new Map(FACULTIES.map((item) => [item.name, item]));
@@ -170,6 +185,22 @@ export function getLevelOptions(): LevelOption[] {
 
 export function isKnownLevel(value: unknown): value is string {
   return typeof value === "string" && LEVEL_VALUES.has(value);
+}
+
+export function getStudyModeOptions(): StudyModeOption[] {
+  return STUDY_MODE_OPTIONS;
+}
+
+export function isKnownStudyMode(value: unknown): value is StudyModeValue {
+  return isKnownStudyModeValue(value);
+}
+
+export function getWeekDayOptions(): WeekDayValue[] {
+  return WEEKDAY_VALUES;
+}
+
+export function isKnownWeekDay(value: unknown): value is WeekDayValue {
+  return isKnownWeekDayValueValue(value);
 }
 
 export function getSignupRoleOptions(): SignupRoleOption[] {

@@ -14,6 +14,8 @@ import {
   isKnownLevel,
   isKnownProgrammeName,
   isKnownProgrammeType,
+  isKnownStudyMode,
+  isKnownWeekDay,
 } from "@/lib/local-db";
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
@@ -103,6 +105,8 @@ function readStoredStudentDetails() {
       department: "",
       programmeType: "",
       programme: "",
+      studyMode: "",
+      customStudyDays: [],
     };
   }
 
@@ -121,6 +125,8 @@ function readStoredStudentDetails() {
         department: "",
         programmeType: "",
         programme: "",
+        studyMode: "",
+        customStudyDays: [],
       };
     }
 
@@ -136,6 +142,8 @@ function readStoredStudentDetails() {
         department: "",
         programmeType: "",
         programme: "",
+        studyMode: "",
+        customStudyDays: [],
       };
     }
 
@@ -166,6 +174,13 @@ function readStoredStudentDetails() {
       isKnownProgrammeName(parsed.programme)
         ? parsed.programme
         : "";
+    const studyMode =
+      typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode)
+        ? parsed.studyMode
+        : "";
+    const customStudyDays = Array.isArray(parsed.customStudyDays)
+      ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day))
+      : [];
 
     return {
       name,
@@ -176,6 +191,8 @@ function readStoredStudentDetails() {
       department,
       programmeType,
       programme,
+      studyMode,
+      customStudyDays,
     };
   } catch {
     return {
@@ -187,6 +204,8 @@ function readStoredStudentDetails() {
       department: "",
       programmeType: "",
       programme: "",
+      studyMode: "",
+      customStudyDays: [],
     };
   }
 }
@@ -258,7 +277,7 @@ export default function StudentLevelPage() {
       }),
     );
 
-    router.push("/signup/student/password");
+    router.push("/signup/student/study-mode");
   };
 
   if (!institutionName) {
@@ -328,7 +347,7 @@ export default function StudentLevelPage() {
           Select Your Level and Semester
         </h1>
         <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-          Choose your current level and semester before setting your password.
+          Choose your current level and semester before selecting study mode.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -373,7 +392,7 @@ export default function StudentLevelPage() {
               }`}
               disabled={!hasValidLevelSelection}
             >
-              Continue to Password Setup
+              Continue to Study Mode
             </button>
           </div>
         </form>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { Clock3 } from "lucide-react";
 import {
   AssignmentsDeadlines,
@@ -15,15 +18,18 @@ import {
   NotificationsFeed,
   type NotificationItem,
 } from "@/components/student-dashboard/NotificationsFeed";
+import { getActiveUserProfile } from "@/lib/auth-storage";
 import {
   formatLectureTimeRange,
-  formatMinutesUntilStart,
   getNextLecture,
   getTodayLectures,
   getWeekDayFromDate,
 } from "@/components/student-dashboard/timetable/data";
-
-export const dynamic = "force-dynamic";
+import {
+  getStudyDaysForMode,
+  WEEKDAY_STUDY_DAYS,
+} from "@/lib/study-schedule";
+import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 
 const ASSIGNMENTS: AssignmentItem[] = [
   {
@@ -46,9 +52,14 @@ const ASSIGNMENTS: AssignmentItem[] = [
   },
 ];
 
-const LECTURE_COMMUNICATIONS: NotificationItem[] = [
+type LectureCommunicationItem = NotificationItem & {
+  day: WeekDay;
+};
+
+const LECTURE_COMMUNICATIONS: LectureCommunicationItem[] = [
   {
     id: "comm-1",
+    day: "Monday",
     title: "CSC 301 - Dr. Mensah",
     detail:
       "Upload your lab report before 6:00 PM today. Late submissions will close automatically.",
@@ -56,6 +67,7 @@ const LECTURE_COMMUNICATIONS: NotificationItem[] = [
   },
   {
     id: "comm-2",
+    day: "Tuesday",
     title: "MAT 221 - Prof. Boateng",
     detail:
       "Tomorrow's class starts 30 minutes earlier. Please review tutorial sheet 4 before coming.",
@@ -63,20 +75,63 @@ const LECTURE_COMMUNICATIONS: NotificationItem[] = [
   },
   {
     id: "comm-3",
+    day: "Friday",
     title: "PHY 201 - Dr. Owusu",
     detail:
       "Live Q&A opens at 8:00 PM for revision. Bring one question from the previous quiz.",
     time: "Today",
   },
+  {
+    id: "comm-4",
+    day: "Saturday",
+    title: "ICT 315 - Weekend Lab",
+    detail:
+      "Saturday practical starts at 9:00 AM. Please submit your pre-lab notes before class.",
+    time: "Weekend",
+  },
+  {
+    id: "comm-5",
+    day: "Sunday",
+    title: "MTH 101 - Revision Session",
+    detail:
+      "Sunday revision room changed to Hall C2. Bring your solved worksheet.",
+    time: "Weekend",
+  },
 ];
 
 export default function DashboardPage() {
+  const [activeDays, setActiveDays] = useState<WeekDay[]>(
+    WEEKDAY_STUDY_DAYS as WeekDay[],
+  );
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const profile = getActiveUserProfile();
+
+      if (!profile || profile.role !== "student") {
+        setActiveDays(WEEKDAY_STUDY_DAYS as WeekDay[]);
+        return;
+      }
+
+      setActiveDays(
+        getStudyDaysForMode(
+          profile.studyMode,
+          profile.customStudyDays || [],
+        ) as WeekDay[],
+      );
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, []);
+
   const now = new Date();
   const todayWeekDay = getWeekDayFromDate(now);
-  const nextLectureResult = getNextLecture(now);
-  const todayLectures = getTodayLectures(now);
+  const nextLectureResult = getNextLecture(now, { activeDays });
+  const todayLectures = getTodayLectures(now, { activeDays });
   const nextLectureToday =
-    todayWeekDay !== null &&
+    activeDays.includes(todayWeekDay) &&
     nextLectureResult !== null &&
     nextLectureResult.lecture.day === todayWeekDay
       ? nextLectureResult.lecture
@@ -108,9 +163,10 @@ export default function DashboardPage() {
         ? nextLectureResult.lecture.course
         : "No upcoming lecture",
       detail: nextLectureResult
-        ? `${nextLectureResult.lecture.venue} • ${nextLectureResult.lecture.lecturer} • ${formatMinutesUntilStart(nextLectureResult.minutesUntilStart)}`
+        ? `${nextLectureResult.lecture.day} • ${formatLectureTimeRange(nextLectureResult.lecture)} • ${nextLectureResult.lecture.venue} • ${nextLectureResult.lecture.lecturer}`
         : "No class is currently scheduled.",
       icon: Clock3,
+      countdownTargetIso: nextLectureResult?.startAtIso,
     },
   ];
 
@@ -121,6 +177,12 @@ export default function DashboardPage() {
     room: lecture.venue,
     isHighlighted: nextLectureToday !== null && nextLectureToday.id === lecture.id,
   }));
+
+  const filteredLectureCommunications = useMemo(
+    () =>
+      LECTURE_COMMUNICATIONS.filter((item) => activeDays.includes(item.day)),
+    [activeDays],
+  );
 
   return (
     <div className="space-y-6">
@@ -138,7 +200,7 @@ export default function DashboardPage() {
       <section id="notifications" className="scroll-mt-24">
         <NotificationsFeed
           title="Lecture Communications"
-          items={LECTURE_COMMUNICATIONS}
+          items={filteredLectureCommunications}
         />
       </section>
     </div>

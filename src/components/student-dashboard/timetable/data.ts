@@ -1,5 +1,9 @@
-import type { WeekDay, WeeklyLecture } from "./LectureCard";
+import type { WeeklyLecture, WeekDay } from "./LectureCard";
 import { getWeeklyLectures } from "@/lib/local-db";
+import {
+  ALL_WEEK_DAYS,
+  getWeekDayFromDate as getStudyWeekDayFromDate,
+} from "@/lib/study-schedule";
 
 export const WEEKLY_LECTURES: WeeklyLecture[] = getWeeklyLectures().map(
   (lecture) => ({
@@ -8,13 +12,9 @@ export const WEEKLY_LECTURES: WeeklyLecture[] = getWeeklyLectures().map(
   }),
 );
 
-const WEEKDAY_INDEX: Record<WeekDay, number> = {
-  Monday: 0,
-  Tuesday: 1,
-  Wednesday: 2,
-  Thursday: 3,
-  Friday: 4,
-};
+const DAY_INDEX = new Map(
+  ALL_WEEK_DAYS.map((day, index) => [day, index]),
+);
 
 const MINUTES_IN_DAY = 24 * 60;
 
@@ -41,32 +41,32 @@ function formatTo12HourClock(timeValue: string): string {
   return `${hours}:${String(rawMinutes).padStart(2, "0")} ${meridiem}`;
 }
 
-function getMondayBasedDayIndex(referenceDate: Date): number {
-  return (referenceDate.getDay() + 6) % 7;
-}
-
-export function getWeekDayFromDate(referenceDate: Date): WeekDay | null {
-  const dayIndex = getMondayBasedDayIndex(referenceDate);
-
-  if (dayIndex > 4) {
-    return null;
+function normalizeActiveDays(activeDays?: WeekDay[]): WeekDay[] {
+  if (!activeDays || activeDays.length === 0) {
+    return [...ALL_WEEK_DAYS] as WeekDay[];
   }
 
-  const weekdays: WeekDay[] = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-  ];
+  const daySet = new Set(activeDays);
 
-  return weekdays[dayIndex];
+  return ALL_WEEK_DAYS.filter((day) => daySet.has(day as WeekDay)) as WeekDay[];
 }
 
-export function getTodayLectures(referenceDate = new Date()): WeeklyLecture[] {
-  const weekday = getWeekDayFromDate(referenceDate);
+export interface LectureQueryOptions {
+  activeDays?: WeekDay[];
+}
 
-  if (!weekday) {
+export function getWeekDayFromDate(referenceDate: Date): WeekDay {
+  return getStudyWeekDayFromDate(referenceDate) as WeekDay;
+}
+
+export function getTodayLectures(
+  referenceDate = new Date(),
+  options: LectureQueryOptions = {},
+): WeeklyLecture[] {
+  const weekday = getWeekDayFromDate(referenceDate);
+  const activeDays = normalizeActiveDays(options.activeDays);
+
+  if (!activeDays.includes(weekday)) {
     return [];
   }
 
@@ -78,39 +78,64 @@ export function getTodayLectures(referenceDate = new Date()): WeeklyLecture[] {
 export interface NextLectureResult {
   lecture: WeeklyLecture;
   minutesUntilStart: number;
+  startAtIso: string;
 }
 
-export function getNextLecture(referenceDate = new Date()): NextLectureResult | null {
-  const nowDayIndex = getMondayBasedDayIndex(referenceDate);
+export function getNextLecture(
+  referenceDate = new Date(),
+  options: LectureQueryOptions = {},
+): NextLectureResult | null {
+  const nowDayIndex = DAY_INDEX.get(getWeekDayFromDate(referenceDate)) || 0;
   const nowMinutes = referenceDate.getHours() * 60 + referenceDate.getMinutes();
+  const nowTimeMs = referenceDate.getTime();
+  const activeDays = normalizeActiveDays(options.activeDays);
+  const activeDaySet = new Set(activeDays);
 
   let closestLecture: NextLectureResult | null = null;
+  let closestLectureTimeMs = Number.POSITIVE_INFINITY;
 
   for (const lecture of WEEKLY_LECTURES) {
-    const lectureDayIndex = WEEKDAY_INDEX[lecture.day];
+    if (!activeDaySet.has(lecture.day)) {
+      continue;
+    }
+
+    const lectureDayIndex = DAY_INDEX.get(lecture.day) ?? -1;
     const lectureStartMinutes = parseTimeToMinutes(lecture.startTime);
 
-    if (!Number.isFinite(lectureStartMinutes)) {
+    if (!Number.isFinite(lectureStartMinutes) || lectureDayIndex < 0) {
       continue;
     }
 
     let dayOffset = lectureDayIndex - nowDayIndex;
 
     if (dayOffset < 0 || (dayOffset === 0 && lectureStartMinutes < nowMinutes)) {
-      dayOffset += 7;
+      dayOffset += ALL_WEEK_DAYS.length;
     }
+
+    const startHours = Math.floor(lectureStartMinutes / 60);
+    const startMinutesRemainder = lectureStartMinutes % 60;
+
+    const lectureStartAt = new Date(referenceDate);
+    lectureStartAt.setDate(referenceDate.getDate() + dayOffset);
+    lectureStartAt.setHours(startHours, startMinutesRemainder, 0, 0);
+
+    const lectureStartAtMs = lectureStartAt.getTime();
 
     const minutesUntilStart =
       dayOffset * MINUTES_IN_DAY + (lectureStartMinutes - nowMinutes);
 
+    const millisecondsUntilStart = lectureStartAtMs - nowTimeMs;
+
     if (
       closestLecture === null ||
-      minutesUntilStart < closestLecture.minutesUntilStart
+      millisecondsUntilStart < closestLectureTimeMs
     ) {
       closestLecture = {
         lecture,
         minutesUntilStart,
+        startAtIso: lectureStartAt.toISOString(),
       };
+      closestLectureTimeMs = millisecondsUntilStart;
     }
   }
 

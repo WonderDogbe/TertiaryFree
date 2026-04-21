@@ -62,7 +62,7 @@ export function QRScanner({ onCheckIn }: QRScannerProps) {
           </p>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-lg bg-gray-950 aspect-video">
+        <div className="relative w-full overflow-hidden rounded-lg bg-gray-950 aspect-square sm:aspect-video">
           <div id={scannerElementId} className="h-full w-full" />
 
           {!isScannerRunning && (

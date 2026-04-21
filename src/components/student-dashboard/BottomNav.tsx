@@ -85,7 +85,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 z-30 h-14 min-h-[calc(3.5rem+env(safe-area-inset-bottom))] w-full border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
+      className="fixed bottom-2 left-0 z-30 h-14 min-h-[calc(3.5rem+env(safe-area-inset-bottom))] w-full overflow-hidden rounded-t-[26px] border-x border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
       aria-label="Bottom tab navigation"
     >
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-around px-1">

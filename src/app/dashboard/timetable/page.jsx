@@ -10,19 +10,16 @@ import {
   getStudyDaysForMode,
   WEEKDAY_STUDY_DAYS,
 } from "@/lib/study-schedule";
-import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 
 export default function ClassTimetablePage() {
-  const [activeDays, setActiveDays] = useState<WeekDay[]>(
-    WEEKDAY_STUDY_DAYS as WeekDay[],
-  );
+  const [activeDays, setActiveDays] = useState(WEEKDAY_STUDY_DAYS);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
       const profile = getActiveUserProfile();
 
       if (!profile || profile.role !== "student") {
-        setActiveDays(WEEKDAY_STUDY_DAYS as WeekDay[]);
+        setActiveDays(WEEKDAY_STUDY_DAYS);
         return;
       }
 
@@ -30,7 +27,7 @@ export default function ClassTimetablePage() {
         getStudyDaysForMode(
           profile.studyMode,
           profile.customStudyDays || [],
-        ) as WeekDay[],
+        ),
       );
     });
 

@@ -37,6 +37,7 @@ import {
   isKnownStudyMode,
   isKnownWeekDay,
 } from "@/lib/local-db";
+import type { WeekDayValue } from "@/lib/study-schedule";
 
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 
@@ -49,7 +50,7 @@ type StudentSignupPrefill = {
   programmeType: "" | "degree" | "hnd";
   programme: string;
   studyMode: "" | "weekday" | "weekend" | "custom";
-  customStudyDays: string[];
+  customStudyDays: WeekDayValue[];
 };
 
 const EMPTY_STUDENT_SIGNUP_PREFILL: StudentSignupPrefill = {

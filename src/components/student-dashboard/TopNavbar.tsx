@@ -86,14 +86,14 @@ export function TopNavbar({
             <MessageSquare className="h-4 w-4" />
           </Link>
 
-          <button
-            type="button"
+          <Link
+            href="/dashboard/notifications"
             className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-            aria-label="Notifications"
+            aria-label="Open notifications"
           >
             <Bell className="h-4 w-4" />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-600" />
-          </button>
+          </Link>
 
           <Link
             href="/dashboard/profile"

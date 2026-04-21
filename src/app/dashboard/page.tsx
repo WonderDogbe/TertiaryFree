@@ -16,9 +16,9 @@ import {
 } from "@/components/student-dashboard/TodayOverview";
 import {
   NotificationsFeed,
-  type NotificationItem,
 } from "@/components/student-dashboard/NotificationsFeed";
 import { getActiveUserProfile } from "@/lib/auth-storage";
+import { LECTURE_COMMUNICATIONS } from "@/lib/dashboard-notifications";
 import {
   formatLectureTimeRange,
   getNextLecture,
@@ -49,53 +49,6 @@ const ASSIGNMENTS: AssignmentItem[] = [
     title: "Software Engineering Reflection",
     due: "Submitted yesterday",
     status: "Submitted",
-  },
-];
-
-type LectureCommunicationItem = NotificationItem & {
-  day: WeekDay;
-};
-
-const LECTURE_COMMUNICATIONS: LectureCommunicationItem[] = [
-  {
-    id: "comm-1",
-    day: "Monday",
-    title: "CSC 301 - Dr. Mensah",
-    detail:
-      "Upload your lab report before 6:00 PM today. Late submissions will close automatically.",
-    time: "15 mins ago",
-  },
-  {
-    id: "comm-2",
-    day: "Tuesday",
-    title: "MAT 221 - Prof. Boateng",
-    detail:
-      "Tomorrow's class starts 30 minutes earlier. Please review tutorial sheet 4 before coming.",
-    time: "1 hour ago",
-  },
-  {
-    id: "comm-3",
-    day: "Friday",
-    title: "PHY 201 - Dr. Owusu",
-    detail:
-      "Live Q&A opens at 8:00 PM for revision. Bring one question from the previous quiz.",
-    time: "Today",
-  },
-  {
-    id: "comm-4",
-    day: "Saturday",
-    title: "ICT 315 - Weekend Lab",
-    detail:
-      "Saturday practical starts at 9:00 AM. Please submit your pre-lab notes before class.",
-    time: "Weekend",
-  },
-  {
-    id: "comm-5",
-    day: "Sunday",
-    title: "MTH 101 - Revision Session",
-    detail:
-      "Sunday revision room changed to Hall C2. Bring your solved worksheet.",
-    time: "Weekend",
   },
 ];
 

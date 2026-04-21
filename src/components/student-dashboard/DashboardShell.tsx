@@ -91,7 +91,9 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     id: "notifications",
     label: "Notifications",
     icon: Bell,
-    href: "/dashboard#notifications",
+    href: "/dashboard/notifications",
+    activePathname: "/dashboard/notifications",
+    activeMatchMode: "prefix",
     group: "general",
   },
   {
@@ -153,9 +155,12 @@ export function DashboardShell({ children }: DashboardShellProps) {
   const isMidsemRoute = pathname.startsWith("/dashboard/midsem");
   const isChatRoute = pathname.startsWith("/dashboard/chat");
   const isProfileRoute = pathname.startsWith("/dashboard/profile");
+  const isNotificationsRoute = pathname.startsWith("/dashboard/notifications");
 
   const pageTitle = pathname.startsWith("/dashboard/settings")
     ? "Settings"
+    : isNotificationsRoute
+      ? "Notifications"
     : isProfileRoute
       ? "Student Profile"
     : isChatRoute

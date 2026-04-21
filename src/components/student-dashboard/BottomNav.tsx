@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -59,7 +60,7 @@ const BOTTOM_NAV_ITEMS: BottomNavItem[] = [
   },
   {
     id: "more",
-    label: "More",
+    label: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
     activePathname: "/dashboard/settings",
@@ -80,12 +81,52 @@ const matchesPath = (
   return pathname === path || pathname.startsWith(`${path}/`);
 };
 
+function isStandalonePwaMode() {
+  const isDisplayModeStandalone = window.matchMedia(
+    "(display-mode: standalone)",
+  ).matches;
+  const isIosStandalone = Boolean(
+    (window.navigator as Navigator & { standalone?: boolean }).standalone,
+  );
+
+  return isDisplayModeStandalone || isIosStandalone;
+}
+
 export function BottomNav() {
   const pathname = usePathname();
+  const [isPwaStandalone, setIsPwaStandalone] = useState(false);
+
+  useEffect(() => {
+    const displayModeQuery = window.matchMedia("(display-mode: standalone)");
+
+    const syncStandaloneState = () => {
+      setIsPwaStandalone(isStandalonePwaMode());
+    };
+
+    syncStandaloneState();
+
+    if (typeof displayModeQuery.addEventListener === "function") {
+      displayModeQuery.addEventListener("change", syncStandaloneState);
+    } else {
+      displayModeQuery.addListener(syncStandaloneState);
+    }
+
+    return () => {
+      if (typeof displayModeQuery.removeEventListener === "function") {
+        displayModeQuery.removeEventListener("change", syncStandaloneState);
+      } else {
+        displayModeQuery.removeListener(syncStandaloneState);
+      }
+    };
+  }, []);
+
+  if (!isPwaStandalone) {
+    return null;
+  }
 
   return (
     <nav
-      className="fixed bottom-0 left-0 z-30 h-20 min-h-[calc(5rem+env(safe-area-inset-bottom))] w-full border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-[#121212] md:hidden pb-safe"
+      className="fixed bottom-0 left-0 z-30 h-[5.2rem] min-h-[calc(5.2rem+env(safe-area-inset-bottom))] w-full border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-[#121212] md:hidden pb-safe"
       aria-label="Bottom tab navigation"
     >
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-around px-1">

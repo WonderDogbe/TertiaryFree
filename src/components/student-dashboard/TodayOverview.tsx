@@ -28,6 +28,8 @@ export function TodayOverview({ items }: TodayOverviewProps) {
           const shouldExpandNextLectureCard =
             item.id === "next-lecture" && items.length === 1;
           const isNextLectureCard = item.id === "next-lecture";
+          const nextLectureCardClasses =
+            "border border-sky-200/80 bg-gradient-to-br from-sky-50 via-blue-50/70 to-indigo-50/70 shadow-[0_10px_30px_-18px_rgba(37,99,235,0.45)] dark:border-sky-900/50 dark:bg-gradient-to-br dark:from-[#171717] dark:via-[#151922] dark:to-[#10151f]";
           const attendancePercentage = Number.parseFloat(
             item.value.replace(/[^\d.]/g, ""),
           );
@@ -50,7 +52,9 @@ export function TodayOverview({ items }: TodayOverviewProps) {
               className={[
                 isAttendanceCard ? attendanceCardClasses : undefined,
                 shouldExpandNextLectureCard ? "md:col-span-2 lg:col-span-3" : undefined,
-                isNextLectureCard ? "min-h-[240px] p-8" : undefined,
+                isNextLectureCard
+                  ? `min-h-[240px] p-8 ${nextLectureCardClasses}`
+                  : undefined,
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -64,7 +68,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                           ? "text-emerald-700 dark:text-emerald-300"
                           : "text-rose-700 dark:text-rose-300"
                         : isNextLectureCard
-                          ? "text-base text-gray-600 dark:text-gray-200"
+                          ? "text-base text-sky-700 dark:text-sky-200"
                         : "text-gray-500 dark:text-gray-300"
                     }`}
                   >
@@ -74,7 +78,9 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                     className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-300 ${
                       isAttendanceCard
                         ? attendanceIconClasses
-                        : "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+                        : isNextLectureCard
+                          ? "bg-white/80 text-blue-700 ring-1 ring-blue-200/80 dark:bg-[#121212] dark:text-blue-200 dark:ring-blue-900/60"
+                          : "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -88,7 +94,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                           ? "text-emerald-700 dark:text-emerald-300"
                           : "text-rose-700 dark:text-rose-300"
                         : isNextLectureCard
-                          ? "text-4xl leading-tight dark:text-gray-100"
+                          ? "text-4xl leading-tight text-slate-900 dark:text-gray-100"
                         : "text-gray-900 dark:text-gray-100"
                     } ${isNextLectureCard ? "md:text-5xl" : "text-2xl"}`}
                   >
@@ -101,7 +107,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
                           ? "text-emerald-700/90 dark:text-emerald-300/90"
                           : "text-rose-700/90 dark:text-rose-300/90"
                         : isNextLectureCard
-                          ? "text-base text-gray-600 dark:text-gray-300"
+                          ? "text-base text-slate-600 dark:text-gray-300"
                         : "text-sm text-gray-500 dark:text-gray-300"
                     }`}
                   >

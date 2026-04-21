@@ -85,7 +85,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-2 left-0 z-30 h-14 min-h-[calc(3.5rem+env(safe-area-inset-bottom))] w-full overflow-hidden rounded-t-[26px] border-x border-t border-gray-200 bg-white shadow-md transition-colors duration-300 dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
+      className="fixed bottom-0 left-0 z-30 h-[40px] min-h-[calc(2.5rem+env(safe-area-inset-bottom))] w-full overflow-hidden border-x border-t border-gray-200 bg-white shadow-md transition-colors duration-300 [clip-path:polygon(0%_100%,0%_34%,6%_0%,94%_0%,100%_34%,100%_100%)] dark:border-gray-800 dark:bg-gray-900 md:hidden pb-safe"
       aria-label="Bottom tab navigation"
     >
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-around px-1">
@@ -106,14 +106,14 @@ export function BottomNav() {
               key={item.id}
               href={item.href}
               aria-label={item.label}
-              className={`relative flex h-full flex-1 flex-col items-center justify-center gap-px text-[10px] font-medium leading-tight transition-all duration-200 active:scale-95 ${
+              className={`relative flex h-full flex-1 flex-col items-center justify-center gap-0 text-[9px] font-medium leading-none transition-all duration-200 active:scale-95 ${
                 isActive
                   ? "text-blue-600"
                   : "text-gray-500 active:text-blue-600"
               }`}
             >
               <span className="relative inline-flex items-center justify-center">
-                <Icon className="h-4 w-4" />
+                <Icon className="h-3.5 w-3.5" />
 
                 {typeof item.badgeCount === "number" && item.badgeCount > 0 && (
                   <span className="absolute -right-2 -top-2 inline-flex min-w-[14px] items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-semibold leading-none text-white">

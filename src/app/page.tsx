@@ -139,6 +139,7 @@ const FEATURE_CARDS: FeatureCardItem[] = [
 
 export default function LandingPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isStandaloneMode, setIsStandaloneMode] = useState(false);
   const [activeFeatureIndex, setActiveFeatureIndex] = useState(0);
   const [isFeaturePaused, setIsFeaturePaused] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -417,6 +418,57 @@ export default function LandingPage() {
       window.removeEventListener("resize", handleScroll);
     };
   }, [isMobileDashboardView]);
+
+  useEffect(() => {
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      ("standalone" in window.navigator && (window.navigator as any).standalone) ||
+      document.referrer.includes("android-app://");
+    setIsStandaloneMode(isStandalone);
+  }, []);
+
+  if (isStandaloneMode) {
+    return (
+      <div className="flex min-h-screen flex-col bg-[var(--color-background)] bg-white text-slate-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
+        <div className="flex-1 flex flex-col pt-[10vh] pb-[5vh] justify-center">
+          <div className="w-full flex justify-center px-8 mb-8">
+            <div className="relative aspect-square w-full max-w-[280px] overflow-hidden rounded-[2.5rem] shadow-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/pic.jpg" 
+                alt="Welcome to TertiaryFree" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+          
+          <div className="text-center px-8">
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Tertiary<span className="text-[var(--color-primary)]">Free</span>
+            </h1>
+            <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+              Your academic life, simplified. Timetables, attendance, and smart updates in one place.
+            </p>
+          </div>
+        </div>
+
+        <div className="w-full px-6 pb-10 flex flex-col gap-3">
+          <Link
+            href="/login"
+            className="w-full flex items-center justify-center rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-lg transition-transform active:scale-[0.98] hover:bg-blue-700"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/signup"
+            className="w-full flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-transparent py-4 text-[1.05rem] font-semibold text-slate-700 transition-colors active:scale-[0.98] dark:border-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50"
+          >
+            Sign Up
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">

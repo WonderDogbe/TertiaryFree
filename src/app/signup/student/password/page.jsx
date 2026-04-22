@@ -295,7 +295,8 @@ export default function StudentPasswordPage() {
       // Ignore cleanup failures.
     }
 
-    router.push("/dashboard");
+    const encodedEmail = encodeURIComponent(studentDetails.email);
+    router.push(`/welcome?email=${encodedEmail}&role=student`);
   };
 
   if (!institutionName) {

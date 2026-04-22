@@ -29,10 +29,10 @@ export default function WelcomePage({
         
         <div className="flex flex-col gap-4">
           <Link
-            href={`/login?email=${encodeURIComponent(typeof email === "string" ? email : Array.isArray(email) ? email[0] : "")}&registered=1`}
+            href="/dashboard"
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-xl transition-transform active:scale-[0.98] hover:bg-blue-700"
           >
-            Continue to Sign In
+            Continue to Dashboard
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>

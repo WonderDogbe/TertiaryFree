@@ -22,8 +22,6 @@ export type SidebarItem = {
 interface SidebarProps {
   items: SidebarItem[];
   isDesktopCollapsed: boolean;
-  isMobileOpen: boolean;
-  onCloseMobile: () => void;
 }
 
 const formatDisplayName = (name: string) =>
@@ -105,8 +103,6 @@ function SidebarLinks({
 export function Sidebar({
   items,
   isDesktopCollapsed,
-  isMobileOpen,
-  onCloseMobile,
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -153,7 +149,6 @@ export function Sidebar({
   const handleConfirmLogout = () => {
     logoutActiveSession();
     setIsLogoutModalOpen(false);
-    onCloseMobile();
     router.push("/login");
   };
   const isMobileProfileActive =
@@ -276,120 +271,6 @@ export function Sidebar({
                   <span className="tracking-normal">Log Out</span>
                 )}
               </button>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out md:hidden dark:border-gray-800 dark:bg-[#121212] ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-        aria-label="Mobile sidebar"
-      >
-        <div className="flex h-16 items-center px-4 transition-colors duration-300">
-          <div className="flex items-center">
-            <Logo size="sm" className="origin-left" />
-          </div>
-        </div>
-
-        <div className="flex flex-1 flex-col p-6">
-          {dashboardItem && (
-            <SidebarLinks
-              items={[dashboardItem]}
-              onNavigate={onCloseMobile}
-              isCompact
-            />
-          )}
-
-          {middleItems.length > 0 && (
-            <div className="mt-4 border-t border-gray-200 pt-4 transition-colors duration-300 dark:border-gray-800">
-              {timetableItems.length > 0 && (
-                <div>
-                  <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                    Timetables
-                  </p>
-                  <div className="mt-2">
-                    <SidebarLinks
-                      items={timetableItems}
-                      onNavigate={onCloseMobile}
-                      isCompact
-                    />
-                  </div>
-                </div>
-              )}
-
-              {classroomConnectItems.length > 0 && (
-                <div
-                  className={
-                    timetableItems.length > 0
-                      ? "mt-4 border-t border-gray-200 pt-4 transition-colors duration-300 dark:border-gray-800"
-                      : undefined
-                  }
-                >
-                  <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">
-                    Classroom
-                  </p>
-                  <div className="mt-2">
-                    <SidebarLinks
-                      items={classroomConnectItems}
-                      onNavigate={onCloseMobile}
-                      isCompact
-                    />
-                  </div>
-                </div>
-              )}
-
-              {generalItems.length > 0 && (
-                <div
-                  className={
-                    timetableItems.length > 0 || classroomConnectItems.length > 0
-                      ? "mt-4 border-t border-gray-200 pt-4 transition-colors duration-300 dark:border-gray-800"
-                      : undefined
-                  }
-                >
-                  <SidebarLinks
-                    items={generalItems}
-                    onNavigate={onCloseMobile}
-                    isCompact
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
-          {settingsItem && (
-            <div className="mt-auto pt-4">
-              <SidebarLinks
-                items={[settingsItem]}
-                onNavigate={onCloseMobile}
-                isCompact
-              />
-              <Link
-                href="/dashboard/profile"
-                onClick={onCloseMobile}
-                className={`mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 transition-all duration-300 ease-in-out ${
-                  isMobileProfileActive
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
-                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                <UserRound className="mt-0.5 h-4 w-4" />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-xs font-medium normal-case tracking-normal">
-                    {mobileProfileName}
-                  </span>
-                  <span
-                    className={`truncate text-[11px] ${
-                      isMobileProfileActive
-                        ? "text-blue-700/80 dark:text-blue-200/80"
-                        : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {mobileProfileLevel}
-                  </span>
-                </span>
-              </Link>
             </div>
           )}
         </div>

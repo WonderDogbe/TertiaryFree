@@ -113,33 +113,9 @@ interface DashboardShellProps {
 export function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 768px)");
-
-    const handleScreenSizeChange = (event: MediaQueryListEvent) => {
-      if (event.matches) {
-        setIsMobileSidebarOpen(false);
-      }
-    };
-
-    mediaQuery.addEventListener("change", handleScreenSizeChange);
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleScreenSizeChange);
-    };
-  }, []);
 
   const handleSidebarToggle = () => {
-    const isDesktopScreen = window.matchMedia("(min-width: 768px)").matches;
-
-    if (isDesktopScreen) {
-      setIsDesktopSidebarCollapsed((previousState) => !previousState);
-      return;
-    }
-
-    setIsMobileSidebarOpen((previousState) => !previousState);
+    setIsDesktopSidebarCollapsed((previousState) => !previousState);
   };
 
   const isTimetableRoute =
@@ -179,21 +155,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-[#121212]">
-      {isMobileSidebarOpen && (
-        <button
-          type="button"
-          onClick={() => setIsMobileSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
-          aria-label="Close sidebar overlay"
-        />
-      )}
-
       <div className="flex min-h-screen">
         <Sidebar
           items={SIDEBAR_ITEMS}
           isDesktopCollapsed={isDesktopSidebarCollapsed}
-          isMobileOpen={isMobileSidebarOpen}
-          onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
         <div
@@ -205,7 +170,6 @@ export function DashboardShell({ children }: DashboardShellProps) {
             title={pageTitle}
             onToggleSidebar={handleSidebarToggle}
             isDesktopSidebarCollapsed={isDesktopSidebarCollapsed}
-            isMobileSidebarOpen={isMobileSidebarOpen}
           />
 
           <main className="flex-1 px-4 py-6 pb-28 sm:px-6 md:pb-6 lg:px-8">{children}</main>

@@ -435,7 +435,7 @@ export default function LandingPage() {
         <div className="relative w-full h-[55vh] min-h-[400px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
-            src="/images/mobileview.jpeg" 
+            src="/img.jpg" 
             alt="Welcome to TertiaryFree" 
             className="w-full h-full object-cover object-top"
           />

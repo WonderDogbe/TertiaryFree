@@ -460,10 +460,10 @@ export default function LandingPage() {
             Sign In
           </Link>
           <Link
-            href="/signup"
+            href="/signup/institution?startOver=1"
             className="w-full flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-transparent py-4 text-[1.05rem] font-semibold text-slate-700 transition-colors active:scale-[0.98] dark:border-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50"
           >
-            Sign Up
+            Create Account
           </Link>
         </div>
       </div>

@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     "course materials",
     "attendance",
   ],
+  icons: {
+    apple: "/pwalogo.jpg",
+  },
 };
 
 import { PwaSplashScreen } from "@/components/PwaSplashScreen";

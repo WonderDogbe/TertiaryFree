@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "attendance",
   ],
   icons: {
-    apple: "/pwalogo.jpg",
+    apple: "/pwalogo-removebg-preview.png",
   },
 };
 

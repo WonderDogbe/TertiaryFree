@@ -429,42 +429,43 @@ export default function LandingPage() {
 
   if (isStandaloneMode) {
     return (
-      <div className="flex min-h-screen flex-col bg-[var(--color-background)] bg-white text-slate-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
-        <div className="flex-1 flex flex-col pt-[10vh] pb-[5vh] justify-center">
-          <div className="w-full flex justify-center px-8 mb-8">
-            <div className="relative aspect-square w-full max-w-[280px] overflow-hidden rounded-[2.5rem] shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src="/pic.jpg" 
-                alt="Welcome to TertiaryFree" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-          
-          <div className="text-center px-8">
-            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
+      <div className="flex min-h-screen flex-col bg-white text-slate-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
+        
+        {/* Full width image that fades at the bottom into the background */}
+        <div className="relative w-full h-[55vh] min-h-[400px]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/images/mobileview.jpeg" 
+            alt="Welcome to TertiaryFree" 
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-gray-950"></div>
+        </div>
+
+        <div className="flex-1 flex flex-col justify-end px-6 pb-12 -mt-10 relative z-10">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl drop-shadow-sm">
               Tertiary<span className="text-[var(--color-primary)]">Free</span>
             </h1>
             <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
               Your academic life, simplified. Timetables, attendance, and smart updates in one place.
             </p>
           </div>
-        </div>
 
-        <div className="w-full px-6 pb-10 flex flex-col gap-3">
-          <Link
-            href="/login"
-            className="w-full flex items-center justify-center rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-lg transition-transform active:scale-[0.98] hover:bg-blue-700"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/signup/institution?startOver=1"
-            className="w-full flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-transparent py-4 text-[1.05rem] font-semibold text-slate-700 transition-colors active:scale-[0.98] dark:border-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50"
-          >
-            Create Account
-          </Link>
+          <div className="w-full flex flex-col gap-3">
+            <Link
+              href="/login"
+              className="w-full flex items-center justify-center rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-lg transition-transform active:scale-[0.98] hover:bg-blue-700"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/signup/institution?startOver=1"
+              className="w-full flex items-center justify-center rounded-2xl border-2 border-slate-200 bg-transparent py-4 text-[1.05rem] font-semibold text-slate-700 transition-colors active:scale-[0.98] dark:border-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-900/50"
+            >
+              Create Account
+            </Link>
+          </div>
         </div>
       </div>
     );

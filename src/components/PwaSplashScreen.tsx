@@ -30,18 +30,18 @@ export function PwaSplashScreen() {
   if (!isPwa || !showSplash) return null;
 
   return (
-    <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white transition-opacity duration-500 ease-in-out">
+    <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[var(--color-background)] bg-white transition-opacity duration-500 ease-in-out dark:bg-gray-950">
       <div className="relative flex h-36 w-36 flex-col items-center justify-center sm:h-44 sm:w-44 animate-pulse">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/pwalogo.jpg"
+          src="/pwalogo-removebg-preview.png"
           alt="TertiaryFree"
-          className="h-full w-full object-contain mix-blend-multiply"
+          className="h-full w-full object-contain"
         />
       </div>
       
       <div className="mt-8 flex flex-col items-center">
-        <p className="text-2xl font-extrabold tracking-tight text-slate-800">
+        <p className="text-2xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
           TertiaryFree
         </p>
 

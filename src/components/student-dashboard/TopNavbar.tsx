@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Bell, Menu, MessageSquare } from "lucide-react";
+import { Bell, MoreHorizontal, MessageSquare } from "lucide-react";
 import { getActiveUserProfile } from "@/lib/auth-storage";
 
 interface TopNavbarProps {
@@ -64,10 +64,10 @@ export function TopNavbar({
             {isMobileSidebarOpen ? (
               <span className="text-lg font-semibold leading-none md:hidden">&lt;</span>
             ) : (
-              <Menu className="h-4 w-4 md:hidden" />
+              <MoreHorizontal className="h-4 w-4 md:hidden" />
             )}
             {isDesktopSidebarCollapsed ? (
-              <Menu className="hidden h-4 w-4 md:block" />
+              <MoreHorizontal className="hidden h-4 w-4 md:block" />
             ) : (
               <span className="hidden text-lg font-semibold leading-none md:block">&lt;</span>
             )}

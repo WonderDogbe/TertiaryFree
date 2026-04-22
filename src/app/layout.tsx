@@ -36,6 +36,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import { PwaSplashScreen } from "@/components/PwaSplashScreen";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -60,7 +62,10 @@ export default function RootLayout({
         className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-950 dark:text-gray-100"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
-        <MantineProvider defaultColorScheme="auto">{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="auto">
+          <PwaSplashScreen />
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

@@ -36,7 +36,7 @@ const HERO_IMAGES = [
     label: "Experience real-time updates and effortless class coordination",
   },
   {
-    url: "/study-group-african-people.jpg",
+    url: "/replace.jpeg",
     label: "Connect with classmates and join smarter learning groups",
   },
 ];
@@ -741,17 +741,12 @@ export default function LandingPage() {
                     </div>
 
                     <div className="overflow-hidden rounded-[1.25rem] border border-slate-200/80 dark:border-slate-700/90">
-                      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 sm:aspect-[16/10] dark:bg-slate-900">
-                        <Image
-                          src="/dashboard.png"
+                      <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/images/framepicture.png"
                           alt="TertiaryFree student dashboard preview"
-                          fill
-                          sizes="(min-width: 1280px) 1100px, (min-width: 1024px) 90vw, (min-width: 640px) 95vw, 100vw"
-                          className="object-cover object-top will-change-transform"
-                          style={{
-                            transform: `translate3d(0, ${-dashboardParallaxOffset}px, 0) scale(${isMobileDashboardView ? 1.02 : 1.08})`,
-                            transition: "transform 120ms linear",
-                          }}
+                          className="w-full h-auto block"
                         />
                         <div
                           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"

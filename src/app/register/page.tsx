@@ -368,7 +368,7 @@ export default function RegisterPage({
     }
 
     const encodedEmail = encodeURIComponent(registrationResult.user.email);
-    router.push(`/login?registered=1&email=${encodedEmail}`);
+    router.push(`/welcome?email=${encodedEmail}&role=${userType}`);
   };
 
   const inputStyles = {

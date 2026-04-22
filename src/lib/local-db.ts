@@ -120,7 +120,7 @@ const PROGRAMME_TYPE_VALUES: ProgrammeTypeValue[] = ["degree", "hnd"];
 const PROGRAMME_TYPE_SET = new Set<ProgrammeTypeValue>(PROGRAMME_TYPE_VALUES);
 const PROGRAMME_TYPE_OPTIONS: SelectOption[] = [
   { value: "degree", label: "Bachelor Degree" },
-  { value: "hnd", label: "HND" },
+  { value: "hnd", label: "Higher National Diploma (HND)" },
 ];
 const STUDY_MODE_OPTIONS: StudyModeOption[] = [
   {

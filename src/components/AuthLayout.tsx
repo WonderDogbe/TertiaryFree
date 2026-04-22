@@ -100,6 +100,21 @@ export function AuthLayout({
     }
   }, [isDarkMode, isThemeReady, isMobileSystemTheme]);
 
+  useEffect(() => {
+    // Attempt to lock screen orientation to portrait for mobile auth screens
+    if (typeof window !== "undefined" && window.screen && window.screen.orientation && window.screen.orientation.lock) {
+      window.screen.orientation.lock("portrait").catch(() => {
+        // Silently fail if browser denies lock
+      });
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+        window.screen.orientation.unlock();
+      }
+    };
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-[var(--color-background)] text-[var(--color-text)]">
       {/* Left pane - Image */}

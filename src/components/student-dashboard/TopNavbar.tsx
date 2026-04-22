@@ -21,10 +21,18 @@ export function TopNavbar({
 }: TopNavbarProps) {
   const [displayName, setDisplayName] = useState("Student");
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isStandaloneMode, setIsStandaloneMode] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
+    // Check if running as PWA
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      ("standalone" in window.navigator && (window.navigator as any).standalone) ||
+      document.referrer.includes("android-app://");
+    setIsStandaloneMode(isStandalone);
+
     const frameId = window.requestAnimationFrame(() => {
       const userProfile = getActiveUserProfile();
 
@@ -140,21 +148,36 @@ export function TopNavbar({
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white transition-colors duration-300 dark:border-gray-800 dark:bg-[#121212]">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            {/* Mobile Context Menu */}
-            <Menu position="bottom-start" offset={4} withinPortal>
-              <Menu.Target>
-                <button
-                  type="button"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:hidden"
-                  aria-label="Mobile context menu"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </button>
-              </Menu.Target>
-              <Menu.Dropdown className="min-w-[180px] rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-[#1A1A1A]">
-                {renderMobileMenuItems()}
-              </Menu.Dropdown>
-            </Menu>
+            {/* Mobile Context Menu OR Hamburger Toggle */}
+            {isStandaloneMode ? (
+              <Menu position="bottom-start" offset={4} withinPortal>
+                <Menu.Target>
+                  <button
+                    type="button"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:hidden"
+                    aria-label="Mobile context menu"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </Menu.Target>
+                <Menu.Dropdown className="min-w-[180px] rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-[#1A1A1A]">
+                  {renderMobileMenuItems()}
+                </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <button
+                type="button"
+                onClick={onToggleSidebar}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:hidden"
+                aria-label="Toggle mobile menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" x2="20" y1="12" y2="12"/>
+                  <line x1="4" x2="20" y1="6" y2="6"/>
+                  <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+              </button>
+            )}
 
             {/* Desktop Sidebar Toggle */}
             <button

@@ -70,11 +70,11 @@ export function TopNavbar({
     if (isTimetableRoute) {
       return (
         <>
-          <Menu.Label>Timetables</Menu.Label>
-          <Menu.Item component={Link} href="/dashboard/timetable" leftSection={<CalendarDays className="h-4 w-4" />}>
+          <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Timetables</Menu.Label>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/timetable" leftSection={<CalendarDays className="h-4 w-4" />}>
             Class Timetable
           </Menu.Item>
-          <Menu.Item component={Link} href="/dashboard/exam-timetable" leftSection={<CalendarDays className="h-4 w-4" />}>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/exam-timetable" leftSection={<CalendarDays className="h-4 w-4" />}>
             Exam Timetable
           </Menu.Item>
         </>
@@ -83,14 +83,14 @@ export function TopNavbar({
     if (isCoursesRoute) {
       return (
         <>
-          <Menu.Label>Academics</Menu.Label>
-          <Menu.Item component={Link} href="/dashboard/courses" leftSection={<BookOpen className="h-4 w-4" />}>
+          <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Academics</Menu.Label>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/courses" leftSection={<BookOpen className="h-4 w-4" />}>
             My Courses
           </Menu.Item>
-          <Menu.Item component={Link} href="/dashboard/quizzes" leftSection={<FileText className="h-4 w-4" />}>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/quizzes" leftSection={<FileText className="h-4 w-4" />}>
             Quizzes
           </Menu.Item>
-          <Menu.Item component={Link} href="/dashboard/midsem" leftSection={<FileText className="h-4 w-4" />}>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/midsem" leftSection={<FileText className="h-4 w-4" />}>
             Midsem
           </Menu.Item>
         </>
@@ -99,8 +99,8 @@ export function TopNavbar({
     if (isAttendanceRoute) {
        return (
         <>
-          <Menu.Label>Attendance</Menu.Label>
-          <Menu.Item component={Link} href="/dashboard/attendance" leftSection={<ChartNoAxesColumn className="h-4 w-4" />}>
+          <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Attendance</Menu.Label>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/attendance" leftSection={<ChartNoAxesColumn className="h-4 w-4" />}>
             View Reports
           </Menu.Item>
         </>
@@ -109,11 +109,12 @@ export function TopNavbar({
     if (isSettingsRoute) {
       return (
         <>
-          <Menu.Label>Account</Menu.Label>
-          <Menu.Item component={Link} href="/dashboard/profile" leftSection={<UserRound className="h-4 w-4" />}>
+          <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Account</Menu.Label>
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/profile" leftSection={<UserRound className="h-4 w-4" />}>
             Profile
           </Menu.Item>
-          <Menu.Item onClick={() => setIsLogoutModalOpen(true)} color="red" leftSection={<LogOut className="h-4 w-4" />}>
+          <Menu.Divider className="border-gray-100 dark:border-gray-800" />
+          <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30" onClick={() => setIsLogoutModalOpen(true)} leftSection={<LogOut className="h-4 w-4" />}>
             Log Out
           </Menu.Item>
         </>
@@ -123,11 +124,11 @@ export function TopNavbar({
     // Default (Home)
     return (
       <>
-        <Menu.Label>Connect</Menu.Label>
-        <Menu.Item component={Link} href="/dashboard/chat" leftSection={<MessageSquare className="h-4 w-4" />}>
+        <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Connect</Menu.Label>
+        <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/chat" leftSection={<MessageSquare className="h-4 w-4" />}>
           Chats
         </Menu.Item>
-        <Menu.Item component={Link} href="/dashboard/notifications" leftSection={<Bell className="h-4 w-4" />}>
+        <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800" component={Link} href="/dashboard/notifications" leftSection={<Bell className="h-4 w-4" />}>
           Notifications
         </Menu.Item>
       </>
@@ -150,7 +151,7 @@ export function TopNavbar({
                   <MoreHorizontal className="h-4 w-4" />
                 </button>
               </Menu.Target>
-              <Menu.Dropdown>
+              <Menu.Dropdown className="min-w-[180px] rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-[#1A1A1A]">
                 {renderMobileMenuItems()}
               </Menu.Dropdown>
             </Menu>

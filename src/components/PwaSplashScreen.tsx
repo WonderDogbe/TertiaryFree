@@ -12,9 +12,21 @@ export function PwaSplashScreen() {
       window.matchMedia("(display-mode: standalone)").matches ||
       ("standalone" in window.navigator && (window.navigator as any).standalone) ||
       document.referrer.includes("android-app://");
-
     if (isStandalone) {
       setIsPwa(true);
+
+      // Lock portrait mode for entire PWA lifecycle
+      try {
+        if (typeof window !== "undefined" && window.screen && window.screen.orientation) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const orientation = window.screen.orientation as any;
+          if (orientation.lock) {
+            orientation.lock("portrait").catch(() => {});
+          }
+        }
+      } catch {}
+
+
       // Let it display for exactly 4 seconds
       const timer = setTimeout(() => {
         setShowSplash(false);

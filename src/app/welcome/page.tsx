@@ -1,8 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, ArrowRight } from "lucide-react";
+import { getActiveUserProfile } from "@/lib/auth-storage";
 
 export default function WelcomePage({
   searchParams,
@@ -11,6 +12,14 @@ export default function WelcomePage({
 }) {
   const resolvedSearchParams = use(searchParams);
   const email = resolvedSearchParams?.email ?? "";
+  const [firstName, setFirstName] = useState("");
+
+  useEffect(() => {
+    const profile = getActiveUserProfile();
+    if (profile && profile.name) {
+      setFirstName(profile.name.split(" ")[0]);
+    }
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--color-background)] bg-gray-50 transition-colors duration-300 dark:bg-[#121212] p-6 selection:bg-[var(--color-accent)] selection:text-white">
@@ -20,7 +29,7 @@ export default function WelcomePage({
         </div>
         
         <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Welcome Aboard!
+          Welcome Aboard{firstName ? `, ${firstName}` : ""}!
         </h1>
         
         <p className="mb-10 text-[1.05rem] text-slate-600 dark:text-slate-300 leading-relaxed">

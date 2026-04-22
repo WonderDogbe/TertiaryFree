@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { MantineProvider } from "@mantine/core";
 import "./globals.css";
 
@@ -37,6 +37,13 @@ export const metadata: Metadata = {
   icons: {
     apple: "/pwalogo-removebg-preview.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 import { PwaSplashScreen } from "@/components/PwaSplashScreen";

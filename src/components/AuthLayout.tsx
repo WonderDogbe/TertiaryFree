@@ -102,15 +102,23 @@ export function AuthLayout({
 
   useEffect(() => {
     // Attempt to lock screen orientation to portrait for mobile auth screens
-    if (typeof window !== "undefined" && window.screen && window.screen.orientation && window.screen.orientation.lock) {
-      window.screen.orientation.lock("portrait").catch(() => {
-        // Silently fail if browser denies lock
-      });
+    if (typeof window !== "undefined" && window.screen && window.screen.orientation) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const orientation = window.screen.orientation as any;
+      if (orientation.lock) {
+        orientation.lock("portrait").catch(() => {
+          // Silently fail if browser denies lock
+        });
+      }
     }
 
     return () => {
-      if (typeof window !== "undefined" && window.screen && window.screen.orientation && window.screen.orientation.unlock) {
-        window.screen.orientation.unlock();
+      if (typeof window !== "undefined" && window.screen && window.screen.orientation) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const orientation = window.screen.orientation as any;
+        if (orientation.unlock) {
+          orientation.unlock();
+        }
       }
     };
   }, []);

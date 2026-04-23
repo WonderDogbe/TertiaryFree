@@ -1,6 +1,7 @@
 "use client";
 
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -81,8 +82,48 @@ const matchesPath = (
   return pathname === path || pathname.startsWith(`${path}/`);
 };
 
+function isStandalonePwaMode() {
+  const isDisplayModeStandalone = window.matchMedia(
+    "(display-mode: standalone)",
+  ).matches;
+  const isIosStandalone = Boolean(
+    (window.navigator as Navigator & { standalone?: boolean }).standalone,
+  );
+
+  return isDisplayModeStandalone || isIosStandalone;
+}
+
 export function BottomNav() {
   const pathname = usePathname();
+  const [isPwaStandalone, setIsPwaStandalone] = useState(false);
+
+  useEffect(() => {
+    const displayModeQuery = window.matchMedia("(display-mode: standalone)");
+
+    const syncStandaloneState = () => {
+      setIsPwaStandalone(isStandalonePwaMode());
+    };
+
+    syncStandaloneState();
+
+    if (typeof displayModeQuery.addEventListener === "function") {
+      displayModeQuery.addEventListener("change", syncStandaloneState);
+    } else {
+      displayModeQuery.addListener(syncStandaloneState);
+    }
+
+    return () => {
+      if (typeof displayModeQuery.removeEventListener === "function") {
+        displayModeQuery.removeEventListener("change", syncStandaloneState);
+      } else {
+        displayModeQuery.removeListener(syncStandaloneState);
+      }
+    };
+  }, []);
+
+  if (!isPwaStandalone) {
+    return null;
+  }
 
   return (
     <nav

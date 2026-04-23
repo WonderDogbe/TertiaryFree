@@ -770,7 +770,7 @@ export default function LandingPage() {
               </div>
 
               <div
-                className="mx-auto mt-10 max-w-6xl sm:mt-14"
+                className="mx-auto mt-10 w-[85%] max-w-[320px] sm:w-full sm:max-w-6xl sm:mt-14"
                 style={{ perspective: isMobileDashboardView ? "1300px" : "1800px" }}
               >
                 <div

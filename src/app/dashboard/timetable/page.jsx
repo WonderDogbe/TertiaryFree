@@ -23,7 +23,7 @@ export default function ClassTimetablePage() {
 
     setActiveDays(
       getStudyDaysForMode(
-        profile.studyMode,
+        profile.studyMode || "weekday",
         profile.customStudyDays || [],
       ),
     );

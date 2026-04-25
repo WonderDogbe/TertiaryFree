@@ -66,7 +66,7 @@ export default function DashboardPage() {
 
     setActiveDays(
       getStudyDaysForMode(
-        user.studyMode,
+        user.studyMode || "weekday",
         user.customStudyDays || [],
       ) as WeekDay[],
     );

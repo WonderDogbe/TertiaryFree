@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, MoreHorizontal, MessageSquare, CalendarDays, BookOpen, FileText, ChartNoAxesColumn, UserRound, LogOut } from "lucide-react";
@@ -22,6 +23,7 @@ export function TopNavbar({
 }: TopNavbarProps) {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState("Student");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isStandaloneMode, setIsStandaloneMode] = useState(false);
   const pathname = usePathname();
@@ -37,6 +39,11 @@ export function TopNavbar({
 
     if (user?.name) {
       setDisplayName(user.name);
+    }
+    if (user?.avatarUrl) {
+      setAvatarUrl(user.avatarUrl);
+    } else {
+      setAvatarUrl(null);
     }
   }, [user]);
 
@@ -215,8 +222,18 @@ export function TopNavbar({
               className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               aria-label="Open student profile"
             >
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white transition-colors duration-300 dark:bg-gray-700">
-                {userInitials}
+              <span className="relative inline-flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-900 text-xs font-semibold text-white transition-colors duration-300 dark:bg-gray-700">
+                {avatarUrl ? (
+                  <Image
+                    src={avatarUrl}
+                    alt="Profile picture"
+                    fill
+                    className="object-cover"
+                    sizes="32px"
+                  />
+                ) : (
+                  userInitials
+                )}
               </span>
               <span className="hidden max-w-[140px] truncate sm:inline">
                 {displayName}

@@ -18,6 +18,7 @@ export interface AuthUser {
   level?: string;
   studyMode?: StudyModeValue;
   customStudyDays?: WeekDayValue[];
+  avatarUrl?: string;
   [key: string]: any;
 }
 

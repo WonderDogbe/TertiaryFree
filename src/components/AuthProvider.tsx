@@ -36,9 +36,15 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
+    const supabase = createClient()
+
+    if (!supabase) {
+      setIsLoading(false)
+      return
+    }
+
     const fetchUser = async () => {
       try {
         const {
@@ -65,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for state changes automatically
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event: string, session: any) => {
         if (session?.user) {
           setUser({
             id: session.user.id,
@@ -82,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase.auth]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, isLoading }}>

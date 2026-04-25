@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, ArrowRight } from "lucide-react";
-import { getActiveUserProfile } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function WelcomePage({
   searchParams,
@@ -14,12 +14,13 @@ export default function WelcomePage({
   const email = resolvedSearchParams?.email ?? "";
   const [firstName, setFirstName] = useState("");
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    const profile = getActiveUserProfile();
-    if (profile && profile.name) {
-      setFirstName(profile.name.split(" ")[0]);
+    if (user?.name) {
+      setFirstName(user.name.split(" ")[0]);
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--color-background)] bg-gray-50 transition-colors duration-300 dark:bg-[#121212] p-6 selection:bg-[var(--color-accent)] selection:text-white">

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { TextInput, PasswordInput } from "@mantine/core";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
-import { authenticateUser } from "@/lib/auth-storage";
+import { createClient } from "@/utils/supabase/client";
 
 export default function LoginPage({
   searchParams,
@@ -43,12 +43,16 @@ export default function LoginPage({
     setLoading(true);
     setAuthError("");
 
-    const loginResult = authenticateUser(formData.email, formData.password);
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
 
     setLoading(false);
 
-    if (!loginResult.success) {
-      setAuthError(loginResult.message);
+    if (error) {
+      setAuthError(error.message);
       return;
     }
 

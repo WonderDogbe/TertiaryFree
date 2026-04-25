@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, MoreHorizontal, MessageSquare, CalendarDays, BookOpen, FileText, ChartNoAxesColumn, UserRound, LogOut } from "lucide-react";
 import { Menu } from "@mantine/core";
-import { getActiveUserProfile, logoutActiveSession } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
+import { createClient } from "@/utils/supabase/client";
 import { ConfirmationModal } from "./ConfirmationModal";
 
 interface TopNavbarProps {
@@ -19,6 +20,7 @@ export function TopNavbar({
   onToggleSidebar,
   isDesktopSidebarCollapsed,
 }: TopNavbarProps) {
+  const { user } = useAuth();
   const [displayName, setDisplayName] = useState("Student");
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isStandaloneMode, setIsStandaloneMode] = useState(false);
@@ -33,18 +35,10 @@ export function TopNavbar({
       document.referrer.includes("android-app://");
     setIsStandaloneMode(isStandalone);
 
-    const frameId = window.requestAnimationFrame(() => {
-      const userProfile = getActiveUserProfile();
-
-      if (userProfile?.name) {
-        setDisplayName(userProfile.name);
-      }
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
+    if (user?.name) {
+      setDisplayName(user.name);
+    }
+  }, [user]);
 
   const userInitials = useMemo(() => {
     const words = displayName
@@ -63,8 +57,9 @@ export function TopNavbar({
     return `${words[0][0]}${words[1][0]}`.toUpperCase();
   }, [displayName]);
 
-  const handleConfirmLogout = () => {
-    logoutActiveSession();
+  const handleConfirmLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setIsLogoutModalOpen(false);
     router.push("/login");
   };

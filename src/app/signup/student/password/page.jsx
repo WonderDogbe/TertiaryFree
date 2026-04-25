@@ -6,7 +6,7 @@ import { useState } from "react";
 import { PasswordInput } from "@mantine/core";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
-import { registerUserAccount } from "@/lib/auth-storage";
+import { createClient } from "@/utils/supabase/client";
 import {
   getProgrammeOptionsForFacultyAndType,
   isKnownDepartmentName,
@@ -261,30 +261,30 @@ export default function StudentPasswordPage() {
     setLoading(true);
     setSubmitError("");
 
-    const registrationResult = registerUserAccount({
-      role: "student",
-      name: studentDetails.name,
-      gender: isKnownGender(studentDetails.gender)
-        ? studentDetails.gender
-        : undefined,
+    const supabase = createClient();
+    const { data: registrationResult, error } = await supabase.auth.signUp({
       email: studentDetails.email,
       password,
-      school: institutionName,
-      department: studentDetails.department,
-      indexNumber: studentDetails.indexNumber,
-      programme: studentDetails.programme,
-      level: studentDetails.level,
-      studyMode: studentDetails.studyMode,
-      customStudyDays:
-        studentDetails.studyMode === "custom"
-          ? studentDetails.customStudyDays
-          : [],
+      options: {
+        data: {
+          role: "student",
+          name: studentDetails.name,
+          gender: isKnownGender(studentDetails.gender) ? studentDetails.gender : null,
+          school: institutionName,
+          department: studentDetails.department,
+          indexNumber: studentDetails.indexNumber,
+          programme: studentDetails.programme,
+          level: studentDetails.level,
+          studyMode: studentDetails.studyMode,
+          customStudyDays: studentDetails.studyMode === "custom" ? studentDetails.customStudyDays : [],
+        }
+      }
     });
 
     setLoading(false);
 
-    if (!registrationResult.success) {
-      setSubmitError(registrationResult.message);
+    if (error) {
+      setSubmitError(error.message);
       return;
     }
 

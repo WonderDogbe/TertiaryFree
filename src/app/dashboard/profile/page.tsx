@@ -11,10 +11,7 @@ import {
   Mail,
   User,
 } from "lucide-react";
-import {
-  type ActiveUserProfile,
-  getActiveUserProfile,
-} from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
 
 const formatDisplayName = (value: string) =>
   value
@@ -49,17 +46,7 @@ function ProfileInfoCard({
 }
 
 export default function StudentProfilePage() {
-  const [profile, setProfile] = useState<ActiveUserProfile | null>(null);
-
-  useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      setProfile(getActiveUserProfile());
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
+  const { user: profile } = useAuth();
 
   const name = profile?.name ? formatDisplayName(profile.name) : "Not available";
   const indexNumber = profile?.indexNumber || "Not provided during registration";
@@ -129,7 +116,7 @@ export default function StudentProfilePage() {
         />
         <ProfileInfoCard
           icon={<IdCard className="h-4 w-4" />}
-          label="Department"
+          label="Faculty"
           value={department}
         />
         <ProfileInfoCard

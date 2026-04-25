@@ -5,36 +5,29 @@ import {
   TimetableGrid,
 } from "@/components/student-dashboard/timetable/TimetableGrid";
 import { WEEKLY_LECTURES } from "@/components/student-dashboard/timetable/data";
-import { getActiveUserProfile } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
 import {
   getStudyDaysForMode,
   WEEKDAY_STUDY_DAYS,
 } from "@/lib/study-schedule";
 
 export default function ClassTimetablePage() {
+  const { user: profile } = useAuth();
   const [activeDays, setActiveDays] = useState(WEEKDAY_STUDY_DAYS);
 
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      const profile = getActiveUserProfile();
+    if (!profile || profile.role !== "student") {
+      setActiveDays(WEEKDAY_STUDY_DAYS);
+      return;
+    }
 
-      if (!profile || profile.role !== "student") {
-        setActiveDays(WEEKDAY_STUDY_DAYS);
-        return;
-      }
-
-      setActiveDays(
-        getStudyDaysForMode(
-          profile.studyMode,
-          profile.customStudyDays || [],
-        ),
-      );
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
+    setActiveDays(
+      getStudyDaysForMode(
+        profile.studyMode,
+        profile.customStudyDays || [],
+      ),
+    );
+  }, [profile]);
 
   const filteredLectures = useMemo(
     () => WEEKLY_LECTURES.filter((lecture) => activeDays.includes(lecture.day)),

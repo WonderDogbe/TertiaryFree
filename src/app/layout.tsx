@@ -47,6 +47,7 @@ export const viewport: Viewport = {
 };
 
 import { PwaSplashScreen } from "@/components/PwaSplashScreen";
+import { AuthProvider } from "@/components/AuthProvider";
 
 export default function RootLayout({
   children,
@@ -74,7 +75,9 @@ export default function RootLayout({
       >
         <MantineProvider defaultColorScheme="auto">
           <PwaSplashScreen />
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </MantineProvider>
       </body>
     </html>

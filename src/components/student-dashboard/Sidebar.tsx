@@ -6,7 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { LogOut, UserRound } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { getActiveUserProfile, logoutActiveSession } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
+import { createClient } from "@/utils/supabase/client";
 import { ConfirmationModal } from "./ConfirmationModal";
 
 export type SidebarItem = {
@@ -126,32 +127,27 @@ export function Sidebar({
   );
   const settingsItem = items.find((item) => item.id === "settings");
 
+  const { user } = useAuth();
+  
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      const activeUserProfile = getActiveUserProfile();
+    if (user?.name) {
+      setMobileProfileName(formatDisplayName(user.name));
+    }
 
-      if (activeUserProfile?.name) {
-        setMobileProfileName(formatDisplayName(activeUserProfile.name));
-      }
+    const rawLevel = user?.level?.trim();
 
-      const rawLevel = activeUserProfile?.level?.trim();
+    if (rawLevel) {
+      const levelLabel =
+        rawLevel.toLowerCase().startsWith("level")
+          ? rawLevel
+          : `Level ${rawLevel}`;
+      setMobileProfileLevel(formatDisplayName(levelLabel));
+    }
+  }, [user]);
 
-      if (rawLevel) {
-        const levelLabel =
-          rawLevel.toLowerCase().startsWith("level")
-            ? rawLevel
-            : `Level ${rawLevel}`;
-        setMobileProfileLevel(formatDisplayName(levelLabel));
-      }
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
-
-  const handleConfirmLogout = () => {
-    logoutActiveSession();
+  const handleConfirmLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setIsLogoutModalOpen(false);
     onCloseMobile();
     router.push("/login");

@@ -17,7 +17,7 @@ import {
 import {
   NotificationsFeed,
 } from "@/components/student-dashboard/NotificationsFeed";
-import { getActiveUserProfile } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
 import { LECTURE_COMMUNICATIONS } from "@/lib/dashboard-notifications";
 import {
   formatLectureTimeRange,
@@ -53,31 +53,24 @@ const ASSIGNMENTS: AssignmentItem[] = [
 ];
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [activeDays, setActiveDays] = useState<WeekDay[]>(
     WEEKDAY_STUDY_DAYS as WeekDay[],
   );
 
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      const profile = getActiveUserProfile();
+    if (!user || user.role !== "student") {
+      setActiveDays(WEEKDAY_STUDY_DAYS as WeekDay[]);
+      return;
+    }
 
-      if (!profile || profile.role !== "student") {
-        setActiveDays(WEEKDAY_STUDY_DAYS as WeekDay[]);
-        return;
-      }
-
-      setActiveDays(
-        getStudyDaysForMode(
-          profile.studyMode,
-          profile.customStudyDays || [],
-        ) as WeekDay[],
-      );
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
+    setActiveDays(
+      getStudyDaysForMode(
+        user.studyMode,
+        user.customStudyDays || [],
+      ) as WeekDay[],
+    );
+  }, [user]);
 
   const now = new Date();
   const todayWeekDay = getWeekDayFromDate(now);

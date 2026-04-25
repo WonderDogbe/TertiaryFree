@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BellRing } from "lucide-react";
 import { Card } from "@/components/student-dashboard/Card";
 import { NotificationsFeed } from "@/components/student-dashboard/NotificationsFeed";
-import { getActiveUserProfile } from "@/lib/auth-storage";
+import { useAuth } from "@/components/AuthProvider";
 import {
   LECTURE_COMMUNICATIONS,
   OUTSTANDING_NOTIFICATIONS,
@@ -26,29 +26,22 @@ const PRIORITY_BADGE_CLASSNAME: Record<OutstandingNotificationItem["priority"], 
 };
 
 export default function NotificationsPage() {
+  const { user: profile } = useAuth();
   const [activeDays, setActiveDays] = useState<WeekDayValue[]>(WEEKDAY_STUDY_DAYS);
 
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      const profile = getActiveUserProfile();
+    if (!profile || profile.role !== "student") {
+      setActiveDays(WEEKDAY_STUDY_DAYS);
+      return;
+    }
 
-      if (!profile || profile.role !== "student") {
-        setActiveDays(WEEKDAY_STUDY_DAYS);
-        return;
-      }
-
-      setActiveDays(
-        getStudyDaysForMode(
-          profile.studyMode,
-          profile.customStudyDays || [],
-        ),
-      );
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-    };
-  }, []);
+    setActiveDays(
+      getStudyDaysForMode(
+        profile.studyMode,
+        profile.customStudyDays || [],
+      ),
+    );
+  }, [profile]);
 
   const outstandingNotifications = useMemo(
     () => OUTSTANDING_NOTIFICATIONS.filter((item) => activeDays.includes(item.day)),

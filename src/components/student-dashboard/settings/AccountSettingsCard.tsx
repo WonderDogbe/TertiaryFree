@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import { KeyRound, LogOut } from "lucide-react";
 import { Card } from "../Card";
 import { ConfirmationModal } from "../ConfirmationModal";
-import { logoutActiveSession } from "@/lib/auth-storage";
+import { createClient } from "@/utils/supabase/client";
 
 export function AccountSettingsCard() {
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  const handleConfirmLogout = () => {
-    logoutActiveSession();
+  const handleConfirmLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setIsLogoutModalOpen(false);
     router.push("/login");
   };

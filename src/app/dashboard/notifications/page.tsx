@@ -37,7 +37,7 @@ export default function NotificationsPage() {
 
     setActiveDays(
       getStudyDaysForMode(
-        profile.studyMode,
+        profile.studyMode || "weekday",
         profile.customStudyDays || [],
       ),
     );

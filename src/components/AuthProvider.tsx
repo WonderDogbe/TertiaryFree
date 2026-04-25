@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import type { StudyModeValue, WeekDayValue } from "@/lib/study-schedule";
 
 // Shape matches the ActiveUserProfile interface from your auth-storage, 
 // so the UI doesn't break when we transition.
@@ -15,8 +16,8 @@ export interface AuthUser {
   indexNumber?: string;
   programme?: string;
   level?: string;
-  studyMode?: string;
-  customStudyDays?: string[];
+  studyMode?: StudyModeValue;
+  customStudyDays?: WeekDayValue[];
   [key: string]: any;
 }
 

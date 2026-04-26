@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Clock4,
   BellRing,
+  MessageSquare,
   ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
@@ -176,7 +177,12 @@ export default function DashboardPage() {
           {/* Left — text */}
           <div className="flex-1 min-w-0">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold text-blue-700 shadow-sm dark:bg-white/10 dark:text-blue-300">
-              ⭐ Active Student
+              ⭐{" "}
+              {user?.studyMode === "weekend"
+                ? "Weekend Student"
+                : user?.studyMode === "custom"
+                  ? "Custom Student"
+                  : "Regular Student"}
             </span>
             <h2 className="mt-3 text-2xl font-bold leading-tight text-gray-900 dark:text-gray-100 sm:text-3xl">
               {firstName}
@@ -195,18 +201,10 @@ export default function DashboardPage() {
                 <BookOpen className="h-3.5 w-3.5" /> View Profile
               </Link>
               <Link
-                href="/dashboard/timetable"
-                className="inline-flex items-center justify-center h-8 w-8 rounded-full border border-gray-300 bg-white/80 text-gray-600 shadow-sm transition-all hover:bg-white dark:border-gray-600 dark:bg-white/10 dark:text-gray-300"
-                aria-label="Timetable"
+                href="/dashboard/chat"
+                className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white/80 px-4 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-all hover:bg-white dark:border-gray-600 dark:bg-white/10 dark:text-gray-300"
               >
-                <CalendarDays className="h-3.5 w-3.5" />
-              </Link>
-              <Link
-                href="/dashboard/notifications"
-                className="inline-flex items-center justify-center h-8 w-8 rounded-full border border-gray-300 bg-white/80 text-gray-600 shadow-sm transition-all hover:bg-white dark:border-gray-600 dark:bg-white/10 dark:text-gray-300"
-                aria-label="Notifications"
-              >
-                <BellRing className="h-3.5 w-3.5" />
+                <MessageSquare className="h-3.5 w-3.5" /> Chat
               </Link>
             </div>
           </div>

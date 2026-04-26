@@ -83,7 +83,7 @@ export default function StudentProfilePage() {
       ? "Weekend"
       : profile?.studyMode === "custom"
         ? "Custom"
-        : "Weekday";
+        : "Regular";
   const activeDaysLabel =
     profile?.customStudyDays && profile.customStudyDays.length > 0
       ? profile.customStudyDays.join(", ")

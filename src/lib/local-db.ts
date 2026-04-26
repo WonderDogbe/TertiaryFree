@@ -125,7 +125,7 @@ const PROGRAMME_TYPE_OPTIONS: SelectOption[] = [
 const STUDY_MODE_OPTIONS: StudyModeOption[] = [
   {
     value: "weekday",
-    label: "Weekday (Mon-Fri)",
+    label: "Regular (Mon-Fri)",
     description: "Attend classes from Monday to Friday.",
   },
   {

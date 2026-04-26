@@ -29,144 +29,38 @@ function isHtuInstitution(institutionName) {
 }
 
 function readStoredInstitutionName() {
-  if (typeof window === "undefined") {
-    return "";
-  }
-
+  if (typeof window === "undefined") return "";
   try {
-    const storedValue = window.localStorage.getItem(
-      SIGNUP_INSTITUTION_STORAGE_KEY,
-    );
-
-    if (!storedValue) {
-      return "";
-    }
-
+    const storedValue = window.localStorage.getItem(SIGNUP_INSTITUTION_STORAGE_KEY);
+    if (!storedValue) return "";
     const parsed = JSON.parse(storedValue);
-
-    if (parsed && typeof parsed === "object" && typeof parsed.name === "string") {
-      return parsed.name;
-    }
-  } catch {
-    // Ignore invalid signup storage payloads.
-  }
-
+    if (parsed && typeof parsed === "object" && typeof parsed.name === "string") return parsed.name;
+  } catch { /* ignore */ }
   return "";
 }
 
 function readStoredStudentDetails() {
-  if (typeof window === "undefined") {
-    return {
-      name: "",
-      email: "",
-      indexNumber: "",
-      gender: "",
-      level: "",
-      department: "",
-      programmeType: "",
-      programme: "",
-      studyMode: "",
-      customStudyDays: [],
-    };
-  }
-
+  if (typeof window === "undefined") return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
   try {
-    const storedValue = window.localStorage.getItem(
-      SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
-    );
-
-    if (!storedValue) {
-      return {
-        name: "",
-        email: "",
-        indexNumber: "",
-        gender: "",
-        level: "",
-        department: "",
-        programmeType: "",
-        programme: "",
-        studyMode: "",
-        customStudyDays: [],
-      };
-    }
-
+    const storedValue = window.localStorage.getItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY);
+    if (!storedValue) return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
     const parsed = JSON.parse(storedValue);
-
-    if (!parsed || typeof parsed !== "object") {
-      return {
-        name: "",
-        email: "",
-        indexNumber: "",
-        gender: "",
-        level: "",
-        department: "",
-        programmeType: "",
-        programme: "",
-        studyMode: "",
-        customStudyDays: [],
-      };
-    }
-
-    const name = typeof parsed.name === "string" ? parsed.name : "";
-    const email = typeof parsed.email === "string" ? parsed.email : "";
-    const indexNumber =
-      typeof parsed.indexNumber === "string" ? parsed.indexNumber : "";
-    const gender =
-      typeof parsed.gender === "string" && isKnownGender(parsed.gender)
-        ? parsed.gender
-        : "";
-    const level =
-      typeof parsed.level === "string" && isKnownLevel(parsed.level)
-        ? parsed.level
-        : "";
-    const department =
-      typeof parsed.department === "string" &&
-      isKnownFacultyName(parsed.department)
-        ? parsed.department
-        : "";
-    const programmeType =
-      typeof parsed.programmeType === "string" &&
-      isKnownProgrammeType(parsed.programmeType)
-        ? parsed.programmeType
-        : "";
-    const programme =
-      typeof parsed.programme === "string" &&
-      isKnownProgrammeName(parsed.programme)
-        ? parsed.programme
-        : "";
-    const studyMode =
-      typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode)
-        ? parsed.studyMode
-        : "";
-    const customStudyDays = Array.isArray(parsed.customStudyDays)
-      ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day))
-      : [];
-
+    if (!parsed || typeof parsed !== "object") return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
+    
     return {
-      name,
-      email,
-      indexNumber,
-      gender,
-      level,
-      department,
-      programmeType,
-      programme,
-      studyMode,
-      customStudyDays,
+      name: typeof parsed.name === "string" ? parsed.name : "",
+      email: typeof parsed.email === "string" ? parsed.email : "",
+      indexNumber: typeof parsed.indexNumber === "string" ? parsed.indexNumber : "",
+      gender: typeof parsed.gender === "string" && isKnownGender(parsed.gender) ? parsed.gender : "",
+      level: typeof parsed.level === "string" && isKnownLevel(parsed.level) ? parsed.level : "",
+      department: typeof parsed.department === "string" && isKnownFacultyName(parsed.department) ? parsed.department : "",
+      programmeType: typeof parsed.programmeType === "string" && isKnownProgrammeType(parsed.programmeType) ? parsed.programmeType : "",
+      programme: typeof parsed.programme === "string" && isKnownProgrammeName(parsed.programme) ? parsed.programme : "",
+      studyMode: typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode) ? parsed.studyMode : "",
+      customStudyDays: Array.isArray(parsed.customStudyDays) ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day)) : [],
     };
   } catch {
-    return {
-      name: "",
-      email: "",
-      indexNumber: "",
-      gender: "",
-      level: "",
-      department: "",
-      programmeType: "",
-      programme: "",
-      studyMode: "",
-      customStudyDays: [],
-    };
+    return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
   }
 }
 
@@ -179,235 +73,220 @@ export default function StudentProgrammePage() {
   const [error, setError] = useState("");
   const requiresProgrammeSelection = isHtuInstitution(institutionName);
 
-  const hasRequiredStudentDetails =
-    !requiresProgrammeSelection || isKnownFacultyName(studentDetails.department);
+  const hasRequiredStudentDetails = !requiresProgrammeSelection || isKnownFacultyName(studentDetails.department);
+
+  const programmeOptions = hasRequiredStudentDetails && isKnownProgrammeType(programmeType)
+    ? getProgrammeOptionsForFacultyAndType(studentDetails.department, programmeType)
+    : [];
+
+  const hasValidProgrammeSelection = !requiresProgrammeSelection || (isKnownProgrammeType(programmeType) && programmeOptions.some((option) => option.name === programme));
 
   const inputStyles = {
-    label: {
-      color: "var(--color-text)",
-      fontWeight: 700,
-      fontSize: "0.76rem",
-      letterSpacing: "0.08em",
-      textTransform: "uppercase",
-      marginBottom: "0.42rem",
-    },
+    root: { marginBottom: "1rem" },
+    label: { display: "none" },
     input: {
-      backgroundColor: "var(--color-secondary-bg)",
-      color: "var(--color-text)",
-      borderColor: "rgba(148, 163, 184, 0.35)",
-      minHeight: "52px",
+      backgroundColor: "#fff",
+      color: "#000",
+      borderColor: "#d8b4fe",
+      borderWidth: "1.5px",
+      minHeight: "60px",
+      borderRadius: "16px",
+      fontSize: "1rem",
+      fontWeight: "600",
+      boxShadow: "0 2px 10px rgba(168, 85, 247, 0.05)",
+      transition: "all 0.2s ease",
+      "&::placeholder": { color: "#475569", opacity: 1 },
+      "&:focus": { borderColor: "#a855f7", boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.1)" },
     },
     dropdown: {
-      backgroundColor: "var(--color-secondary-bg)",
-      borderColor: "rgba(148, 163, 184, 0.35)",
+      backgroundColor: "#fff",
+      borderRadius: "24px",
+      boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+      border: "1px solid rgba(0,0,0,0.08)",
+      padding: "0.75rem",
+      marginTop: "8px",
     },
     option: {
-      color: "var(--color-text)",
-      backgroundColor: "transparent",
+      borderRadius: "14px",
+      fontSize: "0.95rem",
+      fontWeight: "600",
+      padding: "12px 16px",
+      marginBottom: "4px",
+      color: "#000",
+      "&[data-selected]": { backgroundColor: "#f3e8ff", color: "#7e22ce" },
+      "&[data-hovered]": { backgroundColor: "#faf5ff", color: "#7e22ce" },
     },
   };
-
-  const programmeOptions =
-    hasRequiredStudentDetails && isKnownProgrammeType(programmeType)
-      ? getProgrammeOptionsForFacultyAndType(
-          studentDetails.department,
-          programmeType,
-        )
-      : [];
-
-  const hasValidProgrammeSelection =
-    !requiresProgrammeSelection ||
-    (isKnownProgrammeType(programmeType) &&
-      programmeOptions.some((option) => option.name === programme));
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     if (!requiresProgrammeSelection) {
-      window.localStorage.setItem(
-        SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
-        JSON.stringify({
-          ...studentDetails,
-          programmeType: "",
-          programme: "",
-        }),
-      );
-
+      window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, programmeType: "", programme: "" }));
       router.push("/signup/student");
       return;
     }
-
-    if (!isKnownProgrammeType(programmeType)) {
-      setError("Programme type is required");
-      return;
-    }
-
-    if (!programmeOptions.some((option) => option.name === programme)) {
-      setError("Programme is required");
-      return;
-    }
-
-    window.localStorage.setItem(
-      SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
-      JSON.stringify({
-        ...studentDetails,
-        programmeType,
-        programme,
-      }),
-    );
-
+    if (!isKnownProgrammeType(programmeType)) { setError("Programme type is required"); return; }
+    if (!programmeOptions.some((option) => option.name === programme)) { setError("Programme is required"); return; }
+    window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, programmeType, programme }));
     router.push("/signup/student");
   };
 
-  if (!institutionName) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-        <FloatingBackLink
-          href="/signup/institution"
-          label="Back to institution selection"
-        />
-        <section className="w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-            No Institution Selected
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Select your institution first to continue.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/signup/institution"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Institution Selection
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (!hasRequiredStudentDetails) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-        <FloatingBackLink
-          href="/signup/student/department"
-          label="Back to faculty selection"
-        />
-        <section className="w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-            Complete Previous Steps First
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Select your faculty before choosing your programme.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/signup/student/department"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Faculty Selection
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-      <FloatingBackLink
-        href={requiresProgrammeSelection ? "/signup/student/department" : "/signup/details"}
-        label="Back"
-      />
-      <section className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-300">
-          Student Signup
-        </p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-          Select Your Programme
-        </h1>
-        {requiresProgrammeSelection ? (
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Choose your study type and programme under {studentDetails.department}.
-          </p>
-        ) : (
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Programme selection is currently available only for HTU. Continue to student details.
-          </p>
-        )}
+    <>
+      <style>{`
+        .institution-page {
+          min-height: 100svh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 5rem 1.25rem 2.5rem;
+          position: relative;
+          overflow: hidden;
+          background: #fdfdfd;
+        }
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {requiresProgrammeSelection && (
-            <Select
-              id="student-programme-type"
-              label="Study Type"
-              placeholder="Select study type"
-              data={PROGRAMME_TYPE_OPTIONS}
-              value={programmeType}
-              onChange={(value) => {
-                setProgrammeType(value || "");
-                setProgramme("");
-                if (error) {
-                  setError("");
-                }
-              }}
-              styles={inputStyles}
-            />
+
+
+        .institution-container {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          max-width: 520px;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 2.5rem;
+        }
+
+        .institution-header { text-align: center; margin-bottom: 1rem; }
+        .institution-title {
+          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: #000; margin: 0; line-height: 1.1;
+        }
+        .institution-subtitle {
+          font-size: 1rem; color: #334155; margin-top: 0.75rem; font-weight: 600;
+        }
+
+        .institution-form-card {
+          background: #fff;
+          border-radius: 32px;
+          padding: 2.5rem;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+          border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .faculty-option {
+          display: flex; align-items: center; gap: 1rem; color: #000; width: 100%;
+        }
+        .faculty-icon-placeholder {
+          width: 36px; height: 36px; border-radius: 10px; background: #000; color: #fff;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+        }
+
+        .institution-continue-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.6rem;
+          padding: 1.1rem 2.5rem;
+          border-radius: 20px;
+          border: none;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          background: #000;
+          color: #fff;
+          width: 100%;
+          margin-top: 1rem;
+        }
+        .institution-continue-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+          background: #000;
+        }
+        .institution-continue-btn:disabled {
+          opacity: 0.2;
+          cursor: not-allowed;
+        }
+      `}</style>
+
+      <main className="institution-page">
+        <FloatingBackLink href="/signup/student/department" label="Back" />
+
+        <div className="institution-container">
+          {!institutionName ? (
+            <div className="institution-header">
+              <h1 className="institution-title">No Institution Selected</h1>
+              <div className="mt-8">
+                <Link href="/signup/institution" className="institution-continue-btn">Back to selection</Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <header className="institution-header">
+                <h1 className="institution-title">Your Programme</h1>
+                <p className="institution-subtitle">Tell us what you are studying.</p>
+              </header>
+
+              <div className="institution-form-card">
+                <form onSubmit={handleSubmit}>
+                  {requiresProgrammeSelection && (
+                    <>
+                      <Select
+                        id="student-programme-type"
+                        placeholder="Select study type"
+                        data={PROGRAMME_TYPE_OPTIONS}
+                        value={programmeType}
+                        onChange={(value) => { setProgrammeType(value || ""); setProgramme(""); if (error) setError(""); }}
+                        styles={inputStyles}
+                        renderOption={({ option, checked }) => (
+                          <div className="faculty-option">
+                            <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
+                              {option.label.substring(0, 2).toUpperCase()}
+                            </div>
+                            <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
+                          </div>
+                        )}
+                      />
+
+                      <Select
+                        id="student-programme"
+                        placeholder={isKnownProgrammeType(programmeType) ? "Select your programme" : "Select study type first"}
+                        data={programmeOptions.map((option) => ({ value: option.name, label: option.name }))}
+                        value={programme}
+                        onChange={(value) => { setProgramme(value || ""); if (error) setError(""); }}
+                        disabled={!isKnownProgrammeType(programmeType)}
+                        searchable
+                        nothingFoundMessage="No matching programme"
+                        styles={inputStyles}
+                        error={error}
+                        renderOption={({ option, checked }) => (
+                          <div className="faculty-option">
+                            <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
+                              {option.label.substring(0, 2).toUpperCase()}
+                            </div>
+                            <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
+                          </div>
+                        )}
+                      />
+                    </>
+                  )}
+
+                  <button type="submit" className="institution-continue-btn" disabled={!hasValidProgrammeSelection}>
+                    Continue
+                    <svg viewBox="0 0 16 16" width="18" height="18" fill="none" aria-hidden="true">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </>
           )}
-
-          {requiresProgrammeSelection && (
-            <Select
-              id="student-programme"
-              label="Programme"
-              placeholder={
-                isKnownProgrammeType(programmeType)
-                  ? "Select your programme"
-                  : "Select study type first"
-              }
-              data={programmeOptions.map((option) => ({
-                value: option.name,
-                label: option.name,
-              }))}
-              value={programme}
-              onChange={(value) => {
-                setProgramme(value || "");
-                if (error) {
-                  setError("");
-                }
-              }}
-              disabled={!isKnownProgrammeType(programmeType)}
-              searchable
-              nothingFoundMessage="No matching programme"
-              styles={inputStyles}
-              error={error}
-            />
-          )}
-
-          {requiresProgrammeSelection &&
-            isKnownProgrammeType(programmeType) &&
-            programmeOptions.length === 0 && (
-            <p className="-mt-2 text-xs font-medium text-amber-600 dark:text-amber-400">
-              No programmes are currently listed for this faculty and study type.
-            </p>
-            )}
-
-          <div className="pt-2 flex justify-end">
-            <button
-              type="submit"
-              className={`w-full rounded-lg px-5 py-3 text-sm font-semibold text-white transition-colors sm:w-auto ${
-                hasValidProgrammeSelection
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "cursor-not-allowed bg-blue-300"
-              }`}
-              disabled={!hasValidProgrammeSelection}
-            >
-              Continue to Student Details
-            </button>
-          </div>
-        </form>
-      </section>
-    </main>
+        </div>
+      </main>
+    </>
   );
 }

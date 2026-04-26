@@ -24,9 +24,7 @@ const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
 const LEVEL_OPTIONS = getLevelOptions();
 const SEMESTER_OPTIONS = getSemesterOptions();
-const LEVEL_NUMBER_OPTIONS = Array.from(
-  new Set(LEVEL_OPTIONS.map((option) => option.level)),
-).map((levelValue) => ({
+const LEVEL_NUMBER_OPTIONS = Array.from(new Set(LEVEL_OPTIONS.map((option) => option.level))).map((levelValue) => ({
   value: levelValue,
   label: `Level ${levelValue}`,
 }));
@@ -36,177 +34,49 @@ function isHtuInstitution(institutionName) {
 }
 
 function getStoredLevelSelection(storedLevel) {
-  if (!isKnownLevel(storedLevel)) {
-    return {
-      level: "",
-      semester: "",
-    };
-  }
-
-  const matchedOption = LEVEL_OPTIONS.find(
-    (option) => option.value === storedLevel,
-  );
-
-  if (!matchedOption) {
-    return {
-      level: "",
-      semester: "",
-    };
-  }
-
-  return {
-    level: matchedOption.level,
-    semester: matchedOption.semester,
-  };
+  if (!isKnownLevel(storedLevel)) return { level: "", semester: "" };
+  const matchedOption = LEVEL_OPTIONS.find((option) => option.value === storedLevel);
+  return matchedOption ? { level: matchedOption.level, semester: matchedOption.semester } : { level: "", semester: "" };
 }
 
 function buildLevelValue(level, semester) {
-  const matchedOption = LEVEL_OPTIONS.find(
-    (option) => option.level === level && option.semester === semester,
-  );
-
+  const matchedOption = LEVEL_OPTIONS.find((option) => option.level === level && option.semester === semester);
   return matchedOption?.value || "";
 }
 
 function readStoredInstitutionName() {
-  if (typeof window === "undefined") {
-    return "";
-  }
-
+  if (typeof window === "undefined") return "";
   try {
-    const storedValue = window.localStorage.getItem(
-      SIGNUP_INSTITUTION_STORAGE_KEY,
-    );
-
-    if (!storedValue) {
-      return "";
-    }
-
+    const storedValue = window.localStorage.getItem(SIGNUP_INSTITUTION_STORAGE_KEY);
+    if (!storedValue) return "";
     const parsed = JSON.parse(storedValue);
-
-    if (parsed && typeof parsed === "object" && typeof parsed.name === "string") {
-      return parsed.name;
-    }
-  } catch {
-    // Ignore invalid signup storage payloads.
-  }
-
+    if (parsed && typeof parsed === "object" && typeof parsed.name === "string") return parsed.name;
+  } catch { /* ignore */ }
   return "";
 }
 
 function readStoredStudentDetails() {
-  if (typeof window === "undefined") {
-    return {
-      name: "",
-      email: "",
-      indexNumber: "",
-      gender: "",
-      level: "",
-      department: "",
-      programmeType: "",
-      programme: "",
-      studyMode: "",
-      customStudyDays: [],
-    };
-  }
-
+  if (typeof window === "undefined") return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
   try {
-    const storedValue = window.localStorage.getItem(
-      SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
-    );
-
-    if (!storedValue) {
-      return {
-        name: "",
-        email: "",
-        indexNumber: "",
-        gender: "",
-        level: "",
-        department: "",
-        programmeType: "",
-        programme: "",
-        studyMode: "",
-        customStudyDays: [],
-      };
-    }
-
+    const storedValue = window.localStorage.getItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY);
+    if (!storedValue) return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
     const parsed = JSON.parse(storedValue);
-
-    if (!parsed || typeof parsed !== "object") {
-      return {
-        name: "",
-        email: "",
-        indexNumber: "",
-        gender: "",
-        level: "",
-        department: "",
-        programmeType: "",
-        programme: "",
-        studyMode: "",
-        customStudyDays: [],
-      };
-    }
-
-    const name = typeof parsed.name === "string" ? parsed.name : "";
-    const email = typeof parsed.email === "string" ? parsed.email : "";
-    const indexNumber =
-      typeof parsed.indexNumber === "string" ? parsed.indexNumber : "";
-    const gender =
-      typeof parsed.gender === "string" && isKnownGender(parsed.gender)
-        ? parsed.gender
-        : "";
-    const level =
-      typeof parsed.level === "string" && isKnownLevel(parsed.level)
-        ? parsed.level
-        : "";
-    const department =
-      typeof parsed.department === "string" &&
-      isKnownDepartmentName(parsed.department)
-        ? parsed.department
-        : "";
-    const programmeType =
-      typeof parsed.programmeType === "string" &&
-      isKnownProgrammeType(parsed.programmeType)
-        ? parsed.programmeType
-        : "";
-    const programme =
-      typeof parsed.programme === "string" &&
-      isKnownProgrammeName(parsed.programme)
-        ? parsed.programme
-        : "";
-    const studyMode =
-      typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode)
-        ? parsed.studyMode
-        : "";
-    const customStudyDays = Array.isArray(parsed.customStudyDays)
-      ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day))
-      : [];
+    if (!parsed || typeof parsed !== "object") return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
 
     return {
-      name,
-      email,
-      indexNumber,
-      gender,
-      level,
-      department,
-      programmeType,
-      programme,
-      studyMode,
-      customStudyDays,
+      name: typeof parsed.name === "string" ? parsed.name : "",
+      email: typeof parsed.email === "string" ? parsed.email : "",
+      indexNumber: typeof parsed.indexNumber === "string" ? parsed.indexNumber : "",
+      gender: typeof parsed.gender === "string" && isKnownGender(parsed.gender) ? parsed.gender : "",
+      level: typeof parsed.level === "string" && isKnownLevel(parsed.level) ? parsed.level : "",
+      department: typeof parsed.department === "string" && isKnownDepartmentName(parsed.department) ? parsed.department : "",
+      programmeType: typeof parsed.programmeType === "string" && isKnownProgrammeType(parsed.programmeType) ? parsed.programmeType : "",
+      programme: typeof parsed.programme === "string" && isKnownProgrammeName(parsed.programme) ? parsed.programme : "",
+      studyMode: typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode) ? parsed.studyMode : "",
+      customStudyDays: Array.isArray(parsed.customStudyDays) ? parsed.customStudyDays.filter((day) => isKnownWeekDay(day)) : [],
     };
   } catch {
-    return {
-      name: "",
-      email: "",
-      indexNumber: "",
-      gender: "",
-      level: "",
-      department: "",
-      programmeType: "",
-      programme: "",
-      studyMode: "",
-      customStudyDays: [],
-    };
+    return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };
   }
 }
 
@@ -214,189 +84,207 @@ export default function StudentLevelPage() {
   const router = useRouter();
   const [institutionName] = useState(readStoredInstitutionName);
   const [studentDetails] = useState(readStoredStudentDetails);
-  const requiresFacultyAndProgrammeSelection = isHtuInstitution(institutionName);
   const initialLevelSelection = getStoredLevelSelection(studentDetails.level);
   const [selectedLevel, setSelectedLevel] = useState(initialLevelSelection.level);
-  const [selectedSemester, setSelectedSemester] = useState(
-    initialLevelSelection.semester,
-  );
+  const [selectedSemester, setSelectedSemester] = useState(initialLevelSelection.semester);
   const [error, setError] = useState("");
 
   const inputStyles = {
-    label: {
-      color: "var(--color-text)",
-      fontWeight: 700,
-      fontSize: "0.76rem",
-      letterSpacing: "0.08em",
-      textTransform: "uppercase",
-      marginBottom: "0.42rem",
-    },
+    root: { marginBottom: "1rem" },
+    label: { display: "none" },
     input: {
-      backgroundColor: "var(--color-secondary-bg)",
-      color: "var(--color-text)",
-      borderColor: "rgba(148, 163, 184, 0.35)",
-      minHeight: "52px",
+      backgroundColor: "#fff",
+      color: "#000",
+      borderColor: "#d8b4fe",
+      borderWidth: "1.5px",
+      minHeight: "60px",
+      borderRadius: "16px",
+      fontSize: "1rem",
+      fontWeight: "600",
+      boxShadow: "0 2px 10px rgba(168, 85, 247, 0.05)",
+      transition: "all 0.2s ease",
+      "&::placeholder": { color: "#475569", opacity: 1 },
+      "&:focus": { borderColor: "#a855f7", boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.1)" },
     },
     dropdown: {
-      backgroundColor: "var(--color-secondary-bg)",
-      borderColor: "rgba(148, 163, 184, 0.35)",
+      backgroundColor: "#fff",
+      borderRadius: "24px",
+      boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+      border: "1px solid rgba(0,0,0,0.08)",
+      padding: "0.75rem",
+      marginTop: "8px",
     },
     option: {
-      color: "var(--color-text)",
-      backgroundColor: "transparent",
+      borderRadius: "14px",
+      fontSize: "0.95rem",
+      fontWeight: "600",
+      padding: "12px 16px",
+      marginBottom: "4px",
+      color: "#000",
+      "&[data-selected]": { backgroundColor: "#f3e8ff", color: "#7e22ce" },
+      "&[data-hovered]": { backgroundColor: "#faf5ff", color: "#7e22ce" },
     },
   };
 
   const level = buildLevelValue(selectedLevel, selectedSemester);
   const hasValidLevelSelection = isKnownLevel(level);
 
-  const hasRequiredStudentDetails =
-    studentDetails.name.trim() !== "" &&
-    studentDetails.email.trim() !== "" &&
-    studentDetails.email.includes("@") &&
-    studentDetails.indexNumber.trim() !== "" &&
-    isKnownGender(studentDetails.gender) &&
-    (!requiresFacultyAndProgrammeSelection ||
-      (isKnownDepartmentName(studentDetails.department) &&
-        isKnownProgrammeType(studentDetails.programmeType) &&
-        isKnownProgrammeName(studentDetails.programme)));
-
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (!hasValidLevelSelection) {
-      setError("Level and semester are required");
-      return;
-    }
-
-    window.localStorage.setItem(
-      SIGNUP_STUDENT_DETAILS_STORAGE_KEY,
-      JSON.stringify({
-        ...studentDetails,
-        level,
-      }),
-    );
-
+    if (!hasValidLevelSelection) { setError("Level and semester are required"); return; }
+    window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, level }));
     router.push("/signup/student/study-mode");
   };
 
-  if (!institutionName) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-        <FloatingBackLink
-          href="/signup/institution"
-          label="Back to institution selection"
-        />
-        <section className="w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-            No Institution Selected
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Select your institution first to continue.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/signup/institution"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Institution Selection
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (!hasRequiredStudentDetails) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-        <FloatingBackLink
-          href="/signup/student"
-          label="Back to student details"
-        />
-        <section className="w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-            Complete Student Details First
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-            Complete programme and student details before selecting your level.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/signup/student"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Student Details
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 dark:bg-gray-950">
-      <FloatingBackLink href="/signup/student" label="Back to student details" />
-      <section className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-gray-700 dark:bg-gray-900 sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-300">
-          Student Signup
-        </p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-gray-100">
-          Select Your Level and Semester
-        </h1>
-        <p className="mt-2 text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-          Choose your current level and semester before selecting study mode.
-        </p>
+    <>
+      <style>{`
+        .institution-page {
+          min-height: 100svh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 5rem 1.25rem 2.5rem;
+          position: relative;
+          overflow: hidden;
+          background: #fdfdfd;
+        }
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <Select
-            id="student-level"
-            label="Level"
-            placeholder="Select your level"
-            data={LEVEL_NUMBER_OPTIONS}
-            value={selectedLevel}
-            onChange={(value) => {
-              setSelectedLevel(value || "");
-              if (error) {
-                setError("");
-              }
-            }}
-            styles={inputStyles}
-          />
 
-          <Select
-            id="student-semester"
-            label="Semester"
-            placeholder="Select your semester"
-            data={SEMESTER_OPTIONS}
-            value={selectedSemester}
-            onChange={(value) => {
-              setSelectedSemester(value || "");
-              if (error) {
-                setError("");
-              }
-            }}
-            error={error}
-            styles={inputStyles}
-          />
 
-          <div className="pt-2 flex justify-end">
-            <button
-              type="submit"
-              className={`w-full rounded-lg px-5 py-3 text-sm font-semibold text-white transition-colors sm:w-auto ${
-                hasValidLevelSelection
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "cursor-not-allowed bg-blue-300"
-              }`}
-              disabled={!hasValidLevelSelection}
-            >
-              Continue to Study Mode
-            </button>
-          </div>
-        </form>
-      </section>
-    </main>
+        .institution-container {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          max-width: 520px;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 2.5rem;
+        }
+
+        .institution-header { text-align: center; margin-bottom: 1rem; }
+        .institution-title {
+          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: #000; margin: 0; line-height: 1.1;
+        }
+        .institution-subtitle {
+          font-size: 1rem; color: #334155; margin-top: 0.75rem; font-weight: 600;
+        }
+
+        .institution-form-card {
+          background: #fff;
+          border-radius: 32px;
+          padding: 2.5rem;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+          border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .faculty-option {
+          display: flex; align-items: center; gap: 1rem; color: #000; width: 100%;
+        }
+        .faculty-icon-placeholder {
+          width: 36px; height: 36px; border-radius: 10px; background: #000; color: #fff;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+        }
+
+        .institution-continue-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.6rem;
+          padding: 1.1rem 2.5rem;
+          border-radius: 20px;
+          border: none;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          background: #000;
+          color: #fff;
+          width: 100%;
+          margin-top: 1rem;
+        }
+        .institution-continue-btn:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+          background: #000;
+        }
+        .institution-continue-btn:disabled {
+          opacity: 0.2;
+          cursor: not-allowed;
+        }
+      `}</style>
+
+      <main className="institution-page">
+        <FloatingBackLink href="/signup/student" label="Back" />
+
+        <div className="institution-container">
+          {!institutionName ? (
+            <div className="institution-header">
+              <h1 className="institution-title">No Institution Selected</h1>
+              <div className="mt-8">
+                <Link href="/signup/institution" className="institution-continue-btn">Back to selection</Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <header className="institution-header">
+                <h1 className="institution-title">Current Level</h1>
+                <p className="institution-subtitle">Tell us your current year of study.</p>
+              </header>
+
+              <div className="institution-form-card">
+                <form onSubmit={handleSubmit}>
+                  <Select
+                    id="student-level"
+                    placeholder="Select your level"
+                    data={LEVEL_NUMBER_OPTIONS}
+                    value={selectedLevel}
+                    onChange={(value) => { setSelectedLevel(value || ""); if (error) setError(""); }}
+                    styles={inputStyles}
+                    renderOption={({ option, checked }) => (
+                      <div className="faculty-option">
+                        <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
+                          {option.label.substring(6).substring(0, 2).padStart(2, 'L')}
+                        </div>
+                        <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
+                      </div>
+                    )}
+                  />
+
+                  <Select
+                    id="student-semester"
+                    placeholder="Select your semester"
+                    data={SEMESTER_OPTIONS}
+                    value={selectedSemester}
+                    onChange={(value) => { setSelectedSemester(value || ""); if (error) setError(""); }}
+                    error={error}
+                    styles={inputStyles}
+                    renderOption={({ option, checked }) => (
+                      <div className="faculty-option">
+                        <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
+                          {option.label.substring(0, 2).toUpperCase()}
+                        </div>
+                        <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
+                      </div>
+                    )}
+                  />
+
+                  <button type="submit" className="institution-continue-btn" disabled={!hasValidLevelSelection}>
+                    Continue
+                    <svg viewBox="0 0 16 16" width="18" height="18" fill="none" aria-hidden="true">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+    </>
   );
 }

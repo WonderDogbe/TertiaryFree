@@ -11,6 +11,8 @@ import {
   WEEKDAY_STUDY_DAYS,
 } from "@/lib/study-schedule";
 
+import { TimetableTabs } from "@/components/student-dashboard/timetable/TimetableTabs";
+
 export default function ClassTimetablePage() {
   const { user: profile } = useAuth();
   const [activeDays, setActiveDays] = useState(WEEKDAY_STUDY_DAYS);
@@ -35,13 +37,15 @@ export default function ClassTimetablePage() {
   );
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-2xl border border-sky-200 bg-sky-100 p-6 shadow-sm transition-colors duration-300 dark:border-sky-800/70 dark:bg-sky-900/25">
-        <h2 className="text-xl font-semibold text-sky-950 transition-colors duration-300 dark:text-sky-100">
-          Class Timetable
+    <div className="space-y-4">
+      <TimetableTabs />
+      
+      <section className="rounded-[2rem] border border-sky-100 bg-sky-50/50 p-6 shadow-sm transition-colors duration-300 dark:border-sky-900/40 dark:bg-sky-900/10">
+        <h2 className="text-xl font-bold text-sky-950 transition-colors duration-300 dark:text-sky-100">
+          Weekly Classes
         </h2>
-        <p className="mt-2 text-sm text-sky-800 transition-colors duration-300 dark:text-sky-200/90">
-          View classes for your selected study days in one clear weekly overview.
+        <p className="mt-1 text-sm text-sky-800/80 transition-colors duration-300 dark:text-sky-200/60 font-medium">
+          Your personalized lecture schedule based on your study mode.
         </p>
       </section>
 

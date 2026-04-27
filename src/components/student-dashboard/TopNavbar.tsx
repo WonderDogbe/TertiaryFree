@@ -125,7 +125,7 @@ export function TopNavbar({
           </Menu.Item>
           <Menu.Divider className="border-gray-100 dark:border-gray-800" />
           <Menu.Item className="h-9 min-h-0 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30" onClick={() => setIsLogoutModalOpen(true)} leftSection={<LogOut className="h-4 w-4" />}>
-            Log Out
+            Sign Out
           </Menu.Item>
         </>
       );
@@ -237,10 +237,10 @@ export function TopNavbar({
 
       <ConfirmationModal
         isOpen={isLogoutModalOpen}
-        title="Log out of your account?"
+        title="Sign out of your account?"
         description="You will need to sign in again to continue using your dashboard."
-        confirmLabel="Log out"
-        cancelLabel="Stay signed in"
+        confirmLabel="Sign out"
+        cancelLabel={null as any}
         onConfirm={handleConfirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
       />

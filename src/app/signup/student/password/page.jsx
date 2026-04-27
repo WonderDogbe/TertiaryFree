@@ -189,25 +189,31 @@ export default function StudentPasswordPage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 0.6rem;
-          padding: 1.1rem 2.5rem;
-          border-radius: 20px;
+          gap: 0.5rem;
+          padding: 0.85rem 2.5rem;
+          border-radius: 999px;
           border: none;
-          font-size: 1rem;
-          font-weight: 700;
+          font-size: 0.95rem;
+          font-weight: 600;
+          letter-spacing: 0.01em;
           cursor: pointer;
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          background: #000;
+          transition: all 0.25s ease;
+          background: linear-gradient(135deg, #a855f7, #6366f1);
           color: #fff;
           width: 100%;
           margin-top: 1rem;
+          box-shadow: 0 4px 20px rgba(99,102,241,0.35);
         }
         .institution-continue-btn:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-          background: #000;
+          box-shadow: 0 8px 28px rgba(99,102,241,0.45);
         }
-        .institution-continue-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .institution-continue-btn:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+          background: #ccc;
+          box-shadow: none;
+        }
       `}</style>
 
       <main className="institution-page">

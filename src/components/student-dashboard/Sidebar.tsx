@@ -259,8 +259,8 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => setIsLogoutModalOpen(true)}
-                title={isDesktopCollapsed ? "Log out" : undefined}
-                aria-label={isDesktopCollapsed ? "Log out" : undefined}
+                title={isDesktopCollapsed ? "Sign out" : undefined}
+                aria-label={isDesktopCollapsed ? "Sign out" : undefined}
                 className={`mt-2 flex items-center rounded-xl text-sm font-medium text-rose-600 transition-all duration-300 ease-in-out hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-900/30 ${
                   isDesktopCollapsed
                     ? "h-10 w-10 justify-center"
@@ -269,7 +269,7 @@ export function Sidebar({
               >
                 <LogOut className="h-4 w-4" />
                 {!isDesktopCollapsed && (
-                  <span className="tracking-normal">Log Out</span>
+                  <span className="tracking-normal">Sign Out</span>
                 )}
               </button>
             </div>
@@ -393,10 +393,10 @@ export function Sidebar({
 
       <ConfirmationModal
         isOpen={isLogoutModalOpen}
-        title="Log out of your account?"
+        title="Sign out of your account?"
         description="You will need to sign in again to continue using your dashboard."
-        confirmLabel="Log out"
-        cancelLabel="Stay signed in"
+        confirmLabel="Sign out"
+        cancelLabel={null as any}
         onConfirm={handleConfirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
       />

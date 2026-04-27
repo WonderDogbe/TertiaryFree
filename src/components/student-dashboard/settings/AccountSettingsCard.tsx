@@ -39,7 +39,7 @@ export function AccountSettingsCard() {
           >
             <span className="inline-flex items-center gap-2">
               <LogOut className="h-4 w-4" />
-              Log out
+              Sign out
             </span>
           </button>
         </div>
@@ -47,10 +47,10 @@ export function AccountSettingsCard() {
 
       <ConfirmationModal
         isOpen={isLogoutModalOpen}
-        title="Log out of your account?"
+        title="Sign out of your account?"
         description="You will need to sign in again to continue using your dashboard."
-        confirmLabel="Log out"
-        cancelLabel="Stay signed in"
+        confirmLabel="Sign out"
+        cancelLabel={null as any}
         onConfirm={handleConfirmLogout}
         onCancel={() => setIsLogoutModalOpen(false)}
       />

@@ -319,7 +319,7 @@ export default function SignupDetailsPage() {
           ) : (
             <>
               <header className="institution-header">
-                <span className="institution-eyebrow">Step 2 of 3</span>
+
                 <h1 className="institution-title">{institutionName}</h1>
                 <p className="institution-subtitle">What is your role at this institution?</p>
               </header>

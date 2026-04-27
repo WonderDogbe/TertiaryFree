@@ -277,6 +277,26 @@ export function useQrScanner(options: UseQrScannerOptions = {}) {
     statusMessage,
     startScan,
     stopScan,
+    simulateScan: async () => {
+      if (hasSuccessfulScanRef.current) return;
+      
+      const mockCourse = "MTH 101: Engineering Mathematics I";
+      hasSuccessfulScanRef.current = true;
+      setStatus("success");
+      setStatusMessage("Attendance recorded (Simulated)");
+      
+      onCheckIn?.({
+        course: mockCourse,
+        checkInDate: formatCheckInDate(),
+        checkInTime: formatCheckInTime(),
+        status: "Present",
+        rawValue: "SIMULATED_SCAN_VALUE",
+      });
+      
+      if (isScannerRunning) {
+        await stopScan();
+      }
+    },
     resetState,
   };
 }

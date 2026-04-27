@@ -85,13 +85,15 @@ export function ConfirmationModal({
         </div>
 
         <div className="mt-5 flex items-center justify-end gap-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-          >
-            {cancelLabel}
-          </button>
+          {cancelLabel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              {cancelLabel}
+            </button>
+          )}
           <button
             type="button"
             onClick={onConfirm}

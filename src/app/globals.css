@@ -171,7 +171,7 @@ html.dark .glass-panel {
 
 /* Brand Button */
 .btn-brand {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
   color: white;
   border-radius: 9999px;
   padding: 0.75rem 1.75rem;
@@ -181,23 +181,21 @@ html.dark .glass-panel {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  border: none;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.35);
 }
 .btn-brand:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.24);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(99,102,241,0.45);
 }
 .btn-brand:active {
   transform: translateY(0);
 }
-
-:root.dark .btn-brand {
-  background-color: #2f2fe4;
-}
-
-:root.dark .btn-brand:hover {
-  background-color: #162e93;
-  box-shadow: 0 10px 15px -3px rgba(47, 47, 228, 0.35);
+.btn-brand:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #ccc;
+  box-shadow: none;
 }
 
 /* Mantine Combobox/Select readability overrides */

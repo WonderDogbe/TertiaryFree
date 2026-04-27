@@ -797,13 +797,13 @@ export default function LandingPage() {
                       <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src="/images/mobileframe.jpeg"
+                          src="/mobileframepic.png"
                           alt="TertiaryFree student dashboard preview (mobile)"
                           className="w-full h-auto block sm:hidden"
                         />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src="/images/framepicture.png"
+                          src="/framepic.png"
                           alt="TertiaryFree student dashboard preview (desktop)"
                           className="w-full h-auto hidden sm:block"
                         />

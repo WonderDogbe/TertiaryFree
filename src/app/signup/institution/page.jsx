@@ -221,6 +221,10 @@ export default function SignupInstitutionPage() {
             flex-direction: column;
             align-items: center;
           }
+          .institution-card-wrapper {
+            width: 100%;
+            max-width: 260px;
+          }
         }
 
         /* ── Card wrapper ─────────────────────────────────────── */
@@ -467,7 +471,7 @@ export default function SignupInstitutionPage() {
         <div className="institution-container">
           {/* Header */}
           <header className="institution-header">
-            <span className="institution-eyebrow">Step 1 of 3</span>
+
             <h1 className="institution-title">Select Your Institution</h1>
             <p className="institution-subtitle">
               Choose the school you are enrolled in to get started

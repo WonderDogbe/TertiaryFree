@@ -234,7 +234,7 @@ export default function LandingPage() {
   }, [isDarkMode, isThemeReady, isMobileSystemTheme]);
 
   useEffect(() => {
-    if (!isMenuOpen) {
+    if (!isMenuOpen && !isStandaloneMode) {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
       return;
@@ -247,7 +247,7 @@ export default function LandingPage() {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isStandaloneMode]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {

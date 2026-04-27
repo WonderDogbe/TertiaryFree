@@ -174,7 +174,7 @@ export function TopNavbar({
           <div className="flex items-center md:hidden">
              <button 
                onClick={onToggleSidebar}
-               className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 transition-transform active:scale-95"
+               className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 transition-transform active:scale-95"
                aria-label="Open sidebar"
              >
                 {avatarUrl ? (

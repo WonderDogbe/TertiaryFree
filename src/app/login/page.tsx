@@ -76,12 +76,12 @@ export default function LoginPage({
     <>
       <style>{`
         .institution-page {
-          min-height: 100svh;
+          height: 100svh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 5rem 1.25rem 2.5rem;
+          padding: 1.5rem 1.25rem;
           position: relative;
           overflow: hidden;
           background: #fdfdfd;
@@ -108,7 +108,7 @@ export default function LoginPage({
           display: flex;
           flex-direction: column;
           align-items: stretch;
-          gap: 2.5rem;
+          gap: 1.5rem;
         }
 
         .institution-header { text-align: center; margin-bottom: 1rem; }

@@ -176,7 +176,7 @@ export function Sidebar({
           }`}
         >
           <Link href="/dashboard/profile" className="flex items-center gap-3 overflow-hidden">
-            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+            <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
               {user?.avatarUrl ? (
                 <Image src={user.avatarUrl} alt="Profile" fill className="object-cover" />
               ) : (
@@ -302,7 +302,7 @@ export function Sidebar({
       >
         <div className="flex h-20 items-center px-6 transition-colors duration-300">
           <Link href="/dashboard/profile" onClick={onCloseMobile} className="flex items-center gap-3">
-            <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+            <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
               {user?.avatarUrl ? (
                 <Image src={user.avatarUrl} alt="Profile" fill className="object-cover" />
               ) : (

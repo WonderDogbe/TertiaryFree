@@ -429,10 +429,10 @@ export default function LandingPage() {
 
   if (isStandaloneMode) {
     return (
-      <div className="flex min-h-screen flex-col bg-white text-slate-900 dark:bg-[#121212] dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
+      <div className="flex h-screen flex-col overflow-hidden bg-white text-slate-900 dark:bg-[#121212] dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
         
         {/* Full width image that fades at the bottom into the background */}
-        <div className="relative w-full h-[55vh] min-h-[400px]">
+        <div className="relative w-full h-[45vh] min-h-[300px] flex-shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/img.jpg" 
@@ -442,17 +442,17 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-gray-950"></div>
         </div>
 
-        <div className="flex-1 flex flex-col justify-end px-6 pb-12 -mt-10 relative z-10">
-          <div className="text-center mb-10">
+        <div className="flex-1 flex flex-col justify-center px-6 pb-8 -mt-6 relative z-10 overflow-hidden">
+          <div className="text-center mb-6">
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl drop-shadow-sm">
               Tertiary<span className="text-[var(--color-primary)]">Free</span>
             </h1>
-            <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+            <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300 max-w-xs mx-auto">
               Your academic life, simplified. Timetables, attendance, and smart updates in one place.
             </p>
           </div>
 
-          <div className="w-full flex flex-col gap-3">
+          <div className="w-full flex flex-col gap-3 mt-auto">
             <Link
               href="/login"
               className="w-full flex items-center justify-center rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-lg transition-transform active:scale-[0.98] hover:bg-blue-700"

@@ -31,6 +31,15 @@ export default function LoginPage({
   const [authError, setAuthError] = useState("");
   const authNotice = accountCreated ? "Account created. Sign in with your new credentials." : "";
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
+
   const isFormValid = formData.email.trim() !== "" && formData.password.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {

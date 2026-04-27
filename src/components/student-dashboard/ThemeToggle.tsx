@@ -27,11 +27,13 @@ function applyThemeMode(mode: ThemeMode) {
 interface ThemeToggleProps {
   label?: string;
   className?: string;
+  minimalist?: boolean;
 }
 
 export function ThemeToggle({
   label = "Dark Mode",
   className = "",
+  minimalist = false,
 }: ThemeToggleProps) {
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [isReady, setIsReady] = useState(false);
@@ -44,6 +46,26 @@ export function ThemeToggle({
   }, []);
 
   const isDarkMode = themeMode === "dark";
+
+  const toggleTheme = () => {
+    const nextThemeMode: ThemeMode = isDarkMode ? "light" : "dark";
+    setThemeMode(nextThemeMode);
+    applyThemeMode(nextThemeMode);
+  };
+
+  if (minimalist) {
+    return (
+      <button
+        type="button"
+        onClick={toggleTheme}
+        disabled={!isReady}
+        className={`flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors ${className}`}
+        aria-label="Toggle theme"
+      >
+        {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+      </button>
+    );
+  }
 
   return (
     <div
@@ -60,11 +82,7 @@ export function ThemeToggle({
         aria-label={label}
         aria-checked={isDarkMode}
         disabled={!isReady}
-        onClick={() => {
-          const nextThemeMode: ThemeMode = isDarkMode ? "light" : "dark";
-          setThemeMode(nextThemeMode);
-          applyThemeMode(nextThemeMode);
-        }}
+        onClick={toggleTheme}
         className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-300 ${
           isDarkMode ? "bg-blue-600" : "bg-gray-300"
         } ${!isReady ? "cursor-not-allowed opacity-70" : ""}`}

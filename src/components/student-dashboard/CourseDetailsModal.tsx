@@ -61,7 +61,7 @@ export function CourseDetailsModal({ isOpen, onClose, course }: CourseDetailsMod
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl transition-all duration-300 dark:border-gray-700 dark:bg-gray-900"
+        className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-2xl backdrop-blur-xl transition-all duration-300 dark:border-white/10 dark:bg-white/5"
       >
         {/* Header Image/Banner */}
         <div className="relative h-32 w-full bg-blue-600">
@@ -127,7 +127,7 @@ export function CourseDetailsModal({ isOpen, onClose, course }: CourseDetailsMod
             </div>
 
             {/* Quizzes / Assessments */}
-            <div className="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800/50">
+            <div className="rounded-2xl border border-white/40 bg-gray-50/50 p-4 backdrop-blur-sm dark:border-white/5 dark:bg-white/5">
               <div className="mb-3 flex items-center justify-between">
                 <h3 className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-gray-100">
                   <Award className="h-4 w-4 text-amber-500" />

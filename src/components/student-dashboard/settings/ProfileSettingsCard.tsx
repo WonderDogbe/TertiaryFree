@@ -3,7 +3,7 @@ import { Card } from "../Card";
 
 export function ProfileSettingsCard() {
   return (
-    <Card title="Profile Settings" className="p-6 transition-colors duration-300 dark:bg-gray-800">
+    <Card title="Profile Settings" className="p-6 transition-colors duration-300">
       <div className="mt-5 space-y-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-500 transition-colors duration-300 dark:text-gray-400">

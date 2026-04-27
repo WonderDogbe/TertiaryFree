@@ -429,7 +429,7 @@ export default function LandingPage() {
 
   if (isStandaloneMode) {
     return (
-      <div className="flex min-h-screen flex-col bg-white text-slate-900 dark:bg-gray-950 dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
+      <div className="flex min-h-screen flex-col bg-white text-slate-900 dark:bg-[#121212] dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
         
         {/* Full width image that fades at the bottom into the background */}
         <div className="relative w-full h-[55vh] min-h-[400px]">

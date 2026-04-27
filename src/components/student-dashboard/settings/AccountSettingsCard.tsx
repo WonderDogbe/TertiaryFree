@@ -20,7 +20,7 @@ export function AccountSettingsCard() {
 
   return (
     <>
-      <Card title="Account Settings" className="p-6 transition-colors duration-300 dark:bg-gray-800">
+      <Card title="Account Settings" className="p-6 transition-colors duration-300">
         <div className="mt-5 space-y-3">
           <button
             type="button"

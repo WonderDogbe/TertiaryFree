@@ -35,8 +35,8 @@ export function SettingsNavigation({ activeTab, onTabChange }: SettingsNavigatio
             onClick={() => onTabChange(tab.id)}
             className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 text-sm font-semibold transition-all duration-300 ${
               isActive
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-200 dark:bg-blue-700 dark:shadow-none"
-                : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                ? "bg-blue-600/90 text-white shadow-lg shadow-blue-500/20 backdrop-blur-md dark:bg-blue-700/80 dark:shadow-none"
+                : "text-gray-600 hover:bg-white/50 dark:text-gray-400 dark:hover:bg-white/5"
             }`}
           >
             <div className="flex items-center gap-3">

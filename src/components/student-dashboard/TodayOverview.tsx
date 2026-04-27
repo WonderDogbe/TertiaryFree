@@ -29,7 +29,7 @@ export function TodayOverview({ items }: TodayOverviewProps) {
             item.id === "next-lecture" && items.length === 1;
           const isNextLectureCard = item.id === "next-lecture";
           const nextLectureCardClasses =
-            "border border-sky-200/80 bg-gradient-to-br from-sky-50 via-blue-50/70 to-indigo-50/70 shadow-[0_10px_30px_-18px_rgba(37,99,235,0.45)] dark:border-sky-900/50 dark:bg-gradient-to-br dark:from-[#171717] dark:via-[#151922] dark:to-[#10151f]";
+            "border border-white/60 bg-gradient-to-br from-white/80 via-blue-50/40 to-indigo-50/40 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-gradient-to-br dark:from-white/10 dark:via-blue-900/5 dark:to-indigo-900/5";
           const attendancePercentage = Number.parseFloat(
             item.value.replace(/[^\d.]/g, ""),
           );

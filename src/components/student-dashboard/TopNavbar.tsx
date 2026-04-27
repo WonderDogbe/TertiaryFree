@@ -4,11 +4,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, MoreHorizontal, MessageSquare, CalendarDays, BookOpen, FileText, ChartNoAxesColumn, UserRound, LogOut } from "lucide-react";
+import { 
+  Bell, 
+  MoreHorizontal, 
+  MessageSquare, 
+  CalendarDays, 
+  BookOpen, 
+  FileText, 
+  ChartNoAxesColumn, 
+  UserRound, 
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Maximize,
+  HelpCircle,
+  CheckCircle2,
+  Columns,
+  Moon,
+  Sun
+} from "lucide-react";
 import { Menu } from "@mantine/core";
 import { useAuth } from "@/components/AuthProvider";
 import { createClient } from "@/utils/supabase/client";
 import { ConfirmationModal } from "./ConfirmationModal";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface TopNavbarProps {
   title: string;
@@ -23,6 +42,7 @@ export function TopNavbar({
 }: TopNavbarProps) {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState("Student");
+  const [displayLevel, setDisplayLevel] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isStandaloneMode, setIsStandaloneMode] = useState(false);
@@ -30,7 +50,6 @@ export function TopNavbar({
   const router = useRouter();
 
   useEffect(() => {
-    // Check if running as PWA
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       ("standalone" in window.navigator && (window.navigator as any).standalone) ||
@@ -40,6 +59,11 @@ export function TopNavbar({
     if (user?.name) {
       setDisplayName(user.name);
     }
+    if (user?.level) {
+       setDisplayLevel(user.level.startsWith("Level") ? user.level : `Level ${user.level}`);
+    } else {
+       setDisplayLevel("TERTIARYFREE");
+    }
     if (user?.avatarUrl) {
       setAvatarUrl(user.avatarUrl);
     } else {
@@ -48,19 +72,9 @@ export function TopNavbar({
   }, [user]);
 
   const userInitials = useMemo(() => {
-    const words = displayName
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-
-    if (words.length === 0) {
-      return "ST";
-    }
-
-    if (words.length === 1) {
-      return words[0].slice(0, 2).toUpperCase();
-    }
-
+    const words = displayName.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return "ST";
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
     return `${words[0][0]}${words[1][0]}`.toUpperCase();
   }, [displayName]);
 
@@ -130,8 +144,6 @@ export function TopNavbar({
         </>
       );
     }
-    
-    // Default (Home)
     return (
       <>
         <Menu.Label className="py-1 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Connect</Menu.Label>
@@ -145,93 +157,91 @@ export function TopNavbar({
     );
   };
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white transition-colors duration-300 dark:border-gray-800 dark:bg-[#121212]">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            {/* Mobile Context Menu OR Hamburger Toggle */}
-            {isStandaloneMode ? (
-              <Menu position="bottom-start" offset={4} withinPortal>
-                <Menu.Target>
-                  <button
-                    type="button"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:hidden"
-                    aria-label="Mobile context menu"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </Menu.Target>
-                <Menu.Dropdown className="min-w-[180px] rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-[#1A1A1A]">
-                  {renderMobileMenuItems()}
-                </Menu.Dropdown>
-              </Menu>
-            ) : (
-              <button
-                type="button"
-                onClick={onToggleSidebar}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:hidden"
-                aria-label="Toggle mobile menu"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="4" x2="20" y1="12" y2="12"/>
-                  <line x1="4" x2="20" y1="6" y2="6"/>
-                  <line x1="4" x2="20" y1="18" y2="18"/>
-                </svg>
-              </button>
-            )}
-
-            {/* Desktop Sidebar Toggle */}
-            <button
-              type="button"
-              onClick={onToggleSidebar}
-              className="hidden h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-300 dark:border-gray-700 dark:text-gray-300 md:inline-flex"
-              aria-label="Toggle sidebar"
-            >
-              {isDesktopSidebarCollapsed ? (
-                <MoreHorizontal className="h-4 w-4" />
-              ) : (
-                <span className="text-lg font-semibold leading-none">&lt;</span>
-              )}
-            </button>
-            <h1 className="text-xl font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
-              {title}
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard/notifications"
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-              aria-label="Open notifications"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-blue-600" />
-            </Link>
-
-            <Link
-              href="/dashboard/profile"
-              className="hidden items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1 text-sm font-semibold text-gray-700 transition-colors duration-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 md:inline-flex"
-              aria-label="Open student profile"
-            >
-              <span className="relative inline-flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-900 text-xs font-semibold text-white transition-colors duration-300 dark:bg-gray-700">
+          
+          {/* LEFT: Mobile Profile Avatar (Sidebar Trigger) */}
+          <div className="flex items-center md:hidden">
+             <button 
+               onClick={onToggleSidebar}
+               className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 transition-transform active:scale-95"
+               aria-label="Open sidebar"
+             >
                 {avatarUrl ? (
-                  <Image
-                    src={avatarUrl}
-                    alt="Profile picture"
-                    fill
-                    className="object-cover"
-                    sizes="32px"
-                  />
+                  <Image src={avatarUrl} alt="Profile" fill className="object-cover" />
                 ) : (
-                  userInitials
+                  <div className="flex h-full w-full items-center justify-center text-xs font-bold text-gray-400">
+                    {userInitials}
+                  </div>
                 )}
-              </span>
-              <span className="hidden max-w-[140px] truncate sm:inline">
-                {displayName}
-              </span>
-            </Link>
+             </button>
           </div>
+
+          {/* CENTER: Navigation & Title */}
+          <div className="hidden items-center gap-2 md:flex">
+             <div className="flex items-center gap-1">
+                <button onClick={() => router.back()} className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button onClick={() => router.forward()} className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+             </div>
+             
+             <div className="mx-2 h-6 w-px bg-gray-200 dark:bg-gray-800" />
+             
+             <button 
+               onClick={onToggleSidebar}
+               className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+             >
+               <Columns className="h-5 w-5" />
+             </button>
+
+             <h1 className="ml-2 text-sm font-semibold text-gray-800 dark:text-gray-200">
+               {title}
+             </h1>
+          </div>
+
+          {/* RIGHT: Action Bar (Capsule) */}
+          <div className="flex items-center">
+
+            <div className="flex items-center gap-1 rounded-full border border-gray-100 bg-gray-50/50 p-1 dark:border-gray-800 dark:bg-gray-800/30">
+               <Link href="/dashboard/notifications" className="relative flex h-8 w-8 items-center justify-center rounded-full text-blue-500 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                  <Bell className="h-4 w-4" />
+                  <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600 ring-2 ring-gray-50 dark:ring-gray-900" />
+               </Link>
+               
+               <button onClick={toggleFullscreen} className="hidden h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors sm:flex">
+                  <Maximize className="h-4 w-4" />
+               </button>
+
+               <button className="hidden h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors sm:flex">
+                  <CheckCircle2 className="h-4 w-4" />
+               </button>
+
+               <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700" />
+
+               <div className="flex h-8 w-8 items-center justify-center">
+                  <ThemeToggle minimalist />
+               </div>
+
+               <button className="flex items-center gap-1.5 rounded-full px-3 py-1 text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                  <HelpCircle className="h-4 w-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Help</span>
+               </button>
+            </div>
+          </div>
+
         </div>
       </header>
 

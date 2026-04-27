@@ -73,7 +73,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-950 dark:text-gray-100"
+        className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-[#121212] dark:text-gray-100"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
         <MantineProvider defaultColorScheme="auto">

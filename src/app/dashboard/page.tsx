@@ -15,6 +15,7 @@ import {
   BellRing,
   MessageSquare,
   ArrowRight,
+  Star,
 } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import {
@@ -177,7 +178,7 @@ export default function DashboardPage() {
           {/* Left — text */}
           <div className="flex-1 min-w-0">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold text-blue-700 shadow-sm dark:bg-white/10 dark:text-blue-300">
-              ⭐{" "}
+              <Star className="h-3 w-3 fill-emerald-500 text-emerald-500" />
               {user?.studyMode === "weekend"
                 ? "Weekend Student"
                 : user?.studyMode === "custom"
@@ -232,7 +233,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── DATE STRIP ────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <section className="rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:shadow-none transition-all duration-300">
         {/* Month nav */}
         <div className="mb-3 flex items-center justify-between">
           <button
@@ -279,7 +280,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── SELECTED DAY SCHEDULE ──────────────────────────────── */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <section className="rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:shadow-none transition-all duration-300">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {isSameDay(selectedDate, now) ? "Today's Classes" : `Classes · ${DAY_NAMES[selectedDate.getDay()]} ${selectedDate.getDate()}`}
@@ -332,7 +333,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ── ASSIGNMENTS ────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <section className="rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:shadow-none transition-all duration-300">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Assignments</h3>
           <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
@@ -362,7 +363,7 @@ export default function DashboardPage() {
 
       {/* ── LECTURE UPDATES ────────────────────────────────────── */}
       {filteredNotifications.length > 0 && (
-        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <section className="rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 dark:shadow-none transition-all duration-300">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Lecture Updates</h3>
             <Link href="/dashboard/notifications" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">

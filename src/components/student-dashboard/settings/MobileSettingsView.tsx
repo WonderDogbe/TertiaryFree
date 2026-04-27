@@ -66,7 +66,7 @@ export function MobileSettingsView({ onTabChange }: { onTabChange: (tab: string)
       </Link>
 
       {/* Promo Card (Airbnb style) */}
-      <section className="mt-8 overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-xl shadow-gray-100 transition-all dark:border-gray-800 dark:bg-gray-900 dark:shadow-none">
+      <section className="mt-8 overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-6 shadow-xl shadow-blue-500/5 backdrop-blur-md transition-all dark:border-white/10 dark:bg-white/5 dark:shadow-none">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">TertiaryFree Premium</h3>

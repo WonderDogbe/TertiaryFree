@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, UserRound } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -145,6 +146,13 @@ export function Sidebar({
     }
   }, [user]);
 
+  const userInitials = useMemo(() => {
+    const words = mobileProfileName.trim().split(/\s+/).filter(Boolean);
+    if (words.length === 0) return "ST";
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }, [mobileProfileName]);
+
   const handleConfirmLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -163,22 +171,31 @@ export function Sidebar({
         }`}
       >
         <div
-          className={`flex h-16 items-center transition-all duration-300 ease-in-out ${
+          className={`flex h-20 items-center transition-all duration-300 ease-in-out ${
             isDesktopCollapsed ? "justify-center px-3" : "px-6"
           }`}
         >
-          {isDesktopCollapsed ? (
-            <span
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white"
-              aria-label="TertiaryFree"
-            >
-              TF
-            </span>
-          ) : (
-            <div className="flex items-center">
-              <Logo size="sm" className="origin-left" />
+          <Link href="/dashboard/profile" className="flex items-center gap-3 overflow-hidden">
+            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+              {user?.avatarUrl ? (
+                <Image src={user.avatarUrl} alt="Profile" fill className="object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-gray-400">
+                  {userInitials}
+                </div>
+              )}
             </div>
-          )}
+            {!isDesktopCollapsed && (
+              <div className="flex flex-col min-w-0">
+                <span className="truncate text-sm font-bold text-gray-900 dark:text-gray-100">
+                  {mobileProfileName}
+                </span>
+                <span className="truncate text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                  {mobileProfileLevel}
+                </span>
+              </div>
+            )}
+          </Link>
         </div>
 
         <div
@@ -283,10 +300,26 @@ export function Sidebar({
         }`}
         aria-label="Mobile sidebar"
       >
-        <div className="flex h-16 items-center px-4 transition-colors duration-300">
-          <div className="flex items-center">
-            <Logo size="sm" className="origin-left" />
-          </div>
+        <div className="flex h-20 items-center px-6 transition-colors duration-300">
+          <Link href="/dashboard/profile" onClick={onCloseMobile} className="flex items-center gap-3">
+            <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
+              {user?.avatarUrl ? (
+                <Image src={user.avatarUrl} alt="Profile" fill className="object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-gray-400">
+                  {userInitials}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base font-bold text-gray-900 dark:text-gray-100">
+                {mobileProfileName}
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                {mobileProfileLevel}
+              </span>
+            </div>
+          </Link>
         </div>
 
         <div className="flex flex-1 flex-col p-6 overflow-y-auto">
@@ -361,31 +394,6 @@ export function Sidebar({
                 onNavigate={onCloseMobile}
                 isCompact
               />
-              <Link
-                href="/dashboard/profile"
-                onClick={onCloseMobile}
-                className={`mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 transition-all duration-300 ease-in-out ${
-                  isMobileProfileActive
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
-                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                <UserRound className="mt-0.5 h-4 w-4" />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-xs font-medium normal-case tracking-normal">
-                    {mobileProfileName}
-                  </span>
-                  <span
-                    className={`truncate text-[11px] ${
-                      isMobileProfileActive
-                        ? "text-blue-700/80 dark:text-blue-200/80"
-                        : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {mobileProfileLevel}
-                  </span>
-                </span>
-              </Link>
             </div>
           )}
         </div>

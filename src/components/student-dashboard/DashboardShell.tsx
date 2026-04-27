@@ -178,7 +178,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       : "Dashboard";
 
   return (
-    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-[#121212]">
+    <div className="h-screen overflow-hidden bg-gray-50 transition-colors duration-300 dark:bg-[#121212]">
       {isMobileSidebarOpen && (
         <button
           type="button"
@@ -188,7 +188,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         />
       )}
 
-      <div className="flex min-h-screen">
+      <div className="flex h-full">
         <Sidebar
           items={SIDEBAR_ITEMS}
           isDesktopCollapsed={isDesktopSidebarCollapsed}
@@ -197,17 +197,21 @@ export function DashboardShell({ children }: DashboardShellProps) {
         />
 
         <div
-          className={`flex min-w-0 flex-1 flex-col transition-[margin] duration-300 ease-in-out ${
+          className={`flex min-w-0 flex-1 flex-col h-full transition-[margin] duration-300 ease-in-out ${
             isDesktopSidebarCollapsed ? "md:ml-16" : "md:ml-64"
           }`}
         >
-          <TopNavbar
-            title={pageTitle}
-            onToggleSidebar={handleSidebarToggle}
-            isDesktopSidebarCollapsed={isDesktopSidebarCollapsed}
-          />
+          <div className="flex-shrink-0">
+            <TopNavbar
+              title={pageTitle}
+              onToggleSidebar={handleSidebarToggle}
+              isDesktopSidebarCollapsed={isDesktopSidebarCollapsed}
+            />
+          </div>
 
-          <main className="flex-1 px-4 py-6 pb-28 sm:px-6 md:pb-6 lg:px-8">{children}</main>
+          <main className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 pb-28 sm:px-6 md:pb-6 lg:px-8">
+            {children}
+          </main>
         </div>
       </div>
     </div>

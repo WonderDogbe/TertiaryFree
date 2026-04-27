@@ -22,7 +22,7 @@ export function Card({
   return (
     <section
       className={joinClasses(
-        "h-full rounded-2xl bg-white p-5 shadow-sm transition-colors duration-300 dark:bg-gray-800",
+        "h-full rounded-2xl border border-white/60 bg-white/70 p-5 shadow-sm backdrop-blur-md transition-all duration-300 dark:border-white/10 dark:bg-white/5 dark:shadow-none",
         className,
       )}
     >

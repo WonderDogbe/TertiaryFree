@@ -59,7 +59,7 @@ export function NotificationPreferencesCard() {
   });
 
   return (
-    <Card title="Notification Preferences" className="p-6 transition-colors duration-300 dark:bg-gray-800">
+    <Card title="Notification Preferences" className="p-6 transition-colors duration-300">
       <div className="mt-5 space-y-3">
         <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 transition-colors duration-300 dark:bg-blue-900/40 dark:text-blue-200">
           <BellRing className="h-3.5 w-3.5" />

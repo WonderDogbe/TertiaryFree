@@ -37,7 +37,7 @@ body {
 :root.dark {
   --color-primary: #2f2fe4;
   --color-background: #121212;
-  --color-secondary-bg: #1a1953;
+  --color-secondary-bg: #121212;
   --color-text: #f2f3ff;
   --color-accent: #162e93;
   --hero-text-color: #f2f3ff;

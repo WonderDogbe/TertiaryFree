@@ -4,6 +4,7 @@ import facultyJson from "@/db/faculty.json";
 import institutionsJson from "@/db/institutions.json";
 import programmesJson from "@/db/programmes.json";
 import weeklyLecturesJson from "@/db/weekly-lectures.json";
+import quizzesJson from "@/db/quizzes.json";
 import {
   ALL_WEEK_DAYS,
   isKnownStudyMode as isKnownStudyModeValue,
@@ -102,12 +103,26 @@ export interface WeeklyLectureRecord {
   endTime: string;
 }
 
+export interface QuizRecord {
+  id: string;
+  course: string;
+  title: string;
+  date: string;
+  time: string;
+  venue: string;
+  score: string | null;
+  status: "Upcoming" | "Ongoing" | "Completed" | "Missed";
+}
+
 const INSTITUTIONS = institutionsJson as InstitutionRecord[];
 const ACADEMIC_OPTIONS = academicOptionsJson as AcademicOptionsPayload;
 const FACULTIES = facultyJson as FacultyRecord[];
 const PROGRAMMES = programmesJson as ProgrammeRecord[];
 const COURSE_CATALOG = courseCatalogJson as CourseCatalogEntry[];
 const WEEKLY_LECTURES_JSON = weeklyLecturesJson as WeeklyLectureJsonRecord[];
+const QUIZZES_JSON = quizzesJson as QuizRecord[];
+
+const QUIZZES: QuizRecord[] = QUIZZES_JSON;
 
 const WEEKDAY_VALUES: WeekDayValue[] = [...ALL_WEEK_DAYS];
 
@@ -313,4 +328,16 @@ export function getWeeklyLectures(): WeeklyLectureRecord[] {
   }
 
   return mappedLectures;
+}
+
+export function getAllQuizzes(): QuizRecord[] {
+  return QUIZZES;
+}
+
+export function getQuizzesForCourse(courseCode: string): QuizRecord[] {
+  return QUIZZES.filter(
+    (quiz) =>
+      quiz.course.toLowerCase().includes(courseCode.toLowerCase()) ||
+      courseCode.toLowerCase().includes(quiz.course.toLowerCase()),
+  );
 }

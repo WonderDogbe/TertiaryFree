@@ -123,6 +123,8 @@ function formatCountdown(dateTime, now) {
   return `${minutes}m`;
 }
 
+import { HeroAssessmentCard } from "@/components/student-dashboard/HeroAssessmentCard";
+
 export default function MidsemPage() {
   const now = new Date();
 
@@ -156,10 +158,6 @@ export default function MidsemPage() {
         )}%`
       : "--";
 
-  const nextUpcomingMidsem = upcomingMidsems.find(
-    (midsem) => midsem.dateTime.getTime() > now.getTime(),
-  );
-
   const summaryCards = [
     {
       id: "total-midsems",
@@ -172,16 +170,6 @@ export default function MidsemPage() {
       title: "Upcoming Midsems",
       value: String(upcomingMidsems.length),
       helperText: "Scheduled and currently running midsems",
-    },
-    {
-      id: "next-midsem",
-      title: "Next Midsem Countdown",
-      value: nextUpcomingMidsem
-        ? formatCountdown(nextUpcomingMidsem.dateTime, now)
-        : "No upcoming midsem",
-      helperText: nextUpcomingMidsem
-        ? `${nextUpcomingMidsem.course} - ${nextUpcomingMidsem.title}`
-        : "All listed midsems are completed",
     },
     {
       id: "midsem-average",
@@ -202,7 +190,9 @@ export default function MidsemPage() {
         </p>
       </header>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <HeroAssessmentCard type="Midsem" assessments={midsems} />
+
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {summaryCards.map((card) => (
           <SummaryCard
             key={card.id}

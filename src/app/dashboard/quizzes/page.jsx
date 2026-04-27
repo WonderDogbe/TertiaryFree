@@ -2,70 +2,11 @@ import { QuizCard } from "@/components/student-dashboard/quizzes/QuizCard";
 import { QuizTable } from "@/components/student-dashboard/quizzes/QuizTable";
 import { SummaryCard } from "@/components/student-dashboard/quizzes/SummaryCard";
 
+import { getAllQuizzes } from "@/lib/local-db";
+
 export const dynamic = "force-dynamic";
 
-const QUIZZES = [
-  {
-    id: "quiz-1",
-    course: "CSC 301",
-    title: "Algorithms Quiz Drill",
-    date: "2026-04-22",
-    time: "09:30",
-    venue: "Room LT-3",
-    score: null,
-    status: "Upcoming",
-  },
-  {
-    id: "quiz-2",
-    course: "PHY 201",
-    title: "Mechanics Flash Quiz",
-    date: "2026-04-20",
-    time: "14:00",
-    venue: "Online (Zoom)",
-    score: null,
-    status: "Ongoing",
-  },
-  {
-    id: "quiz-3",
-    course: "MAT 221",
-    title: "Differential Equations Quiz",
-    date: "2026-04-24",
-    time: "12:00",
-    venue: "Room C-12",
-    score: null,
-    status: "Upcoming",
-  },
-  {
-    id: "quiz-4",
-    course: "CSC 205",
-    title: "Database Practice Quiz",
-    date: "2026-04-08",
-    time: "10:00",
-    venue: "Room B-07",
-    score: "18/25",
-    status: "Completed",
-  },
-  {
-    id: "quiz-5",
-    course: "STA 211",
-    title: "Probability Quiz 2",
-    date: "2026-03-30",
-    time: "15:00",
-    venue: "Room C-04",
-    score: "21/25",
-    status: "Completed",
-  },
-  {
-    id: "quiz-6",
-    course: "GST 101",
-    title: "Communication Skills Quiz",
-    date: "2026-03-18",
-    time: "11:00",
-    venue: "Online (LMS)",
-    score: "0/20",
-    status: "Missed",
-  },
-];
+const QUIZZES = getAllQuizzes();
 
 const UPCOMING_STATUSES = new Set(["Upcoming", "Ongoing"]);
 const HISTORY_STATUSES = new Set(["Completed", "Missed"]);
@@ -132,6 +73,8 @@ function formatCountdown(dateTime, now) {
   return `${minutes}m`;
 }
 
+import { HeroAssessmentCard } from "@/components/student-dashboard/HeroAssessmentCard";
+
 export default function QuizzesPage() {
   const now = new Date();
 
@@ -196,12 +139,6 @@ export default function QuizzesPage() {
       helperText: "Upcoming and ongoing assessments",
     },
     {
-      id: "countdown",
-      title: "Next Quiz Countdown",
-      value: nextQuizCountdown,
-      helperText: nextQuizDescription,
-    },
-    {
       id: "average",
       title: "Average Score",
       value: averageScore,
@@ -220,7 +157,9 @@ export default function QuizzesPage() {
         </p>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <HeroAssessmentCard type="Quiz" assessments={quizzes} />
+
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {summaryCards.map((card) => (
           <SummaryCard
             key={card.id}

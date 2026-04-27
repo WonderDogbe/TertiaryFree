@@ -142,6 +142,65 @@ export function getNextLecture(
   return closestLecture;
 }
 
+export function getNextLectureForCourse(
+  courseCode: string,
+  referenceDate = new Date(),
+): NextLectureResult | null {
+  const nowDayIndex = DAY_INDEX.get(getWeekDayFromDate(referenceDate)) || 0;
+  const nowMinutes = referenceDate.getHours() * 60 + referenceDate.getMinutes();
+  const nowTimeMs = referenceDate.getTime();
+
+  let closestLecture: NextLectureResult | null = null;
+  let closestLectureTimeMs = Number.POSITIVE_INFINITY;
+
+  for (const lecture of WEEKLY_LECTURES) {
+    if (lecture.code.toLowerCase() !== courseCode.toLowerCase()) {
+      continue;
+    }
+
+    const lectureDayIndex = DAY_INDEX.get(lecture.day) ?? -1;
+    const lectureStartMinutes = parseTimeToMinutes(lecture.startTime);
+
+    if (!Number.isFinite(lectureStartMinutes) || lectureDayIndex < 0) {
+      continue;
+    }
+
+    let dayOffset = lectureDayIndex - nowDayIndex;
+
+    if (dayOffset < 0 || (dayOffset === 0 && lectureStartMinutes < nowMinutes)) {
+      dayOffset += ALL_WEEK_DAYS.length;
+    }
+
+    const startHours = Math.floor(lectureStartMinutes / 60);
+    const startMinutesRemainder = lectureStartMinutes % 60;
+
+    const lectureStartAt = new Date(referenceDate);
+    lectureStartAt.setDate(referenceDate.getDate() + dayOffset);
+    lectureStartAt.setHours(startHours, startMinutesRemainder, 0, 0);
+
+    const lectureStartAtMs = lectureStartAt.getTime();
+
+    const minutesUntilStart =
+      dayOffset * MINUTES_IN_DAY + (lectureStartMinutes - nowMinutes);
+
+    const millisecondsUntilStart = lectureStartAtMs - nowTimeMs;
+
+    if (
+      closestLecture === null ||
+      millisecondsUntilStart < closestLectureTimeMs
+    ) {
+      closestLecture = {
+        lecture,
+        minutesUntilStart,
+        startAtIso: lectureStartAt.toISOString(),
+      };
+      closestLectureTimeMs = millisecondsUntilStart;
+    }
+  }
+
+  return closestLecture;
+}
+
 export function formatLectureTimeRange(lecture: WeeklyLecture): string {
   return `${formatTo12HourClock(lecture.startTime)} - ${formatTo12HourClock(lecture.endTime)}`;
 }

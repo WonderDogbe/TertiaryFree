@@ -7,6 +7,7 @@ import faculty from "@/db/faculty.json";
 import programmes from "@/db/programmes.json";
 import courseCatalog from "@/db/course-catalog.json";
 import weeklyLectures from "@/db/weekly-lectures.json";
+import quizzes from "@/db/quizzes.json";
 
 export async function GET() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -73,6 +74,20 @@ export async function GET() {
       end_time: l.endTime
     }));
     await supabase.from("weekly_lectures").upsert(formattedLectures);
+
+    // 6. Seed Quizzes
+    console.log("Seeding quizzes...");
+    const formattedQuizzes = quizzes.map(q => ({
+      id: q.id,
+      course: q.course,
+      title: q.title,
+      date: q.date,
+      time: q.time,
+      venue: q.venue,
+      score: q.score,
+      status: q.status
+    }));
+    await supabase.from("quizzes").upsert(formattedQuizzes);
 
     return NextResponse.json({ success: true, message: "Database seeding complete! All mock JSON data has been migrated into Supabase." });
   } catch (error: any) {

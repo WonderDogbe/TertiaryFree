@@ -751,8 +751,8 @@ export default function RegisterPage({
               onClick={handleNext}
               className={`flex-1 flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 ${
                 !isCurrentStepValid()
-                  ? \"opacity-45 cursor-not-allowed bg-gray-300\"
-                  : \"bg-gradient-to-br from-[#a855f7] to-[#6366f1] shadow-[0_4px_20px_rgba(99,102,241,0.35)] hover:shadow-[0_8px_28px_rgba(99,102,241,0.45)]\"
+                  ? "opacity-45 cursor-not-allowed bg-gray-300"
+                  : "bg-gradient-to-br from-[#a855f7] to-[#6366f1] shadow-[0_4px_20px_rgba(99,102,241,0.35)] hover:shadow-[0_8px_28px_rgba(99,102,241,0.45)]"
               }`}
               disabled={!isCurrentStepValid()}
             >

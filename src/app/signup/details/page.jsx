@@ -91,7 +91,7 @@ export default function SignupDetailsPage() {
           padding: 5rem 1.25rem 2.5rem;
           position: relative;
           overflow: hidden;
-          background: #f5f5f7;
+          background: var(--color-background);
         }
 
 
@@ -284,7 +284,7 @@ export default function SignupDetailsPage() {
 
         /* Dark theme overrides */
         html.dark .institution-page {
-          background: #0f1324;
+          background: var(--color-background);
         }
         html.dark .institution-title {
           color: #f2f3ff;

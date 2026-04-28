@@ -94,8 +94,6 @@ export default function SignupLecturerPage() {
       padding: "12px 16px",
       marginBottom: "4px",
       color: "#000",
-      "&[data-selected]": { backgroundColor: "#f3e8ff", color: "#7e22ce" },
-      "&[data-hovered]": { backgroundColor: "#faf5ff", color: "#7e22ce" },
     },
   };
 
@@ -125,8 +123,13 @@ export default function SignupLecturerPage() {
     <>
       <style>{`
         .institution-page {
-          min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.25rem 2.5rem; position: relative; overflow: hidden; background: #fdfdfd;
+          min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.25rem 2.5rem; position: relative; overflow: hidden; background: var(--color-background);
         }
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
+        html.dark .premium-input { background-color: rgba(15, 19, 36, 0.5); color: #fff; border-color: #475569; }
         .institution-container {
           position: relative; z-index: 1; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: stretch; gap: 2.5rem;
         }
@@ -154,6 +157,16 @@ export default function SignupLecturerPage() {
         }
         .institution-continue-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.45); }
         .institution-continue-btn:disabled { opacity: 0.45; cursor: not-allowed; background: #ccc; box-shadow: none; }
+
+        /* Mantine Select Overrides */
+        [data-combobox-option][data-selected] {
+          background-color: #f3e8ff !important;
+          color: #7e22ce !important;
+        }
+        [data-combobox-option][data-hovered] {
+          background-color: #faf5ff !important;
+          color: #7e22ce !important;
+        }
       `}</style>
 
       <main className="institution-page">

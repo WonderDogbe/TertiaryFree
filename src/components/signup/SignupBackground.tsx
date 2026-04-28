@@ -108,7 +108,7 @@ export function SignupBackground() {
         justifyContent: "center",
         pointerEvents: "none",
         overflow: "hidden",
-        backgroundColor: isDarkMode ? "#0f1324" : "#fdfdfd",
+        backgroundColor: isDarkMode ? "var(--color-background)" : "#fdfdfd",
       }}
     >
       {/* The main blurred logo */}

@@ -123,8 +123,8 @@ export default function SignupInstitutionPage() {
         .select("*")
         .order("name");
 
-      if (fetchError) {
-        console.error("Error fetching institutions:", fetchError);
+      if (fetchError || !data || data.length === 0) {
+        if (fetchError) console.error("Error fetching institutions:", fetchError);
         setInstitutions(getInstitutions()); // Fallback
       } else {
         setInstitutions(data);
@@ -188,7 +188,7 @@ export default function SignupInstitutionPage() {
           padding: 5rem 1.25rem 2.5rem;
           position: relative;
           overflow: hidden;
-          background: #f5f5f7;
+          background: var(--color-background);
         }
 
         /* Soft background blobs */
@@ -454,7 +454,7 @@ export default function SignupInstitutionPage() {
 
         /* Dark theme overrides */
         html.dark .institution-page {
-          background: #0f1324;
+          background: var(--color-background);
         }
         html.dark .institution-title {
           color: #f2f3ff;

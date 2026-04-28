@@ -112,14 +112,6 @@ export default function StudentFacultyPage() {
       padding: "12px 16px",
       marginBottom: "4px",
       color: "#000", // Pure black text
-      "&[data-selected]": {
-        backgroundColor: "#f3e8ff",
-        color: "#7e22ce",
-      },
-      "&[data-hovered]": {
-        backgroundColor: "#faf5ff",
-        color: "#7e22ce",
-      },
     },
   };
 
@@ -147,8 +139,12 @@ export default function StudentFacultyPage() {
           padding: 5rem 1.25rem 2.5rem;
           position: relative;
           overflow: hidden;
-          background: #fdfdfd;
+          background: var(--color-background);
         }
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
 
 
 
@@ -237,6 +233,16 @@ export default function StudentFacultyPage() {
           cursor: not-allowed;
           background: #ccc;
           box-shadow: none;
+        }
+
+        /* Mantine Select Overrides */
+        [data-combobox-option][data-selected] {
+          background-color: #f3e8ff !important;
+          color: #7e22ce !important;
+        }
+        [data-combobox-option][data-hovered] {
+          background-color: #faf5ff !important;
+          color: #7e22ce !important;
         }
       `}</style>
 

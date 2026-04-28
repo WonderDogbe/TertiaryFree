@@ -97,8 +97,6 @@ export default function LecturerFacultyPage() {
       padding: "12px 16px",
       marginBottom: "4px",
       color: "#000",
-      "&[data-selected]": { backgroundColor: "#f3e8ff", color: "#7e22ce" },
-      "&[data-hovered]": { backgroundColor: "#faf5ff", color: "#7e22ce" },
     },
   };
 
@@ -147,6 +145,16 @@ export default function LecturerFacultyPage() {
         }
         .institution-continue-btn:disabled {
           opacity: 0.45; cursor: not-allowed; background: #ccc; box-shadow: none;
+        }
+
+        /* Mantine Select Overrides */
+        [data-combobox-option][data-selected] {
+          background-color: #f3e8ff !important;
+          color: #7e22ce !important;
+        }
+        [data-combobox-option][data-hovered] {
+          background-color: #faf5ff !important;
+          color: #7e22ce !important;
         }
       `}</style>
 

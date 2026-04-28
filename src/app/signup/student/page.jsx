@@ -133,16 +133,12 @@ export default function SignupStudentPage() {
     <>
       <style>{`
         .institution-page {
-          min-height: 100svh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 5rem 1.25rem 2.5rem;
-          position: relative;
-          overflow: hidden;
-          background: #fdfdfd;
+          min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.25rem 2.5rem; position: relative; overflow: hidden; background: var(--color-background);
         }
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
 
 
 

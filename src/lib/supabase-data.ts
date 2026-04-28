@@ -22,7 +22,7 @@ export async function getInstitutionsFromSupabase() {
 /**
  * Fetches faculties for a specific institution
  */
-export async function getFacultiesFromSupabase(institutionId) {
+export async function getFacultiesFromSupabase(institutionId: string) {
   const supabase = createClient();
   if (!supabase) return [];
 
@@ -42,7 +42,7 @@ export async function getFacultiesFromSupabase(institutionId) {
 /**
  * Fetches programmes for a specific faculty
  */
-export async function getProgrammesFromSupabase(facultyId) {
+export async function getProgrammesFromSupabase(facultyId: string) {
   const supabase = createClient();
   if (!supabase) return [];
 

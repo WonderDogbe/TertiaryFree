@@ -56,9 +56,9 @@ export default function LecturerPasswordPage() {
   const inputStyles = {
     root: { marginBottom: "1.25rem" },
     label: { display: "none" },
-    innerInput: {
-      backgroundColor: "#fff",
-      color: "#000",
+    input: {
+      backgroundColor: "var(--color-background)",
+      color: "var(--color-text)",
       borderColor: "#d8b4fe",
       borderWidth: "1.5px",
       minHeight: "60px",
@@ -66,11 +66,15 @@ export default function LecturerPasswordPage() {
       fontSize: "1rem",
       boxShadow: "0 2px 10px rgba(168, 85, 247, 0.05)",
       transition: "all 0.2s ease",
+    },
+    innerInput: {
+      height: "56px",
+      backgroundColor: "transparent",
+      color: "inherit",
       "&::placeholder": { color: "#475569", opacity: 1 },
-      "&:focus-within": { borderColor: "#a855f7", boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.1)" },
     },
     visibilityToggle: { color: "#64748b" },
-    section: { paddingLeft: "10px" }
+    section: { paddingLeft: "12px", paddingRight: "12px" }
   };
 
   const isFormValid = password.trim() !== "" && confirmPassword.trim() !== "" && password.length >= 8 && password === confirmPassword;
@@ -137,6 +141,18 @@ export default function LecturerPasswordPage() {
         }
         .institution-continue-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.45); }
         .institution-continue-btn:disabled { opacity: 0.45; cursor: not-allowed; background: #ccc; box-shadow: none; }
+        
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
+        html.dark .mantine-PasswordInput-innerInput { background-color: rgba(15, 19, 36, 0.6) !important; color: #fff !important; border-color: #475569 !important; }
+        
+        /* Focus styles */
+        .mantine-PasswordInput-innerInput:focus-within {
+          border-color: #a855f7 !important;
+          box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1) !important;
+        }
       `}</style>
 
       <main className="institution-page">

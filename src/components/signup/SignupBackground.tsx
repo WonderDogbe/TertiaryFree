@@ -108,7 +108,7 @@ export function SignupBackground() {
         justifyContent: "center",
         pointerEvents: "none",
         overflow: "hidden",
-        backgroundColor: isDarkMode ? "var(--color-background)" : "#fdfdfd",
+        backgroundColor: "var(--color-background)",
       }}
     >
       {/* The main blurred logo */}
@@ -133,8 +133,8 @@ export function SignupBackground() {
           position: "absolute",
           inset: 0,
           background: isDarkMode
-            ? "radial-gradient(circle at center, transparent 0%, rgba(15, 19, 36, 0.58) 100%)"
-            : "radial-gradient(circle at center, transparent 0%, rgba(253, 253, 253, 0.6) 100%)",
+            ? "radial-gradient(circle at center, transparent 0%, rgba(15, 19, 36, 0.4) 100%)"
+            : "radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.5) 100%)",
         }}
       />
 

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Moon, Sun } from "lucide-react";
+import { ThemeToggle } from "./student-dashboard/ThemeToggle";
 
 type NavLinkItem = {
   href: string;
@@ -11,18 +11,14 @@ type NavLinkItem = {
 
 type LandingHeaderProps = {
   navLinks: NavLinkItem[];
-  isDarkMode: boolean;
   isMenuOpen: boolean;
-  onToggleDarkMode: () => void;
   onToggleMobileMenu: () => void;
   onCloseMobileMenu: () => void;
 };
 
 export function LandingHeader({
   navLinks,
-  isDarkMode,
   isMenuOpen,
-  onToggleDarkMode,
   onToggleMobileMenu,
   onCloseMobileMenu,
 }: LandingHeaderProps) {
@@ -60,17 +56,7 @@ export function LandingHeader({
             </div>
 
             <div className="hidden md:flex md:items-center md:gap-3 lg:gap-4">
-              <button
-                onClick={onToggleDarkMode}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-blue-200 text-[var(--color-text)] transition-colors hover:bg-[var(--color-secondary-bg)] dark:border-blue-900/40"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? (
-                  <Moon className="h-3.5 w-3.5" />
-                ) : (
-                  <Sun className="h-3.5 w-3.5" />
-                )}
-              </button>
+              <ThemeToggle minimalist />
 
               <div className="flex items-center gap-3 lg:gap-5">
                 {navLinks.map((link) => (

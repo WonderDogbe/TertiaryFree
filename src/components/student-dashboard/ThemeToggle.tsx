@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { useMantineColorScheme } from "@mantine/core";
 
 type ThemeMode = "light" | "dark";
 
 function getInitialThemeMode(): ThemeMode {
+  if (typeof window === "undefined") return "light";
   const savedTheme = window.localStorage.getItem("theme");
 
   if (savedTheme === "light" || savedTheme === "dark") {
-    return savedTheme;
+    return savedTheme as ThemeMode;
   }
 
   return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -35,6 +37,7 @@ export function ThemeToggle({
   className = "",
   minimalist = false,
 }: ThemeToggleProps) {
+  const { setColorScheme } = useMantineColorScheme();
   const [themeMode, setThemeMode] = useState<ThemeMode>("light");
   const [isReady, setIsReady] = useState(false);
 
@@ -42,8 +45,9 @@ export function ThemeToggle({
     const initialThemeMode = getInitialThemeMode();
     setThemeMode(initialThemeMode);
     applyThemeMode(initialThemeMode);
+    setColorScheme(initialThemeMode);
     setIsReady(true);
-  }, []);
+  }, [setColorScheme]);
 
   const isDarkMode = themeMode === "dark";
 
@@ -51,6 +55,7 @@ export function ThemeToggle({
     const nextThemeMode: ThemeMode = isDarkMode ? "light" : "dark";
     setThemeMode(nextThemeMode);
     applyThemeMode(nextThemeMode);
+    setColorScheme(nextThemeMode);
   };
 
   if (minimalist) {

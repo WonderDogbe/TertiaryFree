@@ -64,8 +64,8 @@ export default function LoginPage({
     root: { marginBottom: "1.25rem" },
     label: { display: "none" },
     input: {
-      backgroundColor: "#fff",
-      color: "#000",
+      backgroundColor: "var(--color-background)",
+      color: "var(--color-text)",
       borderColor: "#d8b4fe",
       borderWidth: "1.5px",
       minHeight: "60px",
@@ -93,7 +93,7 @@ export default function LoginPage({
           padding: 1.5rem 1.25rem;
           position: relative;
           overflow: hidden;
-          background: #fdfdfd;
+          background: var(--color-background);
         }
 
         .institution-page::before,
@@ -122,14 +122,14 @@ export default function LoginPage({
 
         .institution-header { text-align: center; margin-bottom: 1rem; }
         .institution-title {
-          font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em; color: #000; margin: 0; line-height: 1.1;
+          font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em; color: var(--color-text); margin: 0; line-height: 1.1;
         }
         .institution-subtitle {
           font-size: 1rem; color: #334155; margin-top: 0.75rem; font-weight: 600;
         }
 
         .institution-form-card {
-          background: #fff;
+          background: var(--color-background);
           border-radius: 32px;
           padding: 2.5rem;
           box-shadow: 0 20px 60px rgba(0,0,0,0.06);
@@ -149,15 +149,15 @@ export default function LoginPage({
           font-weight: 700;
           cursor: pointer;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          background: #000;
+          background: var(--color-primary);
           color: #fff;
           width: 100%;
           margin-top: 1rem;
         }
         .institution-continue-btn:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-          background: #000;
+          box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+          background: var(--color-primary);
         }
         .institution-continue-btn:disabled {
           opacity: 0.2;
@@ -182,11 +182,18 @@ export default function LoginPage({
           margin-top: -0.5rem;
           font-size: 0.8rem;
           font-weight: 800;
-          color: #7e22ce;
+          color: var(--color-primary);
           background: none;
           border: none;
           cursor: pointer;
         }
+
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
+        html.dark .mantine-Input-input { background-color: rgba(15, 19, 36, 0.6) !important; color: #fff !important; border-color: #475569 !important; }
+        html.dark .footer-link { color: #b8c0d6; }
       `}</style>
 
       <main className="institution-page">

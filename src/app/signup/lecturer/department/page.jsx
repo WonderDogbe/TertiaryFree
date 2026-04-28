@@ -66,8 +66,8 @@ export default function LecturerFacultyPage() {
     root: { marginBottom: "1.5rem" },
     label: { display: "none" },
     input: {
-      backgroundColor: "#fff",
-      color: "#000",
+      backgroundColor: "var(--color-background)",
+      color: "var(--color-text)",
       borderColor: "#d8b4fe",
       borderWidth: "1.5px",
       minHeight: "60px",
@@ -83,10 +83,10 @@ export default function LecturerFacultyPage() {
       },
     },
     dropdown: {
-      backgroundColor: "#fff",
+      backgroundColor: "var(--color-background)",
       borderRadius: "24px",
       boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
-      border: "1px solid rgba(0,0,0,0.08)",
+      border: "1px solid rgba(148, 163, 184, 0.22)",
       padding: "0.75rem",
       marginTop: "8px",
     },
@@ -96,7 +96,7 @@ export default function LecturerFacultyPage() {
       fontWeight: "600",
       padding: "12px 16px",
       marginBottom: "4px",
-      color: "#000",
+      color: "var(--color-text)",
     },
   };
 
@@ -147,15 +147,22 @@ export default function LecturerFacultyPage() {
           opacity: 0.45; cursor: not-allowed; background: #ccc; box-shadow: none;
         }
 
+        html.dark .institution-page { background: var(--color-background); }
+        html.dark .institution-title { color: var(--color-text); }
+        html.dark .institution-subtitle { color: #b8c0d6; }
+        html.dark .institution-form-card { background: rgba(20, 26, 46, 0.9); border: 1px solid rgba(148, 163, 184, 0.22); }
+        html.dark .mantine-Input-input { background-color: rgba(15, 19, 36, 0.6) !important; color: #fff !important; border-color: #475569 !important; }
+
         /* Mantine Select Overrides */
         [data-combobox-option][data-selected] {
-          background-color: #f3e8ff !important;
-          color: #7e22ce !important;
+          background-color: #4338ca !important;
+          color: #fff !important;
         }
         [data-combobox-option][data-hovered] {
-          background-color: #faf5ff !important;
-          color: #7e22ce !important;
+          background-color: rgba(67, 56, 202, 0.3) !important;
+          color: #fff !important;
         }
+        html.dark [data-combobox-option] { color: #fff !important; }
       `}</style>
 
       <main className="institution-page">

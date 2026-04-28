@@ -429,7 +429,7 @@ export default function LandingPage() {
 
   if (isStandaloneMode) {
     return (
-      <div className="flex h-screen flex-col overflow-hidden bg-white text-slate-900 dark:bg-[#121212] dark:text-gray-100 selection:bg-[var(--color-accent)] selection:text-white">
+      <div className="flex h-screen flex-col overflow-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
         
         {/* Full width image that fades at the bottom into the background */}
         <div className="relative w-full h-[45vh] min-h-[300px] flex-shrink-0">
@@ -439,7 +439,7 @@ export default function LandingPage() {
             alt="Welcome to TertiaryFree" 
             className="w-full h-full object-cover object-top"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-gray-950"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--color-background)]"></div>
         </div>
 
         <div className="flex-1 flex flex-col justify-center px-6 pb-8 -mt-6 relative z-10 overflow-hidden">
@@ -637,11 +637,11 @@ export default function LandingPage() {
                 }}
               >
                 <div
-                  className="absolute inset-y-0 left-0 z-20 w-10 bg-gradient-to-r from-white to-transparent dark:from-[#0B0F19] dark:to-transparent sm:w-24"
+                  className="absolute inset-y-0 left-0 z-20 w-10 bg-gradient-to-r from-[var(--color-background)] to-transparent sm:w-24"
                   aria-hidden="true"
                 />
                 <div
-                  className="absolute inset-y-0 right-0 z-20 w-10 bg-gradient-to-l from-white to-transparent dark:from-[#0B0F19] dark:to-transparent sm:w-24"
+                  className="absolute inset-y-0 right-0 z-20 w-10 bg-gradient-to-l from-[var(--color-background)] to-transparent sm:w-24"
                   aria-hidden="true"
                 />
 
@@ -735,7 +735,7 @@ export default function LandingPage() {
                   );
                 })}
 
-                <div className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 gap-2.5 rounded-full border border-blue-100/80 bg-white/85 px-4 py-2 shadow-sm backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-black/30">
+                <div className="absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 gap-2.5 rounded-full border border-blue-100/80 bg-[var(--color-background)]/85 px-4 py-2 shadow-sm backdrop-blur dark:border-slate-700/70 dark:shadow-black/30">
                   {FEATURE_CARDS.map((card, index) => (
                     <button
                       key={`feature-dot-${card.title}`}

@@ -76,8 +76,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-[#121212] dark:text-gray-100"
-        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+        className="min-h-full flex flex-col transition-colors duration-300"
+        style={{ 
+          fontFamily: "'Inter', system-ui, sans-serif",
+          backgroundColor: "var(--color-background)",
+          color: "var(--color-text)"
+        }}
       >
         <MantineProvider defaultColorScheme="auto">
           <PwaSplashScreen />

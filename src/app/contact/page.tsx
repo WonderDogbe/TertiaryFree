@@ -99,9 +99,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[var(--color-background)] transition-colors duration-300">
       <LandingHeader 
         navLinks={NAV_LINKS}
-        isDarkMode={isDarkMode}
         isMenuOpen={isMenuOpen}
-        onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
         onToggleMobileMenu={() => setIsMenuOpen(!isMenuOpen)}
         onCloseMobileMenu={() => setIsMenuOpen(false)}
       />

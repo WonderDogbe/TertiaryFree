@@ -475,9 +475,7 @@ export default function LandingPage() {
     <div className="min-h-screen overflow-x-hidden bg-[var(--color-background)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white">
       <LandingHeader
         navLinks={NAV_LINKS}
-        isDarkMode={isDarkMode}
         isMenuOpen={isMenuOpen}
-        onToggleDarkMode={toggleDarkMode}
         onToggleMobileMenu={toggleMobileMenu}
         onCloseMobileMenu={closeMobileMenu}
       />

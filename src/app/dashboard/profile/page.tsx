@@ -14,6 +14,7 @@ import {
   Loader2,
   CheckCircle2,
   AlertCircle,
+  BookOpen,
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/components/AuthProvider";
@@ -78,14 +79,25 @@ export default function StudentProfilePage() {
   const department = profile?.department || "Not available";
   const school = profile?.school || "Not available";
   const email = profile?.email || "Not available";
+  const coursesLectured = Array.isArray(profile?.coursesLectured)
+    ? profile.coursesLectured.join(", ")
+    : typeof profile?.courseLectured === "string" 
+      ? profile.courseLectured 
+      : "None selected";
+
+  const isLecturer = profile?.role === "lecturer";
+  const title = profile?.title || "Dr.";
+
   const studyModeLabel =
     profile?.studyMode === "weekend"
       ? "Weekend"
       : profile?.studyMode === "custom"
         ? "Custom"
         : "Regular";
-  const activeDaysLabel =
-    profile?.customStudyDays && profile.customStudyDays.length > 0
+
+  const activeDaysLabel = isLecturer 
+    ? "Academic Term"
+    : profile?.customStudyDays && profile.customStudyDays.length > 0
       ? profile.customStudyDays.join(", ")
       : "Monday, Tuesday, Wednesday, Thursday, Friday";
 
@@ -241,7 +253,7 @@ export default function StudentProfilePage() {
 
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700 transition-colors duration-300 dark:text-blue-300">
-                Student Profile
+                {isLecturer ? "Faculty Profile" : "Student Profile"}
               </p>
               <h2 className="mt-1 truncate text-2xl font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
                 {name}
@@ -276,12 +288,22 @@ export default function StudentProfilePage() {
 
       {/* Info grid */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <ProfileInfoCard icon={<User className="h-4 w-4" />} label="Name" value={name} />
-        <ProfileInfoCard icon={<Hash className="h-4 w-4" />} label="Index Number" value={indexNumber} />
-        <ProfileInfoCard icon={<GraduationCap className="h-4 w-4" />} label="Programme" value={programme} />
-        <ProfileInfoCard icon={<Layers3 className="h-4 w-4" />} label="Level" value={formatDisplayName(level)} />
-        <ProfileInfoCard icon={<IdCard className="h-4 w-4" />} label="Faculty" value={department} />
-        <ProfileInfoCard icon={<CalendarDays className="h-4 w-4" />} label="Study Mode" value={studyModeLabel} />
+        <ProfileInfoCard icon={<User className="h-4 w-4" />} label="Name" value={isLecturer ? `${title} ${name}` : name} />
+        {isLecturer ? (
+          <ProfileInfoCard icon={<GraduationCap className="h-4 w-4" />} label="Title" value={title} />
+        ) : (
+          <ProfileInfoCard icon={<Hash className="h-4 w-4" />} label="Index Number" value={indexNumber} />
+        )}
+        <ProfileInfoCard icon={<IdCard className="h-4 w-4" />} label="Faculty / Department" value={department} />
+        {isLecturer ? (
+          <ProfileInfoCard icon={<BookOpen className="h-4 w-4" />} label="Courses Lectured" value={coursesLectured} />
+        ) : (
+          <>
+            <ProfileInfoCard icon={<GraduationCap className="h-4 w-4" />} label="Programme" value={programme} />
+            <ProfileInfoCard icon={<Layers3 className="h-4 w-4" />} label="Level" value={formatDisplayName(level)} />
+          </>
+        )}
+        {!isLecturer && <ProfileInfoCard icon={<CalendarDays className="h-4 w-4" />} label="Study Mode" value={studyModeLabel} />}
         <ProfileInfoCard icon={<Building2 className="h-4 w-4" />} label="Institution" value={school} />
       </section>
 

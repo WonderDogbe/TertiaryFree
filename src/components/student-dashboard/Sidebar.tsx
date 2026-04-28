@@ -49,6 +49,7 @@ function SidebarLinks({
   onNavigate?: () => void;
   labelClassName?: string;
 }) {
+  const { user } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -74,7 +75,9 @@ function SidebarLinks({
             aria-label={isCollapsed ? item.label : undefined}
             className={`flex items-center rounded-xl ${isCompact ? "text-xs" : "text-sm"} font-medium transition-all duration-300 ease-in-out ${
               isActive
-                ? "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200"
+                ? (user?.role === "lecturer" 
+                    ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200" 
+                    : "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200")
                 : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
             } ${
               isCollapsed

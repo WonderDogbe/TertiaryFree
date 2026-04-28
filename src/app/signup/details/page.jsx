@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, GraduationCap, Presentation } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -42,6 +42,14 @@ export default function SignupDetailsPage() {
   const [institutionName] = useState(readStoredInstitutionName);
   const [selectedRole, setSelectedRole] = useState("");
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const role = searchParams.get("role");
+    if (role === "student" || role === "lecturer") {
+      setSelectedRole(role);
+    }
+  }, []);
+
   const handleContinue = () => {
     if (!selectedRole) return;
 
@@ -50,6 +58,17 @@ export default function SignupDetailsPage() {
         router.push("/signup/student/department");
       } else {
         router.push("/signup/student");
+      }
+      return;
+    }
+
+    if (selectedRole === "lecturer") {
+      if (isHtuInstitution(institutionName)) {
+        router.push("/signup/lecturer/department");
+      } else {
+        router.push(
+          `/register?role=${selectedRole}&institution=${encodeURIComponent(institutionName)}`,
+        );
       }
       return;
     }

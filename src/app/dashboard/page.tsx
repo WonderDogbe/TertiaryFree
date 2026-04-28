@@ -27,6 +27,7 @@ import {
 import { getStudyDaysForMode, WEEKDAY_STUDY_DAYS } from "@/lib/study-schedule";
 import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 import { LECTURE_COMMUNICATIONS } from "@/lib/dashboard-notifications";
+import { LecturerDashboard } from "@/components/lecturer-dashboard/LecturerDashboard";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -110,7 +111,7 @@ function DatePill({
 // ─── page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const now = useMemo(() => new Date(), []);
   const [selectedDate, setSelectedDate] = useState(now);
   const [weekAnchor, setWeekAnchor] = useState(now);
@@ -127,6 +128,19 @@ export default function DashboardPage() {
       getStudyDaysForMode(user.studyMode || "weekday", user.customStudyDays || []) as WeekDay[]
     );
   }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <p className="text-sm font-bold text-gray-500 animate-pulse">Loading your dashboard...</p>
+      </div>
+    );
+  }
+
+  if (user?.role === "lecturer") {
+    return <LecturerDashboard />;
+  }
 
   const weekDays = useMemo(() => buildWeekDays(weekAnchor), [weekAnchor]);
 
@@ -164,6 +178,8 @@ export default function DashboardPage() {
     () => LECTURE_COMMUNICATIONS.filter((item) => activeDays.includes(item.day)).slice(0, 3),
     [activeDays]
   );
+
+
 
   return (
     <div className="space-y-5 pb-4">

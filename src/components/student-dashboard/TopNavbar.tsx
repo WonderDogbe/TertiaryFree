@@ -222,9 +222,13 @@ export function TopNavbar({
 
                <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-gray-700" />
 
-               <Link href="/dashboard/notifications" className="relative flex h-8 w-8 items-center justify-center rounded-full text-blue-500 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+               <Link href="/dashboard/notifications" className={`relative flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white dark:hover:bg-gray-800 ${
+                 user?.role === "lecturer" ? "text-indigo-500" : "text-blue-500"
+               }`}>
                   <Bell className="h-4 w-4" />
-                  <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600 ring-2 ring-gray-50 dark:ring-gray-900" />
+                  <span className={`absolute right-2 top-2 h-1.5 w-1.5 rounded-full ring-2 ring-gray-50 dark:ring-gray-900 ${
+                    user?.role === "lecturer" ? "bg-indigo-600" : "bg-blue-600"
+                  }`} />
                </Link>
                
                <button onClick={toggleFullscreen} className="hidden h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors sm:flex">

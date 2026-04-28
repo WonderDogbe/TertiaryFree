@@ -14,6 +14,8 @@ import {
 import { usePathname } from "next/navigation";
 import { Sidebar, type SidebarItem } from "./Sidebar";
 import { TopNavbar } from "./TopNavbar";
+import { useAuth } from "@/components/AuthProvider";
+import { Megaphone, QrCode } from "lucide-react";
 
 const SIDEBAR_ITEMS: SidebarItem[] = [
   {
@@ -106,11 +108,76 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   },
 ];
 
+const LECTURER_SIDEBAR_ITEMS: SidebarItem[] = [
+  {
+    id: "dashboard",
+    label: "Overview",
+    icon: Home,
+    href: "/dashboard",
+    activePathname: "/dashboard",
+    activeMatchMode: "exact",
+  },
+  {
+    id: "lectures",
+    label: "My Schedule",
+    icon: CalendarDays,
+    href: "/dashboard/lecturer/timetable",
+    activePathname: "/dashboard/lecturer/timetable",
+    activeMatchMode: "prefix",
+    group: "timetable",
+  },
+  {
+    id: "attendance",
+    label: "Attendance",
+    icon: QrCode,
+    href: "/dashboard/lecturer/attendance",
+    activePathname: "/dashboard/lecturer/attendance",
+    activeMatchMode: "prefix",
+    group: "general",
+  },
+  {
+    id: "courses",
+    label: "Manage Courses",
+    icon: BookOpen,
+    href: "/dashboard/lecturer/courses",
+    activePathname: "/dashboard/lecturer/courses",
+    activeMatchMode: "prefix",
+    group: "general",
+  },
+  {
+    id: "quizzes",
+    label: "Quizzes & Exams",
+    icon: FileText,
+    href: "/dashboard/lecturer/quizzes",
+    activePathname: "/dashboard/lecturer/quizzes",
+    activeMatchMode: "prefix",
+    group: "classroom-connect",
+  },
+  {
+    id: "announcements",
+    label: "Announcements",
+    icon: Megaphone,
+    href: "/dashboard/lecturer/announcements",
+    activePathname: "/dashboard/lecturer/announcements",
+    activeMatchMode: "prefix",
+    group: "classroom-connect",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    href: "/dashboard/settings",
+    activePathname: "/dashboard/settings",
+    activeMatchMode: "prefix",
+  },
+];
+
 interface DashboardShellProps {
   children: ReactNode;
 }
 
 export function DashboardShell({ children }: DashboardShellProps) {
+  const { user } = useAuth();
   const pathname = usePathname();
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -162,7 +229,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
     : isNotificationsRoute
       ? "Notifications"
     : isProfileRoute
-      ? "Student Profile"
+      ? "My Profile"
     : isChatRoute
       ? "Chat"
     : isMidsemRoute
@@ -190,7 +257,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
       <div className="flex h-full">
         <Sidebar
-          items={SIDEBAR_ITEMS}
+          items={user?.role === "lecturer" ? LECTURER_SIDEBAR_ITEMS : SIDEBAR_ITEMS}
           isDesktopCollapsed={isDesktopSidebarCollapsed}
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}

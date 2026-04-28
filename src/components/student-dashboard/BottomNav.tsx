@@ -10,7 +10,10 @@ import {
   ChartNoAxesColumn,
   Home,
   Settings,
+  Megaphone,
+  QrCode,
 } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
 import type { LucideIcon } from "lucide-react";
 
 type BottomNavItem = {
@@ -70,6 +73,49 @@ const BOTTOM_NAV_ITEMS: BottomNavItem[] = [
   },
 ];
 
+const LECTURER_BOTTOM_NAV_ITEMS: BottomNavItem[] = [
+  {
+    id: "dashboard",
+    label: "Home",
+    href: "/dashboard",
+    icon: Home,
+    activePathname: "/dashboard",
+    activeMatchMode: "exact",
+  },
+  {
+    id: "timetable",
+    label: "Schedule",
+    href: "/dashboard/lecturer/timetable",
+    icon: CalendarDays,
+    activePathname: "/dashboard/lecturer/timetable",
+    activeMatchMode: "prefix",
+  },
+  {
+    id: "attendance",
+    label: "Attendance",
+    href: "/dashboard/lecturer/attendance",
+    icon: QrCode,
+    activePathname: "/dashboard/lecturer/attendance",
+    activeMatchMode: "prefix",
+  },
+  {
+    id: "announcements",
+    label: "Announce",
+    href: "/dashboard/lecturer/announcements",
+    icon: Megaphone,
+    activePathname: "/dashboard/lecturer/announcements",
+    activeMatchMode: "prefix",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+    activePathname: "/dashboard/settings",
+    activeMatchMode: "prefix",
+  },
+];
+
 const matchesPath = (
   pathname: string,
   path: string,
@@ -94,6 +140,7 @@ function isStandalonePwaMode() {
 }
 
 export function BottomNav() {
+  const { user } = useAuth();
   const pathname = usePathname();
   const [isPwaStandalone, setIsPwaStandalone] = useState(false);
 
@@ -131,7 +178,7 @@ export function BottomNav() {
       aria-label="Bottom tab navigation"
     >
       <div className="mx-auto flex h-full w-full max-w-md items-center justify-around px-1">
-        {BOTTOM_NAV_ITEMS.map((item) => {
+        {(user?.role === "lecturer" ? LECTURER_BOTTOM_NAV_ITEMS : BOTTOM_NAV_ITEMS).map((item) => {
           const Icon = item.icon;
           const isActive =
             matchesPath(
@@ -150,7 +197,7 @@ export function BottomNav() {
               aria-label={item.label}
               className={`relative flex h-full flex-1 flex-col items-center justify-center gap-px text-[10px] font-medium leading-tight transition-all duration-200 active:scale-95 ${
                 isActive
-                  ? "text-blue-600"
+                  ? user?.role === "lecturer" ? "text-indigo-600" : "text-blue-600"
                   : "text-gray-500 active:text-blue-600"
               }`}
             >
@@ -158,7 +205,9 @@ export function BottomNav() {
                 <Icon className="h-4 w-4" />
 
                 {typeof item.badgeCount === "number" && item.badgeCount > 0 && (
-                  <span className="absolute -right-2 -top-2 inline-flex min-w-[14px] items-center justify-center rounded-full bg-blue-600 px-1 text-[9px] font-semibold leading-none text-white">
+                  <span className={`absolute -right-2 -top-2 inline-flex min-w-[14px] items-center justify-center rounded-full px-1 text-[9px] font-semibold leading-none text-white ${
+                    user?.role === "lecturer" ? "bg-indigo-600" : "bg-blue-600"
+                  }`}>
                     {item.badgeCount > 99 ? "99+" : item.badgeCount}
                   </span>
                 )}

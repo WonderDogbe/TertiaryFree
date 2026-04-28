@@ -23,7 +23,7 @@ const NAV_LINKS = [
   { href: "#about", label: "About" },
   { href: "#features", label: "Features" },
   { href: "#onboarding", label: "Onboarding" },
-  { href: "#contact", label: "Contact Us" },
+  { href: "/contact", label: "Contact Us" },
 ];
 
 const HERO_IMAGES = [

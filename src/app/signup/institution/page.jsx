@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InstitutionCard } from "@/components/signup/InstitutionCard";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
-import {
-  getInstitutions,
-  isKnownInstitutionName,
+import { 
+  getInstitutions, 
+  isKnownInstitutionName 
 } from "@/lib/local-db";
+import { createClient } from "@/utils/supabase/client";
 
 /* ─── constants ──────────────────────────────────────────────────── */
 
@@ -77,17 +78,13 @@ function getInstitutionLogoSrc(institutionId) {
   return INSTITUTION_META[institutionId]?.logoSrc ?? null;
 }
 
-function persistSelectedInstitution(institutionName) {
-  const selectedInstitutionRecord = INSTITUTIONS.find(
-    (institution) => institution.name === institutionName,
-  );
+function persistSelectedInstitution(institution, institutions) {
+  if (!institution) return false;
 
-  if (!selectedInstitutionRecord) return false;
-
-  const institutionLogoSrc = getInstitutionLogoSrc(selectedInstitutionRecord.id);
+  const institutionLogoSrc = getInstitutionLogoSrc(institution.id);
   const payload = institutionLogoSrc
-    ? { ...selectedInstitutionRecord, logoSrc: institutionLogoSrc }
-    : selectedInstitutionRecord;
+    ? { ...institution, logoSrc: institutionLogoSrc }
+    : institution;
 
   try {
     window.localStorage.setItem(
@@ -105,9 +102,38 @@ function persistSelectedInstitution(institutionName) {
 
 export default function SignupInstitutionPage() {
   const router = useRouter();
+  const [institutions, setInstitutions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedInstitution, setSelectedInstitution] = useState(() =>
     shouldStartOver() ? "" : readStoredInstitutionName(),
   );
+
+  useEffect(() => {
+    async function fetchInstitutions() {
+      const supabase = createClient();
+      if (!supabase) {
+        setInstitutions(getInstitutions());
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error: fetchError } = await supabase
+        .from("institutions")
+        .select("*")
+        .order("name");
+
+      if (fetchError) {
+        console.error("Error fetching institutions:", fetchError);
+        setInstitutions(getInstitutions()); // Fallback
+      } else {
+        setInstitutions(data);
+      }
+      setIsLoading(false);
+    }
+
+    fetchInstitutions();
+  }, []);
 
   useEffect(() => {
     if (!shouldStartOver()) return;
@@ -130,17 +156,21 @@ export default function SignupInstitutionPage() {
     const institutionToContinueWith =
       typeof institutionName === "string" ? institutionName : selectedInstitution;
 
-    if (!persistSelectedInstitution(institutionToContinueWith)) return;
-
-    router.push("/signup/details");
+    const searchParams = new URLSearchParams(window.location.search);
+    const role = searchParams.get("role");
+    const nextUrl = role ? `/signup/details?role=${role}` : "/signup/details";
+    router.push(nextUrl);
   };
 
   const handleSelectInstitution = (institution) => {
     setSelectedInstitution(institution.name);
-    const didPersistSelection = persistSelectedInstitution(institution.name);
+    const didPersistSelection = persistSelectedInstitution(institution, institutions);
 
     if (isMobileViewport() && didPersistSelection) {
-      router.push("/signup/details");
+      const searchParams = new URLSearchParams(window.location.search);
+      const role = searchParams.get("role");
+      const nextUrl = role ? `/signup/details?role=${role}` : "/signup/details";
+      router.push(nextUrl);
     }
   };
 
@@ -480,21 +510,28 @@ export default function SignupInstitutionPage() {
 
           {/* Cards */}
           <div className="institution-grid" role="group" aria-label="Institution selection">
-            {INSTITUTIONS.map((institution) => {
-              const meta = INSTITUTION_META[institution.id] ?? {};
-              return (
-                <InstitutionCard
-                  key={institution.name}
-                  name={institution.name}
-                  abbreviation={institution.abbreviation}
-                  logoSrc={meta.logoSrc ?? null}
-                  tagline={meta.tagline ?? null}
-                  isFeatured={meta.featured ?? false}
-                  isSelected={selectedInstitution === institution.name}
-                  onSelect={() => handleSelectInstitution(institution)}
-                />
-              );
-            })}
+            {isLoading ? (
+              <div className="flex flex-col items-center gap-3 py-10">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+                <p className="text-sm font-bold text-gray-500">Loading schools...</p>
+              </div>
+            ) : (
+              institutions.map((institution) => {
+                const meta = INSTITUTION_META[institution.id] ?? {};
+                return (
+                  <InstitutionCard
+                    key={institution.id}
+                    name={institution.name}
+                    abbreviation={institution.abbreviation}
+                    logoSrc={meta.logoSrc ?? null}
+                    tagline={meta.tagline ?? null}
+                    isFeatured={meta.featured ?? false}
+                    isSelected={selectedInstitution === institution.name}
+                    onSelect={() => handleSelectInstitution(institution)}
+                  />
+                );
+              })
+            )}
           </div>
 
           {/* Continue (desktop) */}

@@ -34,12 +34,12 @@ export function Footer() {
             >
               About
             </Link>
-            <a
-              href="mailto:support@tertiaryfree.com"
+            <Link
+              href="/contact"
               className="text-sm font-medium text-slate-600 transition-colors hover:text-[var(--color-primary)] dark:text-slate-200 dark:hover:text-blue-300"
             >
               Contact Us
-            </a>
+            </Link>
             <Link
               href="#"
               className="text-sm font-medium text-slate-600 transition-colors hover:text-[var(--color-primary)] dark:text-slate-200 dark:hover:text-blue-300"

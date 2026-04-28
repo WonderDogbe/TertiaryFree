@@ -50,14 +50,26 @@ export default function LoginPage({
     setAuthError("");
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
+    if (!supabase) {
+      setAuthError("Authentication service is temporarily unavailable. Please check your connection or configuration.");
+      setLoading(false);
+      return;
+    }
 
-    setLoading(false);
-    if (error) { setAuthError(error.message); return; }
-    router.push("/dashboard");
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setLoading(false);
+      if (error) { setAuthError(error.message); return; }
+      router.push("/dashboard");
+    } catch (err) {
+      setLoading(false);
+      setAuthError("Failed to connect to the authentication server. Please check your internet connection.");
+      console.error("Login error:", err);
+    }
   };
 
   const inputStyles = {

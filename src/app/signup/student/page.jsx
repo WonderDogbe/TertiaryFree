@@ -91,7 +91,7 @@ export default function SignupStudentPage() {
       },
     },
     dropdown: {
-      backgroundColor: "#fff",
+      backgroundColor: "var(--color-secondary-bg)",
       borderRadius: "24px",
       boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
       border: "1px solid rgba(0,0,0,0.08)",
@@ -155,24 +155,28 @@ export default function SignupStudentPage() {
 
         .institution-header { text-align: center; margin-bottom: 1rem; }
         .institution-title {
-          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: #000; margin: 0; line-height: 1.1;
+          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--color-text); margin: 0; line-height: 1.1;
         }
         .institution-subtitle {
-          font-size: 1rem; color: #334155; margin-top: 0.75rem; font-weight: 600;
+          font-size: 1rem; color: var(--color-text); opacity: 0.8; margin-top: 0.75rem; font-weight: 600;
         }
 
         .institution-form-card {
-          background: #fff;
+          background: var(--color-background);
           border-radius: 32px;
           padding: 2.5rem;
           box-shadow: 0 20px 60px rgba(0,0,0,0.06);
           border: 1px solid rgba(0,0,0,0.02);
         }
+        html.dark .institution-form-card {
+          background: rgba(20, 26, 46, 0.95);
+          border-color: rgba(148, 163, 184, 0.22);
+        }
 
         .premium-input {
           width: 100%;
-          background-color: #fff;
-          color: #000;
+          background-color: var(--color-background);
+          color: var(--color-text);
           border: 1.5px solid #d8b4fe;
           min-height: 60px;
           border-radius: 16px;
@@ -190,13 +194,14 @@ export default function SignupStudentPage() {
         .premium-input::placeholder { color: #475569; font-weight: 500; }
 
         .faculty-option {
-          display: flex; align-items: center; gap: 1rem; color: #000; width: 100%;
+          display: flex; align-items: center; gap: 1rem; color: var(--color-text); width: 100%;
         }
         .faculty-icon-placeholder {
-          width: 36px; height: 36px; border-radius: 10px; background: #000; color: #fff;
+          width: 36px; height: 36px; border-radius: 10px; background: #1a1a1a; color: #fff;
           display: flex; align-items: center; justify-content: center;
           font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
         }
+        html.dark .faculty-icon-placeholder { background: #334155; }
 
         .institution-continue-btn {
           position: relative;

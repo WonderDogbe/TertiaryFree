@@ -87,10 +87,68 @@ export async function getTimetableFromSupabase() {
 
   const { data, error } = await supabase
     .from("weekly_lectures")
-    .select("*");
+    .select(`
+      id,
+      day,
+      lecturer,
+      venue,
+      start_time,
+      end_time,
+      course:courses (
+        id,
+        title
+      )
+    `)
+    .order("day")
+    .order("start_time");
 
   if (error) {
     console.error("Error fetching timetable:", error);
+    return [];
+  }
+  
+  // Flatten the course title into the object
+  return (data || []).map(l => ({
+    ...l,
+    course_title: (l.course as any)?.title || l.course_code || "Unknown Course",
+    course_code: (l.course as any)?.id || l.course_code
+  }));
+}
+
+/**
+ * Fetches all quizzes from Supabase
+ */
+export async function getQuizzesFromSupabase() {
+  const supabase = createClient();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("quizzes")
+    .select("*")
+    .order("date", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching quizzes:", error);
+    return [];
+  }
+  return data || [];
+}
+
+/**
+ * Fetches academic levels
+ */
+export async function getLevelsFromSupabase() {
+  const supabase = createClient();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("academic_levels")
+    .select("*")
+    .order("level")
+    .order("semester");
+
+  if (error) {
+    console.error("Error fetching levels:", error);
     return [];
   }
   return data || [];

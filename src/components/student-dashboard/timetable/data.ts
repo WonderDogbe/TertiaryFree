@@ -62,6 +62,7 @@ export function getWeekDayFromDate(referenceDate: Date): WeekDay {
 export function getTodayLectures(
   referenceDate = new Date(),
   options: LectureQueryOptions = {},
+  lectures: WeeklyLecture[] = WEEKLY_LECTURES
 ): WeeklyLecture[] {
   const weekday = getWeekDayFromDate(referenceDate);
   const activeDays = normalizeActiveDays(options.activeDays);
@@ -70,7 +71,7 @@ export function getTodayLectures(
     return [];
   }
 
-  return WEEKLY_LECTURES.filter((lecture) => lecture.day === weekday).sort((a, b) =>
+  return lectures.filter((lecture) => lecture.day === weekday).sort((a, b) =>
     a.startTime.localeCompare(b.startTime),
   );
 }
@@ -84,6 +85,7 @@ export interface NextLectureResult {
 export function getNextLecture(
   referenceDate = new Date(),
   options: LectureQueryOptions = {},
+  lectures: WeeklyLecture[] = WEEKLY_LECTURES
 ): NextLectureResult | null {
   const nowDayIndex = DAY_INDEX.get(getWeekDayFromDate(referenceDate)) || 0;
   const nowMinutes = referenceDate.getHours() * 60 + referenceDate.getMinutes();
@@ -94,7 +96,7 @@ export function getNextLecture(
   let closestLecture: NextLectureResult | null = null;
   let closestLectureTimeMs = Number.POSITIVE_INFINITY;
 
-  for (const lecture of WEEKLY_LECTURES) {
+  for (const lecture of lectures) {
     if (!activeDaySet.has(lecture.day)) {
       continue;
     }
@@ -145,6 +147,7 @@ export function getNextLecture(
 export function getNextLectureForCourse(
   courseCode: string,
   referenceDate = new Date(),
+  lectures: WeeklyLecture[] = WEEKLY_LECTURES
 ): NextLectureResult | null {
   const nowDayIndex = DAY_INDEX.get(getWeekDayFromDate(referenceDate)) || 0;
   const nowMinutes = referenceDate.getHours() * 60 + referenceDate.getMinutes();
@@ -153,7 +156,7 @@ export function getNextLectureForCourse(
   let closestLecture: NextLectureResult | null = null;
   let closestLectureTimeMs = Number.POSITIVE_INFINITY;
 
-  for (const lecture of WEEKLY_LECTURES) {
+  for (const lecture of lectures) {
     if (lecture.code.toLowerCase() !== courseCode.toLowerCase()) {
       continue;
     }

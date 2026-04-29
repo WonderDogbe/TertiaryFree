@@ -49,7 +49,6 @@ export const viewport: Viewport = {
 import { PwaSplashScreen } from "@/components/PwaSplashScreen";
 import { AuthProvider } from "@/components/AuthProvider";
 
-import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -59,9 +58,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
-        <Script
+        <script
           id="theme-init"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

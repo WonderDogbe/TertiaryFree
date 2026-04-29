@@ -39,27 +39,18 @@ export default function ContactPage() {
   });
 
   // Theme Sync
+  // Theme Sync (Handled by global ThemeToggle, keeping local state for UI tweaks)
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
-    if (savedTheme === "dark" || (!savedTheme && systemTheme)) {
-      setIsDarkMode(true);
-    }
+    const root = document.documentElement;
+    const sync = () => setIsDarkMode(root.classList.contains("dark"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
     setIsThemeReady(true);
+    return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!isThemeReady) return;
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode, isThemeReady]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

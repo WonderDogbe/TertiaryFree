@@ -205,13 +205,24 @@ html.dark .glass-panel {
 
 [data-combobox-option]:where(:not([data-combobox-selected], [data-combobox-disabled])):hover,
 [data-combobox-option][data-combobox-active]:where(:not([data-combobox-selected], [data-combobox-disabled])) {
-  background-color: rgba(37, 99, 235, 0.18);
-  color: var(--color-text);
+  background-color: rgba(37, 99, 235, 0.18) !important;
+  color: var(--color-text) !important;
 }
 
 [data-combobox-option][data-combobox-selected] {
-  background-color: rgba(37, 99, 235, 0.24);
-  color: var(--color-text);
+  background-color: rgba(37, 99, 235, 0.24) !important;
+  color: var(--color-text) !important;
+}
+
+html.dark [data-combobox-dropdown] {
+  background-color: #121212 !important;
+  border-color: #334155 !important;
+}
+
+html.dark .mantine-Select-input,
+html.dark .mantine-Input-input {
+  background-color: #121212 !important;
+  color: #f2f3ff !important;
 }
 
 /* Global clickable cursor hints */

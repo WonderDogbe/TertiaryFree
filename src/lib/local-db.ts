@@ -12,6 +12,7 @@ import {
   type StudyModeValue,
   type WeekDayValue,
 } from "@/lib/study-schedule";
+import { createClient } from "@/utils/supabase/client";
 
 export interface InstitutionRecord {
   id: string;
@@ -169,6 +170,26 @@ export function isKnownInstitutionName(institutionName: string): boolean {
   return INSTITUTION_NAMES.has(institutionName);
 }
 
+/**
+ * Fetches institutions from Supabase with local fallback
+ */
+export async function getInstitutionsAsync(): Promise<InstitutionRecord[]> {
+  const supabase = createClient();
+  if (!supabase) return getInstitutions();
+
+  const { data, error } = await supabase
+    .from("institutions")
+    .select("*")
+    .order("name");
+
+  if (error || !data || data.length === 0) {
+    if (error) console.error("Error fetching institutions from Supabase:", error);
+    return getInstitutions();
+  }
+
+  return data as InstitutionRecord[];
+}
+
 export function findFacultyByName(facultyName: string): FacultyRecord | null {
   return FACULTY_BY_NAME.get(facultyName) || null;
 }
@@ -238,6 +259,27 @@ export function isKnownFacultyName(value: unknown): value is string {
   return typeof value === "string" && FACULTY_NAMES.has(value);
 }
 
+/**
+ * Fetches faculties from Supabase for a specific institution
+ */
+export async function getFacultiesAsync(institutionId: string): Promise<FacultyRecord[]> {
+  const supabase = createClient();
+  if (!supabase) return getFacultyOptions();
+
+  const { data, error } = await supabase
+    .from("faculties")
+    .select("*")
+    .eq("institution_id", institutionId)
+    .order("name");
+
+  if (error || !data || data.length === 0) {
+    if (error) console.error("Error fetching faculties from Supabase:", error);
+    return getFacultyOptions();
+  }
+
+  return data as FacultyRecord[];
+}
+
 export function getDepartmentOptions(): DepartmentRecord[] {
   return getFacultyOptions();
 }
@@ -286,6 +328,40 @@ export function getProgrammeOptionsForFacultyAndType(
 
 export function isKnownProgrammeName(value: unknown): value is string {
   return typeof value === "string" && PROGRAMME_NAMES.has(value);
+}
+
+/**
+ * Fetches programmes from Supabase for a specific faculty
+ */
+export async function getProgrammesAsync(facultyId: string, type?: string): Promise<ProgrammeRecord[]> {
+  const supabase = createClient();
+  if (!supabase) return getProgrammeOptions();
+
+  let query = supabase
+    .from("programmes")
+    .select("*")
+    .eq("faculty_id", facultyId)
+    .order("name");
+
+  if (type) {
+    query = query.eq("programme_type", type);
+  }
+
+  const { data, error } = await supabase;
+
+  if (error || !data || data.length === 0) {
+    if (error) console.error("Error fetching programmes from Supabase:", error);
+    // Fallback logic for local filtering
+    const faculty = FACULTIES.find(f => f.id === facultyId);
+    return getProgrammeOptionsForFacultyAndType(faculty?.name || "", type as any);
+  }
+
+  return data.map(p => ({
+    id: p.id,
+    name: p.name,
+    facultyId: p.faculty_id,
+    programmeType: p.programme_type
+  })) as ProgrammeRecord[];
 }
 
 export function getCourseCatalog(): CourseCatalogEntry[] {

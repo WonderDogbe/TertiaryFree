@@ -28,6 +28,7 @@ import { getStudyDaysForMode, WEEKDAY_STUDY_DAYS } from "@/lib/study-schedule";
 import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 import { LECTURE_COMMUNICATIONS } from "@/lib/dashboard-notifications";
 import { LecturerDashboard } from "@/components/lecturer-dashboard/LecturerDashboard";
+import { getTimetableFromSupabase } from "@/lib/supabase-data";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -118,6 +119,30 @@ export default function DashboardPage() {
   const dateStripRef = useRef<HTMLDivElement>(null);
 
   const [activeDays, setActiveDays] = useState<WeekDay[]>(WEEKDAY_STUDY_DAYS as WeekDay[]);
+  const [weeklyLectures, setWeeklyLectures] = useState<any[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      const lectures = await getTimetableFromSupabase();
+      if (lectures && lectures.length > 0) {
+        // Map Supabase fields to local expected names
+        const mapped = lectures.map(l => ({
+          id: l.id,
+          day: l.day as WeekDay,
+          course: l.course_title,
+          code: l.course_code,
+          lecturer: l.lecturer,
+          venue: l.venue,
+          startTime: l.start_time,
+          endTime: l.end_time
+        }));
+        setWeeklyLectures(mapped);
+      }
+      setIsDataLoading(false);
+    }
+    loadData();
+  }, []);
 
   useEffect(() => {
     if (!user || user.role !== "student") {
@@ -145,9 +170,11 @@ export default function DashboardPage() {
   const weekDays = useMemo(() => buildWeekDays(weekAnchor), [weekAnchor]);
 
   const todayWeekDay = getWeekDayFromDate(now);
-  const nextLectureResult = getNextLecture(now, { activeDays });
+  
+  // Use local-db logic but with our dynamic weeklyLectures
+  const nextLectureResult = getNextLecture(now, { activeDays }, weeklyLectures);
   const selectedWeekDay = getWeekDayFromDate(selectedDate);
-  const selectedDayLectures = getTodayLectures(selectedDate, { activeDays });
+  const selectedDayLectures = getTodayLectures(selectedDate, { activeDays }, weeklyLectures);
 
   const nextLectureToday =
     activeDays.includes(todayWeekDay) &&

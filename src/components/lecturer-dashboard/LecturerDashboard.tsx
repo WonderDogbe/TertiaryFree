@@ -26,6 +26,9 @@ import {
   formatLectureTimeRange,
   getTodayLectures,
 } from "@/components/student-dashboard/timetable/data";
+import { getTimetableFromSupabase } from "@/lib/supabase-data";
+import { useState, useEffect } from "react";
+import type { WeekDay } from "@/components/student-dashboard/timetable/LectureCard";
 
 // --- Helpers ---
 
@@ -90,7 +93,31 @@ function ActionButton({ action }: { action: ActionData }) {
 export function LecturerDashboard() {
   const { user } = useAuth();
   const now = useMemo(() => new Date(), []);
-  const todayLectures = useMemo(() => getTodayLectures(now), [now]);
+  const [weeklyLectures, setWeeklyLectures] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      const lectures = await getTimetableFromSupabase();
+      if (lectures && lectures.length > 0) {
+        const mapped = lectures.map(l => ({
+          id: l.id,
+          day: l.day as WeekDay,
+          course: l.course_title,
+          code: l.course_code,
+          lecturer: l.lecturer,
+          venue: l.venue,
+          startTime: l.start_time,
+          endTime: l.end_time
+        }));
+        setWeeklyLectures(mapped);
+      }
+      setIsLoading(false);
+    }
+    loadData();
+  }, []);
+
+  const todayLectures = useMemo(() => getTodayLectures(now, {}, weeklyLectures), [now, weeklyLectures]);
 
   const activeCoursesCount = user?.coursesLectured?.length || 0;
 

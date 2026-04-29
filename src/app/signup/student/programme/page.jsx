@@ -7,7 +7,8 @@ import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import {
-  getProgrammeOptionsForFacultyAndType,
+  findFacultyByName,
+  getProgrammesAsync,
   getProgrammeTypeOptions,
   isKnownFacultyName,
   isKnownGender,
@@ -70,14 +71,27 @@ export default function StudentProgrammePage() {
   const [studentDetails] = useState(readStoredStudentDetails);
   const [programmeType, setProgrammeType] = useState(studentDetails.programmeType);
   const [programme, setProgramme] = useState(studentDetails.programme);
+  const [programmeOptions, setProgrammeOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const requiresProgrammeSelection = isHtuInstitution(institutionName);
 
-  const hasRequiredStudentDetails = !requiresProgrammeSelection || isKnownFacultyName(studentDetails.department);
-
-  const programmeOptions = hasRequiredStudentDetails && isKnownProgrammeType(programmeType)
-    ? getProgrammeOptionsForFacultyAndType(studentDetails.department, programmeType)
-    : [];
+  useEffect(() => {
+    async function loadProgrammes() {
+      if (requiresProgrammeSelection && studentDetails.department && isKnownProgrammeType(programmeType)) {
+        setIsLoading(true);
+        // We need the faculty ID, but the storage might have the faculty Name.
+        // Let's resolve the ID from the name if needed.
+        const faculty = findFacultyByName(studentDetails.department);
+        if (faculty) {
+          const data = await getProgrammesAsync(faculty.id, programmeType);
+          setProgrammeOptions(data);
+        }
+        setIsLoading(false);
+      }
+    }
+    loadProgrammes();
+  }, [studentDetails.department, programmeType, requiresProgrammeSelection]);
 
   const hasValidProgrammeSelection = !requiresProgrammeSelection || (isKnownProgrammeType(programmeType) && programmeOptions.some((option) => option.name === programme));
 
@@ -99,7 +113,7 @@ export default function StudentProgrammePage() {
       "&:focus": { borderColor: "#a855f7", boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.1)" },
     },
     dropdown: {
-      backgroundColor: "#fff",
+      backgroundColor: "var(--color-secondary-bg)",
       borderRadius: "24px",
       boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
       border: "1px solid rgba(0,0,0,0.08)",
@@ -157,28 +171,33 @@ export default function StudentProgrammePage() {
 
         .institution-header { text-align: center; margin-bottom: 1rem; }
         .institution-title {
-          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: #000; margin: 0; line-height: 1.1;
+          font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; color: var(--color-text); margin: 0; line-height: 1.1;
         }
         .institution-subtitle {
-          font-size: 1rem; color: #334155; margin-top: 0.75rem; font-weight: 600;
+          font-size: 1rem; color: var(--color-text); opacity: 0.8; margin-top: 0.75rem; font-weight: 600;
         }
 
         .institution-form-card {
-          background: #fff;
+          background: var(--color-background);
           border-radius: 32px;
           padding: 2.5rem;
           box-shadow: 0 20px 60px rgba(0,0,0,0.06);
           border: 1px solid rgba(0,0,0,0.02);
         }
+        html.dark .institution-form-card {
+          background: rgba(20, 26, 46, 0.95);
+          border-color: rgba(148, 163, 184, 0.22);
+        }
 
         .faculty-option {
-          display: flex; align-items: center; gap: 1rem; color: #000; width: 100%;
+          display: flex; align-items: center; gap: 1rem; color: var(--color-text); width: 100%;
         }
         .faculty-icon-placeholder {
-          width: 36px; height: 36px; border-radius: 10px; background: #000; color: #fff;
+          width: 36px; height: 36px; border-radius: 10px; background: #1a1a1a; color: #fff;
           display: flex; align-items: center; justify-content: center;
           font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
         }
+        html.dark .faculty-icon-placeholder { background: #334155; }
 
         .institution-continue-btn {
           position: relative;
@@ -253,13 +272,13 @@ export default function StudentProgrammePage() {
 
                       <Select
                         id="student-programme"
-                        placeholder={isKnownProgrammeType(programmeType) ? "Select your programme" : "Select study type first"}
+                        placeholder={isLoading ? "Loading..." : isKnownProgrammeType(programmeType) ? "Select your programme" : "Select study type first"}
                         data={programmeOptions.map((option) => ({ value: option.name, label: option.name }))}
                         value={programme}
                         onChange={(value) => { setProgramme(value || ""); if (error) setError(""); }}
-                        disabled={!isKnownProgrammeType(programmeType)}
+                        disabled={!isKnownProgrammeType(programmeType) || isLoading}
                         searchable
-                        nothingFoundMessage="No matching programme"
+                        nothingFoundMessage={isLoading ? "Loading programmes..." : "No matching programme"}
                         styles={inputStyles}
                         error={error}
                         renderOption={({ option, checked }) => (

@@ -10,6 +10,7 @@ import {
   getStudyDaysForMode,
   WEEKDAY_STUDY_DAYS,
 } from "@/lib/study-schedule";
+import { getTimetableFromSupabase } from "@/lib/supabase-data";
 
 import { TimetableTabs } from "@/components/student-dashboard/timetable/TimetableTabs";
 
@@ -31,9 +32,32 @@ export default function ClassTimetablePage() {
     );
   }, [profile]);
 
+  const [lectures, setLectures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTimetable() {
+      const data = await getTimetableFromSupabase();
+      if (data) {
+        setLectures(data.map(l => ({
+          id: l.id,
+          day: l.day,
+          course: l.course_title,
+          code: l.course_code,
+          lecturer: l.lecturer,
+          venue: l.venue,
+          startTime: l.start_time,
+          endTime: l.end_time
+        })));
+      }
+      setIsLoading(false);
+    }
+    loadTimetable();
+  }, []);
+
   const filteredLectures = useMemo(
-    () => WEEKLY_LECTURES.filter((lecture) => activeDays.includes(lecture.day)),
-    [activeDays],
+    () => lectures.filter((lecture) => activeDays.includes(lecture.day)),
+    [activeDays, lectures],
   );
 
   return (
@@ -49,7 +73,14 @@ export default function ClassTimetablePage() {
         </p>
       </section>
 
-      <TimetableGrid lectures={filteredLectures} days={activeDays} />
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <p className="text-sm font-bold text-gray-500">Loading your timetable...</p>
+        </div>
+      ) : (
+        <TimetableGrid lectures={filteredLectures} days={activeDays} />
+      )}
     </div>
   );
 }

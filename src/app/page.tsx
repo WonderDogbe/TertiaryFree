@@ -164,74 +164,16 @@ export default function LandingPage() {
     setIsMenuOpen(false);
   };
 
+  // Unified Theme Sync
   useEffect(() => {
-    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-    const applyThemePreference = () => {
-      const savedTheme = window.localStorage.getItem("theme");
-      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
-      const shouldFollowSystemTheme = !hasSavedTheme;
-      setIsMobileSystemTheme(shouldFollowSystemTheme);
-
-      if (shouldFollowSystemTheme) {
-        setIsDarkMode(systemThemeQuery.matches);
-        setIsThemeReady(true);
-        return;
-      }
-
-      if (savedTheme === "dark") {
-        setIsDarkMode(true);
-        setIsThemeReady(true);
-        return;
-      }
-
-      if (savedTheme === "light") {
-        setIsDarkMode(false);
-        setIsThemeReady(true);
-        return;
-      }
-
-      setIsDarkMode(false);
-      setIsThemeReady(true);
-    };
-
-    const handleSystemThemeChange = (event: MediaQueryListEvent) => {
-      const savedTheme = window.localStorage.getItem("theme");
-      const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
-
-      if (hasSavedTheme) {
-        return;
-      }
-
-      setIsDarkMode(event.matches);
-    };
-
-    applyThemePreference();
-    systemThemeQuery.addEventListener("change", handleSystemThemeChange);
-
-    return () => {
-      systemThemeQuery.removeEventListener("change", handleSystemThemeChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isThemeReady) {
-      return;
-    }
-
     const root = document.documentElement;
-    root.classList.remove("light", "dark");
-
-    if (isDarkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.add("light");
-    }
-
-    if (!isMobileSystemTheme) {
-      window.localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    }
-  }, [isDarkMode, isThemeReady, isMobileSystemTheme]);
+    const sync = () => setIsDarkMode(root.classList.contains("dark"));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    setIsThemeReady(true);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!isMenuOpen && !isStandaloneMode) {

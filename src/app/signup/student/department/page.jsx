@@ -7,7 +7,7 @@ import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import {
-  getFacultyOptions,
+  getFacultiesAsync,
   isKnownFacultyName,
   isKnownGender,
   isKnownLevel,
@@ -21,13 +21,17 @@ const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
-const FACULTY_SELECT_OPTIONS = getFacultyOptions().map((option) => ({
-  value: option.name,
-  label: option.name,
-}));
-
 function isHtuInstitution(institutionName) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
+}
+
+function readStoredInstitution() {
+  if (typeof window === "undefined") return null;
+  try {
+    const storedValue = window.localStorage.getItem(SIGNUP_INSTITUTION_STORAGE_KEY);
+    if (!storedValue) return null;
+    return JSON.parse(storedValue);
+  } catch { return null; }
 }
 
 function readStoredInstitutionName() {
@@ -68,11 +72,32 @@ function readStoredStudentDetails() {
 
 export default function StudentFacultyPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
+  const [institution] = useState(readStoredInstitution);
   const [studentDetails] = useState(readStoredStudentDetails);
   const [faculty, setFaculty] = useState(studentDetails.department);
+  const [faculties, setFaculties] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const institutionName = institution?.name || "";
   const requiresFacultySelection = isHtuInstitution(institutionName);
+
+  useEffect(() => {
+    async function loadFaculties() {
+      if (!institution?.id) {
+        setIsLoading(false);
+        return;
+      }
+      const data = await getFacultiesAsync(institution.id);
+      setFaculties(data);
+      setIsLoading(false);
+    }
+    loadFaculties();
+  }, [institution?.id]);
+
+  const FACULTY_SELECT_OPTIONS = faculties.map((option) => ({
+    value: option.name,
+    label: option.name,
+  }));
 
   const inputStyles = {
     root: { marginBottom: "1.5rem" },
@@ -98,7 +123,7 @@ export default function StudentFacultyPage() {
       },
     },
     dropdown: {
-      backgroundColor: "var(--color-background)",
+      backgroundColor: "var(--color-secondary-bg)",
       borderRadius: "24px",
       boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
       border: "1px solid rgba(148, 163, 184, 0.22)",
@@ -164,37 +189,42 @@ export default function StudentFacultyPage() {
           font-size: 2.25rem;
           font-weight: 800;
           letter-spacing: -0.04em;
-          color: #000;
+          color: var(--color-text);
           margin: 0;
           line-height: 1.1;
         }
         .institution-subtitle {
           font-size: 1rem;
-          color: #334155;
+          color: var(--color-text);
+          opacity: 0.8;
           margin-top: 0.75rem;
           font-weight: 600;
         }
 
         .institution-form-card {
-          background: #fff;
+          background: var(--color-background);
           border-radius: 32px;
           padding: 2.5rem;
           box-shadow: 0 20px 60px rgba(0,0,0,0.06);
           border: 1px solid rgba(0,0,0,0.02);
+        }
+        html.dark .institution-form-card {
+           background: rgba(20, 26, 46, 0.95);
+           border-color: rgba(148, 163, 184, 0.22);
         }
 
         .faculty-option {
           display: flex;
           align-items: center;
           gap: 1rem;
-          color: #000;
+          color: var(--color-text);
           width: 100%;
         }
         .faculty-icon-placeholder {
           width: 36px;
           height: 36px;
           border-radius: 10px;
-          background: #000;
+          background: #1a1a1a;
           color: #fff;
           display: flex;
           align-items: center;
@@ -202,6 +232,9 @@ export default function StudentFacultyPage() {
           font-size: 0.75rem;
           font-weight: 800;
           flex-shrink: 0;
+        }
+        html.dark .faculty-icon-placeholder {
+          background: #334155;
         }
 
         .institution-continue-btn {
@@ -272,27 +305,34 @@ export default function StudentFacultyPage() {
               <div className="institution-form-card">
                 <form onSubmit={handleSubmit}>
                   {requiresFacultySelection && (
-                    <Select
-                      id="student-faculty"
-                      placeholder="Select your faculty"
-                      data={FACULTY_SELECT_OPTIONS}
-                      value={faculty}
-                      onChange={(value) => {
-                        setFaculty(value || "");
-                        if (error) setError("");
-                      }}
-                      error={error}
-                      styles={inputStyles}
-                      searchable
-                      renderOption={({ option, checked }) => (
-                        <div className="faculty-option">
-                          <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
-                            {option.label.substring(0, 2).toUpperCase()}
+                    isLoading ? (
+                      <div className="flex flex-col items-center gap-3 py-6">
+                        <div className="h-6 w-6 animate-spin rounded-full border-3 border-indigo-600 border-t-transparent" />
+                        <p className="text-xs font-bold text-gray-500">Loading faculties...</p>
+                      </div>
+                    ) : (
+                      <Select
+                        id="student-faculty"
+                        placeholder="Select your faculty"
+                        data={FACULTY_SELECT_OPTIONS}
+                        value={faculty}
+                        onChange={(value) => {
+                          setFaculty(value || "");
+                          if (error) setError("");
+                        }}
+                        error={error}
+                        styles={inputStyles}
+                        searchable
+                        renderOption={({ option, checked }) => (
+                          <div className="faculty-option">
+                            <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
+                              {option.label.substring(0, 2).toUpperCase()}
+                            </div>
+                            <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
                           </div>
-                          <span style={{ color: "inherit", fontWeight: "inherit" }}>{option.label}</span>
-                        </div>
-                      )}
-                    />
+                        )}
+                      />
+                    )
                   )}
 
                   <button

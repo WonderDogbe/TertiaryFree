@@ -227,13 +227,14 @@ export default function SignupInstitutionPage() {
           font-size: clamp(1.75rem, 4vw, 2.5rem);
           font-weight: 700;
           letter-spacing: -0.03em;
-          color: #111;
+          color: var(--color-text);
           margin: 0 0 0.5rem;
           line-height: 1.15;
         }
         .institution-subtitle {
           font-size: 0.95rem;
-          color: #666;
+          color: var(--color-text);
+          opacity: 0.7;
           margin: 0;
         }
 
@@ -318,7 +319,7 @@ export default function SignupInstitutionPage() {
           border-radius: 22px;
           border: none;
           overflow: hidden;
-          background: #fff;
+          background: var(--color-background);
           cursor: pointer;
           box-shadow: 0 4px 24px rgba(0,0,0,0.07);
           transition: box-shadow 0.25s ease;
@@ -337,7 +338,7 @@ export default function SignupInstitutionPage() {
         .institution-card-logo-area {
           position: relative;
           height: 140px;
-          background: linear-gradient(135deg, #e8e8f4 0%, #f0eef8 100%);
+          background: var(--color-secondary-bg);
           overflow: hidden;
           display: flex;
           align-items: center;
@@ -364,7 +365,7 @@ export default function SignupInstitutionPage() {
         .institution-card-logo-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.6) 100%);
+          background: linear-gradient(to bottom, transparent 50%, var(--color-background) 100%);
         }
 
         /* Body */
@@ -379,7 +380,7 @@ export default function SignupInstitutionPage() {
           font-size: 1.4rem;
           font-weight: 800;
           letter-spacing: -0.04em;
-          color: #111;
+          color: var(--color-text);
           margin: 0;
           line-height: 1;
         }
@@ -455,6 +456,10 @@ export default function SignupInstitutionPage() {
         /* Dark theme overrides */
         html.dark .institution-page {
           background: var(--color-background);
+        }
+        html.dark .institution-card-btn {
+          background: rgba(20, 26, 46, 0.95);
+          box-shadow: 0 4px 24px rgba(0,0,0,0.3);
         }
         html.dark .institution-title {
           color: #f2f3ff;

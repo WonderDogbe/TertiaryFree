@@ -198,7 +198,7 @@ export default function LecturerFacultyPage() {
                       error={error}
                       styles={inputStyles}
                       searchable
-                      renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
+                      renderOption={({ option, checked }: { option: any; checked?: boolean }) => (
                         <div className="faculty-option">
                           <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                             {option.label.substring(0, 2).toUpperCase()}

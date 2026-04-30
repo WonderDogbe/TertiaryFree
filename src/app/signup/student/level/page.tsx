@@ -244,7 +244,7 @@ export default function StudentLevelPage() {
                     value={selectedLevel}
                     onChange={(value) => { setSelectedLevel(value || ""); if (error) setError(""); }}
                     styles={inputStyles}
-                    renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
+                    renderOption={({ option, checked }: { option: any; checked?: boolean }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(6).substring(0, 2).padStart(2, 'L')}
@@ -262,7 +262,7 @@ export default function StudentLevelPage() {
                     onChange={(value) => { setSelectedSemester(value || ""); if (error) setError(""); }}
                     error={error}
                     styles={inputStyles}
-                    renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
+                    renderOption={({ option, checked }: { option: any; checked?: boolean }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(0, 2).toUpperCase()}

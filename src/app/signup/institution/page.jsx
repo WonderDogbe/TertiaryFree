@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { InstitutionCard } from "@/components/signup/InstitutionCard";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import { 
-  getInstitutions, 
+  getInstitutions,
+  getInstitutionsAsync, 
   isKnownInstitutionName 
 } from "@/lib/local-db";
 import { createClient } from "@/utils/supabase/client";
@@ -111,24 +112,8 @@ export default function SignupInstitutionPage() {
 
   useEffect(() => {
     async function fetchInstitutions() {
-      const supabase = createClient();
-      if (!supabase) {
-        setInstitutions(getInstitutions());
-        setIsLoading(false);
-        return;
-      }
-
-      const { data, error: fetchError } = await supabase
-        .from("institutions")
-        .select("*")
-        .order("name");
-
-      if (fetchError || !data || data.length === 0) {
-        if (fetchError) console.error("Error fetching institutions:", fetchError);
-        setInstitutions(getInstitutions()); // Fallback
-      } else {
-        setInstitutions(data);
-      }
+      const data = await getInstitutionsAsync();
+      setInstitutions(data);
       setIsLoading(false);
     }
 

@@ -17,6 +17,7 @@ import {
   isKnownProgrammeType,
   isKnownStudyMode,
   isKnownWeekDay,
+  type ProgrammeRecord,
 } from "@/lib/local-db";
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
@@ -71,7 +72,7 @@ export default function StudentProgrammePage() {
   const [studentDetails] = React.useState(readStoredStudentDetails);
   const [programmeType, setProgrammeType] = React.useState(studentDetails.programmeType);
   const [programme, setProgramme] = React.useState(studentDetails.programme);
-  const [programmeOptions, setProgrammeOptions] = React.useState([]);
+  const [programmeOptions, setProgrammeOptions] = React.useState<ProgrammeRecord[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const requiresProgrammeSelection = isHtuInstitution(institutionName);

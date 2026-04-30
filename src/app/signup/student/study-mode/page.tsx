@@ -57,7 +57,7 @@ function readStoredStudentDetails() {
       programmeType: typeof parsed.programmeType === "string" && isKnownProgrammeType(parsed.programmeType) ? parsed.programmeType : "",
       programme: typeof parsed.programme === "string" && isKnownProgrammeName(parsed.programme) ? parsed.programme : "",
       studyMode: typeof parsed.studyMode === "string" && isKnownStudyMode(parsed.studyMode) ? parsed.studyMode : "",
-      customStudyDays: Array.isArray(parsed.customStudyDays) ? ALL_WEEK_DAYS.filter((day) => parsed.customStudyDays.some((storedDay) => storedDay === day)) : [],
+      customStudyDays: Array.isArray(parsed.customStudyDays) ? ALL_WEEK_DAYS.filter((day) => parsed.customStudyDays.some((storedDay: string) => storedDay === day)) : [],
     };
   } catch {
     return { name: "", email: "", indexNumber: "", gender: "", level: "", department: "", programmeType: "", programme: "", studyMode: "", customStudyDays: [] };

@@ -163,7 +163,14 @@ const USER_ROLE_VALUES = new Set(
 const COURSE_BY_CODE = new Map(COURSE_CATALOG.map((item) => [item.code, item]));
 
 export function getInstitutions(): InstitutionRecord[] {
-  return INSTITUTIONS;
+  return [...INSTITUTIONS].sort((a, b) => {
+    const aName = a.name.toUpperCase();
+    const bName = b.name.toUpperCase();
+    const HTU = "HO TECHNICAL UNIVERSITY";
+    if (aName === HTU) return -1;
+    if (bName === HTU) return 1;
+    return aName.localeCompare(bName);
+  });
 }
 
 export function isKnownInstitutionName(institutionName: string): boolean {
@@ -187,7 +194,16 @@ export async function getInstitutionsAsync(): Promise<InstitutionRecord[]> {
     return getInstitutions();
   }
 
-  return data as InstitutionRecord[];
+  const sorted = (data as InstitutionRecord[]).sort((a, b) => {
+    const aName = a.name.toUpperCase();
+    const bName = b.name.toUpperCase();
+    const HTU = "HO TECHNICAL UNIVERSITY";
+    if (aName === HTU) return -1;
+    if (bName === HTU) return 1;
+    return aName.localeCompare(bName);
+  });
+
+  return sorted;
 }
 
 export function findFacultyByName(facultyName: string): FacultyRecord | null {

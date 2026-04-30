@@ -127,7 +127,7 @@ export default function DashboardPage() {
       const lectures = await getTimetableFromSupabase();
       if (lectures && lectures.length > 0) {
         // Map Supabase fields to local expected names
-        const mapped = lectures.map(l => ({
+        const mapped = lectures.map((l: any) => ({
           id: l.id,
           day: l.day as WeekDay,
           course: l.course_title,

@@ -100,7 +100,7 @@ export function LecturerDashboard() {
     async function loadData() {
       const lectures = await getTimetableFromSupabase();
       if (lectures && lectures.length > 0) {
-        const mapped = lectures.map(l => ({
+        const mapped = lectures.map((l: any) => ({
           id: l.id,
           day: l.day as WeekDay,
           course: l.course_title,

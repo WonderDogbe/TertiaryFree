@@ -299,7 +299,7 @@ export default function SignupStudentPage() {
                     onChange={(v) => { setFormData(prev => ({ ...prev, gender: v || "" })); if (errors.gender) setErrors(prev => ({ ...prev, gender: "" })); }}
                     error={errors.gender}
                     styles={inputStyles}
-                    renderOption={({ option, checked }: { option: any; checked: boolean }) => (
+                    renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(0, 2).toUpperCase()}

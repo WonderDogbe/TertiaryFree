@@ -260,7 +260,7 @@ export default function StudentProgrammePage() {
                         value={programmeType}
                         onChange={(value) => { setProgrammeType(value || ""); setProgramme(""); if (error) setError(""); }}
                         styles={inputStyles}
-                        renderOption={({ option, checked }: { option: any; checked: boolean }) => (
+                        renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
                           <div className="faculty-option">
                             <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                               {option.label.substring(0, 2).toUpperCase()}
@@ -281,7 +281,7 @@ export default function StudentProgrammePage() {
                         nothingFoundMessage={isLoading ? "Loading programmes..." : "No matching programme"}
                         styles={inputStyles}
                         error={error}
-                        renderOption={({ option, checked }: { option: any; checked: boolean }) => (
+                        renderOption={({ option, checked }: { option: any; checked: boolean | undefined }) => (
                           <div className="faculty-option">
                             <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                               {option.label.substring(0, 2).toUpperCase()}

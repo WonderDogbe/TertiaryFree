@@ -87,18 +87,7 @@ export async function getTimetableFromSupabase() {
 
   const { data, error } = await supabase
     .from("weekly_lectures")
-    .select(`
-      id,
-      day,
-      lecturer,
-      venue,
-      start_time,
-      end_time,
-      course:courses (
-        id,
-        title
-      )
-    `)
+    .select("*")
     .order("day")
     .order("start_time");
 
@@ -107,11 +96,9 @@ export async function getTimetableFromSupabase() {
     return [];
   }
   
-  // Flatten the course title into the object
   return (data || []).map((l: any) => ({
     ...l,
-    course_title: (l.course as any)?.title || l.course_code || "Unknown Course",
-    course_code: (l.course as any)?.id || l.course_code
+    course_title: l.course_title || l.course_code || "Unknown Course",
   }));
 }
 

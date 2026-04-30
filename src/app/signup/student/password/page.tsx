@@ -95,7 +95,6 @@ export default function StudentPasswordPage() {
       height: "56px",
       backgroundColor: "transparent",
       color: "inherit",
-      "&::placeholder": { color: "#475569", opacity: 1 },
     },
     visibilityToggle: { color: "#64748b" },
     section: { paddingLeft: "12px", paddingRight: "12px" }

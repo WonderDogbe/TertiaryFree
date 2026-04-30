@@ -103,8 +103,6 @@ export default function StudentLevelPage() {
       fontWeight: "600",
       boxShadow: "0 2px 10px rgba(168, 85, 247, 0.05)",
       transition: "all 0.2s ease",
-      "&::placeholder": { color: "#475569", opacity: 1 },
-      "&:focus": { borderColor: "#a855f7", boxShadow: "0 0 0 4px rgba(168, 85, 247, 0.1)" },
     },
     dropdown: {
       backgroundColor: "#fff",
@@ -121,8 +119,6 @@ export default function StudentLevelPage() {
       padding: "12px 16px",
       marginBottom: "4px",
       color: "#000",
-      "&[data-selected]": { backgroundColor: "#f3e8ff", color: "#7e22ce" },
-      "&[data-hovered]": { backgroundColor: "#faf5ff", color: "#7e22ce" },
     },
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InstitutionCard } from "@/components/signup/InstitutionCard";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -109,7 +109,7 @@ export default function SignupInstitutionPage() {
     shouldStartOver() ? "" : readStoredInstitutionName(),
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function fetchInstitutions() {
       const supabase = createClient();
       if (!supabase) {
@@ -135,7 +135,7 @@ export default function SignupInstitutionPage() {
     fetchInstitutions();
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!shouldStartOver()) return;
 
     try {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, GraduationCap, Presentation } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -42,7 +42,7 @@ export default function SignupDetailsPage() {
   const [institutionName] = useState(readStoredInstitutionName);
   const [selectedRole, setSelectedRole] = useState("");
 
-  useEffect(() => {
+  React.useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const role = searchParams.get("role");
     if (role === "student" || role === "lecturer") {

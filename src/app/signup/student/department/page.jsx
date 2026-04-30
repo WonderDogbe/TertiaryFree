@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";

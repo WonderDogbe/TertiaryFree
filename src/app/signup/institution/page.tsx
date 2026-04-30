@@ -25,7 +25,7 @@ const START_OVER_QUERY_PARAM = "startOver";
  * tagline  → badge shown above the card (optional, marks the "featured" slot)
  * featured → renders the gradient accent ring
  */
-const INSTITUTION_META = {
+const INSTITUTION_META: Record<string, any> = {
   htu: {
     logoSrc: "/HTU-LOGO.png",
     tagline: null,

@@ -10,7 +10,7 @@ import { getSignupRoleOptions } from "@/lib/local-db";
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const ROLE_OPTIONS = getSignupRoleOptions();
 const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
-const ROLE_ICON_BY_VALUE = {
+const ROLE_ICON_BY_VALUE: Record<string, any> = {
   student: GraduationCap,
   lecturer: Presentation,
 };

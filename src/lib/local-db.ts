@@ -347,7 +347,7 @@ export async function getProgrammesAsync(facultyId: string, type?: string): Prom
     query = query.eq("programme_type", type);
   }
 
-  const { data, error } = await supabase;
+  const { data, error } = await query;
 
   if (error || !data || data.length === 0) {
     if (error) console.error("Error fetching programmes from Supabase:", error);
@@ -356,7 +356,7 @@ export async function getProgrammesAsync(facultyId: string, type?: string): Prom
     return getProgrammeOptionsForFacultyAndType(faculty?.name || "", type as any);
   }
 
-  return data.map(p => ({
+  return data.map((p: any) => ({
     id: p.id,
     name: p.name,
     facultyId: p.faculty_id,

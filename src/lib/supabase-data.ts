@@ -108,7 +108,7 @@ export async function getTimetableFromSupabase() {
   }
   
   // Flatten the course title into the object
-  return (data || []).map(l => ({
+  return (data || []).map((l: any) => ({
     ...l,
     course_title: (l.course as any)?.title || l.course_code || "Unknown Course",
     course_code: (l.course as any)?.id || l.course_code

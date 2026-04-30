@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -29,17 +29,17 @@ const LEVEL_NUMBER_OPTIONS = Array.from(new Set(LEVEL_OPTIONS.map((option) => op
   label: `Level ${levelValue}`,
 }));
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
-function getStoredLevelSelection(storedLevel) {
+function getStoredLevelSelection(storedLevel: any) {
   if (!isKnownLevel(storedLevel)) return { level: "", semester: "" };
   const matchedOption = LEVEL_OPTIONS.find((option) => option.value === storedLevel);
   return matchedOption ? { level: matchedOption.level, semester: matchedOption.semester } : { level: "", semester: "" };
 }
 
-function buildLevelValue(level, semester) {
+function buildLevelValue(level: string, semester: string) {
   const matchedOption = LEVEL_OPTIONS.find((option) => option.level === level && option.semester === semester);
   return matchedOption?.value || "";
 }
@@ -82,12 +82,12 @@ function readStoredStudentDetails() {
 
 export default function StudentLevelPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [studentDetails] = useState(readStoredStudentDetails);
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [studentDetails] = React.useState(readStoredStudentDetails);
   const initialLevelSelection = getStoredLevelSelection(studentDetails.level);
-  const [selectedLevel, setSelectedLevel] = useState(initialLevelSelection.level);
-  const [selectedSemester, setSelectedSemester] = useState(initialLevelSelection.semester);
-  const [error, setError] = useState("");
+  const [selectedLevel, setSelectedLevel] = React.useState(initialLevelSelection.level);
+  const [selectedSemester, setSelectedSemester] = React.useState(initialLevelSelection.semester);
+  const [error, setError] = React.useState("");
 
   const inputStyles = {
     root: { marginBottom: "1rem" },
@@ -129,7 +129,7 @@ export default function StudentLevelPage() {
   const level = buildLevelValue(selectedLevel, selectedSemester);
   const hasValidLevelSelection = isKnownLevel(level);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!hasValidLevelSelection) { setError("Level and semester are required"); return; }
     window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, level }));
@@ -244,7 +244,7 @@ export default function StudentLevelPage() {
                     value={selectedLevel}
                     onChange={(value) => { setSelectedLevel(value || ""); if (error) setError(""); }}
                     styles={inputStyles}
-                    renderOption={({ option, checked }) => (
+                    renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(6).substring(0, 2).padStart(2, 'L')}
@@ -262,7 +262,7 @@ export default function StudentLevelPage() {
                     onChange={(value) => { setSelectedSemester(value || ""); if (error) setError(""); }}
                     error={error}
                     styles={inputStyles}
-                    renderOption={({ option, checked }) => (
+                    renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(0, 2).toUpperCase()}

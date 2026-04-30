@@ -21,7 +21,7 @@ const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -140,7 +140,7 @@ export default function StudentFacultyPage() {
     },
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!requiresFacultySelection) {
       window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, department: "", programmeType: "", programme: "" }));
@@ -323,7 +323,7 @@ export default function StudentFacultyPage() {
                         error={error}
                         styles={inputStyles}
                         searchable
-                        renderOption={({ option, checked }) => (
+                        renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                           <div className="faculty-option">
                             <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                               {option.label.substring(0, 2).toUpperCase()}

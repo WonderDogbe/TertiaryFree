@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, GraduationCap, Presentation } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -15,7 +15,7 @@ const ROLE_ICON_BY_VALUE = {
   lecturer: Presentation,
 };
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -39,8 +39,8 @@ function readStoredInstitutionName() {
 
 export default function SignupDetailsPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [selectedRole, setSelectedRole] = useState("");
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [selectedRole, setSelectedRole] = React.useState("");
 
   React.useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);

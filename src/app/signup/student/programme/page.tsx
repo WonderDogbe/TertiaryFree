@@ -25,7 +25,7 @@ const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
 const PROGRAMME_TYPE_OPTIONS = getProgrammeTypeOptions();
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -132,7 +132,7 @@ export default function StudentProgrammePage() {
     },
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!requiresProgrammeSelection) {
       window.localStorage.setItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY, JSON.stringify({ ...studentDetails, programmeType: "", programme: "" }));
@@ -260,7 +260,7 @@ export default function StudentProgrammePage() {
                         value={programmeType}
                         onChange={(value) => { setProgrammeType(value || ""); setProgramme(""); if (error) setError(""); }}
                         styles={inputStyles}
-                        renderOption={({ option, checked }) => (
+                        renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                           <div className="faculty-option">
                             <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                               {option.label.substring(0, 2).toUpperCase()}
@@ -281,7 +281,7 @@ export default function StudentProgrammePage() {
                         nothingFoundMessage={isLoading ? "Loading programmes..." : "No matching programme"}
                         styles={inputStyles}
                         error={error}
-                        renderOption={({ option, checked }) => (
+                        renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                           <div className="faculty-option">
                             <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                               {option.label.substring(0, 2).toUpperCase()}

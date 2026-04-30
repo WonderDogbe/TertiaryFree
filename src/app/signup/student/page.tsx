@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { Select } from "@mantine/core";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -23,7 +23,7 @@ const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
 const GENDER_OPTIONS = getGenderOptions();
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -65,10 +65,10 @@ function readStoredStudentDetails() {
 
 export default function SignupStudentPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [formData, setFormData] = useState(readStoredStudentDetails);
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [formData, setFormData] = React.useState(readStoredStudentDetails);
   const requiresProgrammeSelection = isHtuInstitution(institutionName);
-  const [errors, setErrors] = useState({ name: "", email: "", indexNumber: "", gender: "" });
+  const [errors, setErrors] = React.useState({ name: "", email: "", indexNumber: "", gender: "" });
 
   const inputStyles = {
     root: { marginBottom: "1.25rem" },
@@ -114,7 +114,7 @@ export default function SignupStudentPage() {
 
   const isFormValid = formData.name.trim() !== "" && formData.email.trim() !== "" && formData.email.includes("@") && formData.indexNumber.trim() !== "" && isKnownGender(formData.gender);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const nextErrors = {
       name: formData.name.trim() ? "" : "Full name is required",
@@ -299,7 +299,7 @@ export default function SignupStudentPage() {
                     onChange={(v) => { setFormData(prev => ({ ...prev, gender: v || "" })); if (errors.gender) setErrors(prev => ({ ...prev, gender: "" })); }}
                     error={errors.gender}
                     styles={inputStyles}
-                    renderOption={({ option, checked }) => (
+                    renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                       <div className="faculty-option">
                         <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                           {option.label.substring(0, 2).toUpperCase()}

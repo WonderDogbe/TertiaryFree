@@ -1,7 +1,7 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { PasswordInput } from "@mantine/core";
 import { UserPlus, Lock } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -45,13 +45,13 @@ function readStoredLecturerDetails() {
 
 export default function LecturerPasswordPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [lecturerDetails] = useState(readStoredLecturerDetails);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
-  const [submitError, setSubmitError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [lecturerDetails] = React.useState(readStoredLecturerDetails);
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [errors, setErrors] = React.useState({ password: "", confirmPassword: "" });
+  const [submitError, setSubmitError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const inputStyles = {
     root: { marginBottom: "1.25rem" },
@@ -79,7 +79,7 @@ export default function LecturerPasswordPage() {
 
   const isFormValid = password.trim() !== "" && confirmPassword.trim() !== "" && password.length >= 8 && password === confirmPassword;
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const nextErrors = {
       password: password.trim() === "" ? "Password is required" : password.length < 8 ? "Password must be at least 8 characters" : "",

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { PasswordInput } from "@mantine/core";
 import { ArrowLeft, UserPlus, Lock } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -22,7 +22,7 @@ const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -64,14 +64,14 @@ function readStoredStudentDetails() {
 
 export default function StudentPasswordPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [studentDetails] = useState(readStoredStudentDetails);
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [studentDetails] = React.useState(readStoredStudentDetails);
   const requiresFacultyAndProgrammeSelection = isHtuInstitution(institutionName);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
-  const [submitError, setSubmitError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [errors, setErrors] = React.useState({ password: "", confirmPassword: "" });
+  const [submitError, setSubmitError] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   const programmeMatchesSelection = !requiresFacultyAndProgrammeSelection || (isKnownDepartmentName(studentDetails.department) && isKnownProgrammeType(studentDetails.programmeType) ? getProgrammeOptionsForFacultyAndType(studentDetails.department, studentDetails.programmeType).some((option) => option.name === studentDetails.programme) : false);
 
@@ -103,7 +103,7 @@ export default function StudentPasswordPage() {
 
   const isFormValid = password.trim() !== "" && confirmPassword.trim() !== "" && password.length >= 8 && password === confirmPassword;
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const nextErrors = {
       password: password.trim() === "" ? "Password is required" : password.length < 8 ? "Password must be at least 8 characters" : "",

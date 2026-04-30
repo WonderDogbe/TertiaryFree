@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import {
@@ -24,7 +24,7 @@ const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 
 const STUDY_MODE_OPTIONS = getStudyModeOptions();
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -66,13 +66,12 @@ function readStoredStudentDetails() {
 
 export default function StudentStudyModePage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [studentDetails] = useState(readStoredStudentDetails);
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [studentDetails] = React.useState(readStoredStudentDetails);
   const requiresFacultyAndProgrammeSelection = isHtuInstitution(institutionName);
-
-  const [studyMode, setStudyMode] = useState(studentDetails.studyMode);
-  const [customStudyDays, setCustomStudyDays] = useState(studentDetails.customStudyDays);
-  const [error, setError] = useState("");
+  const [studyMode, setStudyMode] = React.useState(studentDetails.studyMode);
+  const [customStudyDays, setCustomStudyDays] = React.useState(studentDetails.customStudyDays);
+  const [error, setError] = React.useState("");
 
   const programmeMatchesSelection = !requiresFacultyAndProgrammeSelection || (isKnownDepartmentName(studentDetails.department) && isKnownProgrammeType(studentDetails.programmeType) ? getProgrammeOptionsForFacultyAndType(studentDetails.department, studentDetails.programmeType).some((option) => option.name === studentDetails.programme) : false);
 
@@ -80,7 +79,7 @@ export default function StudentStudyModePage() {
 
   const hasValidStudyMode = isKnownStudyMode(studyMode) && (studyMode !== "custom" || customStudyDays.length > 0);
 
-  const handleToggleCustomDay = (day) => {
+  const handleToggleCustomDay = (day: any) => {
     if (!isKnownWeekDay(day)) return;
     setCustomStudyDays((currentDays) => {
       const daySet = new Set(currentDays);
@@ -90,7 +89,7 @@ export default function StudentStudyModePage() {
     if (error) setError("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!isKnownStudyMode(studyMode)) { setError("Select your study mode"); return; }
     if (studyMode === "custom" && customStudyDays.length === 0) { setError("Select at least one study day"); return; }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { InstitutionCard } from "@/components/signup/InstitutionCard";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
@@ -74,11 +74,11 @@ function readStoredInstitutionName() {
   return "";
 }
 
-function getInstitutionLogoSrc(institutionId) {
-  return INSTITUTION_META[institutionId]?.logoSrc ?? null;
+function getInstitutionLogoSrc(institutionId: string) {
+  return (INSTITUTION_META as any)[institutionId]?.logoSrc ?? null;
 }
 
-function persistSelectedInstitution(institution, institutions) {
+function persistSelectedInstitution(institution: any, institutions: any[]) {
   if (!institution) return false;
 
   const institutionLogoSrc = getInstitutionLogoSrc(institution.id);
@@ -102,10 +102,10 @@ function persistSelectedInstitution(institution, institutions) {
 
 export default function SignupInstitutionPage() {
   const router = useRouter();
-  const [institutions, setInstitutions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedInstitution, setSelectedInstitution] = useState(() =>
+  const [institutions, setInstitutions] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<any>(null);
+  const [selectedInstitution, setSelectedInstitution] = React.useState<string>(() =>
     shouldStartOver() ? "" : readStoredInstitutionName(),
   );
 
@@ -152,7 +152,7 @@ export default function SignupInstitutionPage() {
     return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
   };
 
-  const handleContinue = (institutionName = selectedInstitution) => {
+  const handleContinue = (institutionName: string = selectedInstitution) => {
     const institutionToContinueWith =
       typeof institutionName === "string" ? institutionName : selectedInstitution;
 
@@ -162,7 +162,7 @@ export default function SignupInstitutionPage() {
     router.push(nextUrl);
   };
 
-  const handleSelectInstitution = (institution) => {
+  const handleSelectInstitution = (institution: any) => {
     setSelectedInstitution(institution.name);
     const didPersistSelection = persistSelectedInstitution(institution, institutions);
 

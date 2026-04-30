@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { Select, MultiSelect } from "@mantine/core";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import {
@@ -17,7 +17,7 @@ const HTU_INSTITUTION_NAME = "HO TECHNICAL UNIVERSITY";
 const TITLE_OPTIONS = getLecturerTitleOptions();
 const COURSE_OPTIONS = getCourseOptions();
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -55,9 +55,9 @@ function readStoredLecturerDetails() {
 
 export default function SignupLecturerPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [formData, setFormData] = useState(readStoredLecturerDetails);
-  const [errors, setErrors] = useState({ name: "", email: "", title: "", coursesLectured: "" });
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [formData, setFormData] = React.useState(readStoredLecturerDetails);
+  const [errors, setErrors] = React.useState({ name: "", email: "", title: "", coursesLectured: "" });
 
   const inputStyles = {
     root: { marginBottom: "1.25rem" },
@@ -104,7 +104,7 @@ export default function SignupLecturerPage() {
     formData.title !== "" && 
     formData.coursesLectured.length > 0;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const nextErrors = {
       name: formData.name.trim() ? "" : "Full name is required",

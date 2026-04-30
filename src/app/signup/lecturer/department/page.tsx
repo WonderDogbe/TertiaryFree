@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 import { Select } from "@mantine/core";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import {
@@ -19,7 +19,7 @@ const FACULTY_SELECT_OPTIONS = getFacultyOptions().map((option) => ({
   label: option.name,
 }));
 
-function isHtuInstitution(institutionName) {
+function isHtuInstitution(institutionName: string) {
   return institutionName.trim().toUpperCase() === HTU_INSTITUTION_NAME;
 }
 
@@ -56,10 +56,10 @@ function readStoredLecturerDetails() {
 
 export default function LecturerFacultyPage() {
   const router = useRouter();
-  const [institutionName] = useState(readStoredInstitutionName);
-  const [lecturerDetails] = useState(readStoredLecturerDetails);
-  const [faculty, setFaculty] = useState(lecturerDetails.department);
-  const [error, setError] = useState("");
+  const [institutionName] = React.useState(readStoredInstitutionName);
+  const [lecturerDetails] = React.useState(readStoredLecturerDetails);
+  const [faculty, setFaculty] = React.useState(lecturerDetails.department);
+  const [error, setError] = React.useState("");
   const requiresFacultySelection = isHtuInstitution(institutionName);
 
   const inputStyles = {
@@ -100,7 +100,7 @@ export default function LecturerFacultyPage() {
     },
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!requiresFacultySelection) {
       window.localStorage.setItem(SIGNUP_LECTURER_DETAILS_STORAGE_KEY, JSON.stringify({ ...lecturerDetails, department: "" }));
@@ -198,7 +198,7 @@ export default function LecturerFacultyPage() {
                       error={error}
                       styles={inputStyles}
                       searchable
-                      renderOption={({ option, checked }) => (
+                      renderOption={({ option, checked }: { option: any; checked: boolean }) => (
                         <div className="faculty-option">
                           <div className="faculty-icon-placeholder" style={{ backgroundColor: checked ? "#7e22ce" : "#000" }}>
                             {option.label.substring(0, 2).toUpperCase()}

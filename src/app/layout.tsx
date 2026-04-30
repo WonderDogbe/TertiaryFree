@@ -49,6 +49,7 @@ export const viewport: Viewport = {
 import { PwaSplashScreen } from "@/components/PwaSplashScreen";
 import { AuthProvider } from "@/components/AuthProvider";
 
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -58,8 +59,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
-        <script
+        <Script
           id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,12 +76,8 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="min-h-full flex flex-col transition-colors duration-300"
-        style={{ 
-          fontFamily: "'Inter', system-ui, sans-serif",
-          backgroundColor: "var(--color-background)",
-          color: "var(--color-text)"
-        }}
+        className="min-h-full flex flex-col bg-white text-gray-900 transition-colors duration-300 dark:bg-[#121212] dark:text-gray-100"
+        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
         <MantineProvider defaultColorScheme="auto">
           <PwaSplashScreen />

@@ -5,18 +5,15 @@ import { useRouter } from "next/navigation";
 import { InstitutionCard } from "@/components/signup/InstitutionCard";
 import { FloatingBackLink } from "@/components/signup/FloatingBackLink";
 import { 
-  getInstitutions,
   getInstitutionsAsync, 
   isKnownInstitutionName 
 } from "@/lib/local-db";
-import { createClient } from "@/utils/supabase/client";
 
 /* ─── constants ──────────────────────────────────────────────────── */
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
 const SIGNUP_INSTITUTION_UPDATED_EVENT = "tertiaryfree:signup-institution-updated";
-const INSTITUTIONS = getInstitutions();
 const MOBILE_MEDIA_QUERY = "(max-width: 767px)";
 const START_OVER_QUERY_PARAM = "startOver";
 
@@ -112,9 +109,14 @@ export default function SignupInstitutionPage() {
 
   React.useEffect(() => {
     async function fetchInstitutions() {
-      const data = await getInstitutionsAsync();
-      setInstitutions(data);
-      setIsLoading(false);
+      try {
+        const data = await getInstitutionsAsync();
+        setInstitutions(data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchInstitutions();

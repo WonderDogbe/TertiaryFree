@@ -14,8 +14,6 @@ import {
 import { usePathname } from "next/navigation";
 import { Sidebar, type SidebarItem } from "./Sidebar";
 import { TopNavbar } from "./TopNavbar";
-import { useAuth } from "@/components/AuthProvider";
-import { Megaphone, QrCode } from "lucide-react";
 
 const SIDEBAR_ITEMS: SidebarItem[] = [
   {
@@ -93,74 +91,8 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     id: "notifications",
     label: "Notifications",
     icon: Bell,
-    href: "/dashboard/notifications",
-    activePathname: "/dashboard/notifications",
-    activeMatchMode: "prefix",
+    href: "/dashboard#notifications",
     group: "general",
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    href: "/dashboard/settings",
-    activePathname: "/dashboard/settings",
-    activeMatchMode: "prefix",
-  },
-];
-
-const LECTURER_SIDEBAR_ITEMS: SidebarItem[] = [
-  {
-    id: "dashboard",
-    label: "Overview",
-    icon: Home,
-    href: "/dashboard",
-    activePathname: "/dashboard",
-    activeMatchMode: "exact",
-  },
-  {
-    id: "lectures",
-    label: "My Schedule",
-    icon: CalendarDays,
-    href: "/dashboard/lecturer/timetable",
-    activePathname: "/dashboard/lecturer/timetable",
-    activeMatchMode: "prefix",
-    group: "timetable",
-  },
-  {
-    id: "attendance",
-    label: "Attendance",
-    icon: QrCode,
-    href: "/dashboard/lecturer/attendance",
-    activePathname: "/dashboard/lecturer/attendance",
-    activeMatchMode: "prefix",
-    group: "general",
-  },
-  {
-    id: "courses",
-    label: "Manage Courses",
-    icon: BookOpen,
-    href: "/dashboard/lecturer/courses",
-    activePathname: "/dashboard/lecturer/courses",
-    activeMatchMode: "prefix",
-    group: "general",
-  },
-  {
-    id: "quizzes",
-    label: "Quizzes & Exams",
-    icon: FileText,
-    href: "/dashboard/lecturer/quizzes",
-    activePathname: "/dashboard/lecturer/quizzes",
-    activeMatchMode: "prefix",
-    group: "classroom-connect",
-  },
-  {
-    id: "announcements",
-    label: "Announcements",
-    icon: Megaphone,
-    href: "/dashboard/lecturer/announcements",
-    activePathname: "/dashboard/lecturer/announcements",
-    activeMatchMode: "prefix",
-    group: "classroom-connect",
   },
   {
     id: "settings",
@@ -177,7 +109,6 @@ interface DashboardShellProps {
 }
 
 export function DashboardShell({ children }: DashboardShellProps) {
-  const { user } = useAuth();
   const pathname = usePathname();
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -222,14 +153,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
   const isMidsemRoute = pathname.startsWith("/dashboard/midsem");
   const isChatRoute = pathname.startsWith("/dashboard/chat");
   const isProfileRoute = pathname.startsWith("/dashboard/profile");
-  const isNotificationsRoute = pathname.startsWith("/dashboard/notifications");
 
   const pageTitle = pathname.startsWith("/dashboard/settings")
     ? "Settings"
-    : isNotificationsRoute
-      ? "Notifications"
     : isProfileRoute
-      ? "My Profile"
+      ? "Student Profile"
     : isChatRoute
       ? "Chat"
     : isMidsemRoute
@@ -245,7 +173,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
       : "Dashboard";
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-50 transition-colors duration-300 dark:bg-[#121212]">
+    <div className="min-h-screen bg-gray-50 transition-colors duration-300 dark:bg-gray-900">
       {isMobileSidebarOpen && (
         <button
           type="button"
@@ -255,30 +183,27 @@ export function DashboardShell({ children }: DashboardShellProps) {
         />
       )}
 
-      <div className="flex h-full">
+      <div className="flex min-h-screen">
         <Sidebar
-          items={user?.role === "lecturer" ? LECTURER_SIDEBAR_ITEMS : SIDEBAR_ITEMS}
+          items={SIDEBAR_ITEMS}
           isDesktopCollapsed={isDesktopSidebarCollapsed}
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
         <div
-          className={`flex min-w-0 flex-1 flex-col h-full transition-[margin] duration-300 ease-in-out ${
+          className={`flex min-w-0 flex-1 flex-col transition-[margin] duration-300 ease-in-out ${
             isDesktopSidebarCollapsed ? "md:ml-16" : "md:ml-64"
           }`}
         >
-          <div className="flex-shrink-0">
-            <TopNavbar
-              title={pageTitle}
-              onToggleSidebar={handleSidebarToggle}
-              isDesktopSidebarCollapsed={isDesktopSidebarCollapsed}
-            />
-          </div>
+          <TopNavbar
+            title={pageTitle}
+            onToggleSidebar={handleSidebarToggle}
+            isDesktopSidebarCollapsed={isDesktopSidebarCollapsed}
+            isMobileSidebarOpen={isMobileSidebarOpen}
+          />
 
-          <main className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 pb-28 sm:px-6 md:pb-6 lg:px-8">
-            {children}
-          </main>
+          <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
         </div>
       </div>
     </div>

@@ -181,29 +181,65 @@ export function isKnownInstitutionName(institutionName: string): boolean {
  * Fetches institutions from Supabase with local fallback
  */
 export async function getInstitutionsAsync(): Promise<InstitutionRecord[]> {
+  // Prefer same-origin API to avoid browser CORS/network restrictions.
+  if (typeof window !== "undefined") {
+    try {
+      const response = await fetch("/api/institutions", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        const maybeInstitutions = Array.isArray(json)
+          ? json
+          : (json?.institutions as unknown);
+
+        if (Array.isArray(maybeInstitutions) && maybeInstitutions.length > 0) {
+          return (maybeInstitutions as InstitutionRecord[]).sort((a, b) => {
+            const aName = (a.name || "").toUpperCase();
+            const bName = (b.name || "").toUpperCase();
+            const HTU = "HO TECHNICAL UNIVERSITY";
+            if (aName === HTU) return -1;
+            if (bName === HTU) return 1;
+            return aName.localeCompare(bName);
+          });
+        }
+      }
+    } catch {
+      // Fall through to other sources
+    }
+  }
+
   const supabase = createClient();
   if (!supabase) return getInstitutions();
 
-  const { data, error } = await supabase
-    .from("institutions")
-    .select("*")
-    .order("name");
+  try {
+    const { data, error } = await supabase
+      .from("institutions")
+      .select("*")
+      .order("name");
 
-  if (error || !data || data.length === 0) {
-    if (error) console.error("Error fetching institutions from Supabase:", error);
+    if (error || !data || data.length === 0) {
+      if (error)
+        console.error("Error fetching institutions from Supabase:", error);
+      return getInstitutions();
+    }
+
+    const sorted = (data as InstitutionRecord[]).sort((a, b) => {
+      const aName = (a.name || "").toUpperCase();
+      const bName = (b.name || "").toUpperCase();
+      const HTU = "HO TECHNICAL UNIVERSITY";
+      if (aName === HTU) return -1;
+      if (bName === HTU) return 1;
+      return aName.localeCompare(bName);
+    });
+
+    return sorted;
+  } catch (error) {
+    console.error("Error fetching institutions (network):", error);
     return getInstitutions();
   }
-
-  const sorted = (data as InstitutionRecord[]).sort((a, b) => {
-    const aName = a.name.toUpperCase();
-    const bName = b.name.toUpperCase();
-    const HTU = "HO TECHNICAL UNIVERSITY";
-    if (aName === HTU) return -1;
-    if (bName === HTU) return 1;
-    return aName.localeCompare(bName);
-  });
-
-  return sorted;
 }
 
 export function findFacultyByName(facultyName: string): FacultyRecord | null {

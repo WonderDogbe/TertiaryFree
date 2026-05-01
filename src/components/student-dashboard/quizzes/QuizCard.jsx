@@ -17,7 +17,7 @@ function getStatusClassName(status) {
 
 export function QuizCard({ quiz }) {
   return (
-    <article className="flex flex-col gap-2 rounded-2xl border border-white/60 bg-white/70 p-4 shadow-sm backdrop-blur-md transition-all duration-300 dark:border-white/10 dark:bg-white/5">
+    <article className="flex flex-col gap-2 rounded-xl border border-gray-200 p-4 transition-all duration-200 hover:shadow-md dark:border-gray-700">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500 dark:text-gray-400">

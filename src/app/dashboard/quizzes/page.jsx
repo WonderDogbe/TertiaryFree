@@ -1,13 +1,71 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { QuizCard } from "@/components/student-dashboard/quizzes/QuizCard";
 import { QuizTable } from "@/components/student-dashboard/quizzes/QuizTable";
 import { SummaryCard } from "@/components/student-dashboard/quizzes/SummaryCard";
-import { HeroAssessmentCard } from "@/components/student-dashboard/HeroAssessmentCard";
-import { getQuizzesFromSupabase } from "@/lib/supabase-data";
 
 export const dynamic = "force-dynamic";
+
+const QUIZZES = [
+  {
+    id: "quiz-1",
+    course: "CSC 301",
+    title: "Algorithms Quiz Drill",
+    date: "2026-04-22",
+    time: "09:30",
+    venue: "Room LT-3",
+    score: null,
+    status: "Upcoming",
+  },
+  {
+    id: "quiz-2",
+    course: "PHY 201",
+    title: "Mechanics Flash Quiz",
+    date: "2026-04-20",
+    time: "14:00",
+    venue: "Online (Zoom)",
+    score: null,
+    status: "Ongoing",
+  },
+  {
+    id: "quiz-3",
+    course: "MAT 221",
+    title: "Differential Equations Quiz",
+    date: "2026-04-24",
+    time: "12:00",
+    venue: "Room C-12",
+    score: null,
+    status: "Upcoming",
+  },
+  {
+    id: "quiz-4",
+    course: "CSC 205",
+    title: "Database Practice Quiz",
+    date: "2026-04-08",
+    time: "10:00",
+    venue: "Room B-07",
+    score: "18/25",
+    status: "Completed",
+  },
+  {
+    id: "quiz-5",
+    course: "STA 211",
+    title: "Probability Quiz 2",
+    date: "2026-03-30",
+    time: "15:00",
+    venue: "Room C-04",
+    score: "21/25",
+    status: "Completed",
+  },
+  {
+    id: "quiz-6",
+    course: "GST 101",
+    title: "Communication Skills Quiz",
+    date: "2026-03-18",
+    time: "11:00",
+    venue: "Online (LMS)",
+    score: "0/20",
+    status: "Missed",
+  },
+];
 
 const UPCOMING_STATUSES = new Set(["Upcoming", "Ongoing"]);
 const HISTORY_STATUSES = new Set(["Completed", "Missed"]);
@@ -74,36 +132,22 @@ function formatCountdown(dateTime, now) {
   return `${minutes}m`;
 }
 
-
-
 export default function QuizzesPage() {
-  const [quizzes, setQuizzes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const now = new Date();
 
-  useEffect(() => {
-    async function loadQuizzes() {
-      const data = await getQuizzesFromSupabase();
-      if (data) {
-        const processed = data.map((quiz) => {
-          const scoreData = parseScore(quiz.score);
-          const dateTime = getQuizDateTime(quiz);
+  const quizzes = QUIZZES.map((quiz) => {
+    const scoreData = parseScore(quiz.score);
+    const dateTime = getQuizDateTime(quiz);
 
-          return {
-            ...quiz,
-            dateTime,
-            dateLabel: formatDate(quiz.date),
-            timeLabel: formatTime(quiz.time),
-            percentage: scoreData ? Math.round(scoreData.percentage) : null,
-            percentageLabel: scoreData ? `${Math.round(scoreData.percentage)}%` : "--",
-          };
-        }).sort((leftQuiz, rightQuiz) => leftQuiz.dateTime.getTime() - rightQuiz.dateTime.getTime());
-        setQuizzes(processed);
-      }
-      setIsLoading(false);
-    }
-    loadQuizzes();
-  }, []);
+    return {
+      ...quiz,
+      dateTime,
+      dateLabel: formatDate(quiz.date),
+      timeLabel: formatTime(quiz.time),
+      percentage: scoreData ? Math.round(scoreData.percentage) : null,
+      percentageLabel: scoreData ? `${Math.round(scoreData.percentage)}%` : "--",
+    };
+  }).sort((leftQuiz, rightQuiz) => leftQuiz.dateTime - rightQuiz.dateTime);
 
   const upcomingQuizzes = quizzes.filter((quiz) => UPCOMING_STATUSES.has(quiz.status));
   const historyQuizzes = quizzes
@@ -152,6 +196,12 @@ export default function QuizzesPage() {
       helperText: "Upcoming and ongoing assessments",
     },
     {
+      id: "countdown",
+      title: "Next Quiz Countdown",
+      value: nextQuizCountdown,
+      helperText: nextQuizDescription,
+    },
+    {
       id: "average",
       title: "Average Score",
       value: averageScore,
@@ -170,57 +220,46 @@ export default function QuizzesPage() {
         </p>
       </header>
 
-      <HeroAssessmentCard type="Quiz" assessments={quizzes} />
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {summaryCards.map((card) => (
+          <SummaryCard
+            key={card.id}
+            title={card.title}
+            value={card.value}
+            helperText={card.helperText}
+          />
+        ))}
+      </section>
 
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-10 gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
-          <p className="text-sm font-bold text-gray-500">Loading quizzes...</p>
+      <section>
+        <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
+          Upcoming Quizzes
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-4">
+          {upcomingQuizzes.length > 0 ? (
+            upcomingQuizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
+          ) : (
+            <article className="rounded-xl border border-dashed border-gray-300 p-4 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
+              No upcoming quizzes right now.
+            </article>
+          )}
         </div>
-      ) : (
-        <>
-          <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {summaryCards.map((card) => (
-              <SummaryCard
-                key={card.id}
-                title={card.title}
-                value={card.value}
-                helperText={card.helperText}
-              />
-            ))}
-          </section>
+      </section>
 
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
-              Upcoming Quizzes
-            </h2>
-            <div className="mt-4 grid grid-cols-1 gap-4">
-              {upcomingQuizzes.length > 0 ? (
-                upcomingQuizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
-              ) : (
-                <article className="rounded-xl border border-dashed border-gray-300 p-4 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-300">
-                  No upcoming quizzes right now.
-                </article>
-              )}
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
-              Quiz History
-            </h2>
-            <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm transition-colors duration-300 dark:bg-gray-800">
-              {historyQuizzes.length > 0 ? (
-                <QuizTable items={historyQuizzes} />
-              ) : (
-                <p className="text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
-                  Completed quizzes will appear here once results are published.
-                </p>
-              )}
-            </div>
-          </section>
-        </>
-      )}
+      <section>
+        <h2 className="text-lg font-semibold text-gray-900 transition-colors duration-300 dark:text-gray-100">
+          Quiz History
+        </h2>
+        <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm transition-colors duration-300 dark:bg-gray-800">
+          {historyQuizzes.length > 0 ? (
+            <QuizTable items={historyQuizzes} />
+          ) : (
+            <p className="text-sm text-gray-600 transition-colors duration-300 dark:text-gray-300">
+              Completed quizzes will appear here once results are published.
+            </p>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

@@ -57,7 +57,13 @@ export default function LoginPage({
 
     setLoading(false);
     if (error) { setAuthError(error.message); return; }
-    router.push("/dashboard");
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const role = user?.user_metadata?.role;
+    router.push(role === "lecturer" ? "/dashboard/lecturer" : "/dashboard");
   };
 
   const inputStyles = {

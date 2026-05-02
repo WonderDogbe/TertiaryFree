@@ -77,9 +77,9 @@ const LECTURER_BOTTOM_NAV_ITEMS: BottomNavItem[] = [
   {
     id: "dashboard",
     label: "Home",
-    href: "/dashboard",
+    href: "/dashboard/lecturer",
     icon: Home,
-    activePathname: "/dashboard",
+    activePathname: "/dashboard/lecturer",
     activeMatchMode: "exact",
   },
   {

@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { Clock3 } from "lucide-react";
+import { createClient as createServerClient } from "@/utils/supabase/server";
 import {
   AssignmentsDeadlines,
   type AssignmentItem,
@@ -70,7 +72,16 @@ const LECTURE_COMMUNICATIONS: NotificationItem[] = [
   },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user?.user_metadata?.role === "lecturer") {
+    redirect("/dashboard/lecturer");
+  }
+
   const now = new Date();
   const todayWeekDay = getWeekDayFromDate(now);
   const nextLectureResult = getNextLecture(now);

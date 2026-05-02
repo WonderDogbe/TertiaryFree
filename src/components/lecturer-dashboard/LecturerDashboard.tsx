@@ -38,10 +38,7 @@ const QUICK_ACTIONS = [
   { id: "qa-3", label: "Quizzes", icon: FileUp, href: "/dashboard/lecturer/quizzes" },
 ];
 
-const ANNOUNCEMENTS = [
-  { id: "ann-1", title: "Midsem Examination Date", detail: "The mid-semester exam for ICT 315 has been scheduled for May 15th.", time: "2h ago" },
-  { id: "ann-2", title: "New Resource Uploaded", detail: "Lecture notes for 'Distributed Systems' are now available in the portal.", time: "5h ago" },
-];
+const ANNOUNCEMENTS: any[] = [];
 
 // --- Sub-components ---
 
@@ -122,10 +119,10 @@ export function LecturerDashboard() {
   const activeCoursesCount = user?.coursesLectured?.length || 0;
 
   const dynamicStats = useMemo(() => [
-    { id: "stat-1", label: "Total Students", value: "248", icon: Users },
+    { id: "stat-1", label: "Total Students", value: "—", icon: Users },
     { id: "stat-2", label: "Assigned Courses", value: activeCoursesCount.toString(), icon: GraduationCap },
-    { id: "stat-3", label: "Marking Inbox", value: "03", icon: FileText },
-    { id: "stat-4", label: "Avg. Attendance", value: "92%", icon: CheckCircle2 },
+    { id: "stat-3", label: "Marking Inbox", value: "0", icon: FileText },
+    { id: "stat-4", label: "Avg. Attendance", value: "—", icon: CheckCircle2 },
   ], [activeCoursesCount]);
 
   const myLectures = useMemo(() => {
@@ -273,28 +270,37 @@ export function LecturerDashboard() {
                <h3 className="text-xl font-black text-slate-900 dark:text-white">Notifications</h3>
                <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mt-1">Recent Faculty Alerts</p>
             </div>
-            <button className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-colors">
+            <button className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-colors" disabled>
               Clear All
             </button>
           </div>
           
           <div className="space-y-4">
-            {ANNOUNCEMENTS.map(item => (
-              <div key={item.id} className="flex gap-5 rounded-3xl border border-slate-50 bg-slate-50/50 p-5 dark:border-white/5 dark:bg-white/5 transition-all hover:bg-white dark:hover:bg-white/10">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
-                  <BellRing size={22} />
+            {ANNOUNCEMENTS.length === 0 ? (
+              <div className="flex flex-col items-center gap-4 py-12 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                  <BellRing className="h-8 w-8 text-slate-300 dark:text-slate-600" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-black text-slate-900 dark:text-white">{item.title}</p>
-                    <span className="flex-shrink-0 text-[10px] font-black uppercase text-slate-400 tracking-tighter">{item.time}</span>
-                  </div>
-                  <p className="mt-2 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-                    {item.detail}
-                  </p>
-                </div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">No notifications yet</p>
               </div>
-            ))}
+            ) : (
+              ANNOUNCEMENTS.map(item => (
+                <div key={item.id} className="flex gap-5 rounded-3xl border border-slate-50 bg-slate-50/50 p-5 dark:border-white/5 dark:bg-white/5 transition-all hover:bg-white dark:hover:bg-white/10">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                    <BellRing size={22} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-sm font-black text-slate-900 dark:text-white">{item.title}</p>
+                      <span className="flex-shrink-0 text-[10px] font-black uppercase text-slate-400 tracking-tighter">{item.time}</span>
+                    </div>
+                    <p className="mt-2 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                      {item.detail}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
             
             <Link href="/dashboard/lecturer/announcements" className="flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 py-4 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-black active:scale-[0.98] dark:bg-indigo-600 dark:hover:bg-indigo-700">
                <Megaphone size={16} />

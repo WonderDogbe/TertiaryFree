@@ -33,12 +33,14 @@ interface TopNavbarProps {
   title: string;
   onToggleSidebar: () => void;
   isDesktopSidebarCollapsed: boolean;
+  isMobileSidebarOpen?: boolean;
 }
 
 export function TopNavbar({
   title,
   onToggleSidebar,
   isDesktopSidebarCollapsed,
+  isMobileSidebarOpen = false,
 }: TopNavbarProps) {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState("Student");
@@ -175,7 +177,8 @@ export function TopNavbar({
              <button 
                onClick={onToggleSidebar}
                className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800 transition-transform active:scale-95"
-               aria-label="Open sidebar"
+               aria-label={isMobileSidebarOpen ? "Close sidebar" : "Open sidebar"}
+               aria-expanded={isMobileSidebarOpen}
              >
                 {avatarUrl ? (
                   <Image src={avatarUrl} alt="Profile" fill className="object-cover" />

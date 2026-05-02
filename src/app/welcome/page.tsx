@@ -11,7 +11,9 @@ export default function WelcomePage({
   searchParams: Promise<{ email?: string | string[]; role?: string | string[] }>;
 }) {
   const resolvedSearchParams = use(searchParams);
-  const email = resolvedSearchParams?.email ?? "";
+  const rawRole = resolvedSearchParams?.role;
+  const role = Array.isArray(rawRole) ? rawRole[0] : rawRole;
+  const dashboardHref = role === "lecturer" ? "/dashboard/lecturer" : "/dashboard";
   const [firstName, setFirstName] = useState("");
 
   const { user } = useAuth();
@@ -39,7 +41,7 @@ export default function WelcomePage({
         
         <div className="flex flex-col gap-4">
           <Link
-            href="/dashboard"
+            href={dashboardHref}
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--color-primary)] py-4 text-[1.05rem] font-semibold text-white shadow-xl transition-transform active:scale-[0.98] hover:bg-blue-700"
           >
             Continue to Dashboard

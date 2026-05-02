@@ -13,6 +13,7 @@ import {
 
 const SIGNUP_INSTITUTION_STORAGE_KEY = "tertiaryfree:signup-institution";
 const SIGNUP_STUDENT_DETAILS_STORAGE_KEY = "tertiaryfree:signup-student-details";
+const SIGNUP_LECTURER_DETAILS_STORAGE_KEY = "tertiaryfree:signup-lecturer-details";
 const SIGNUP_INSTITUTION_UPDATED_EVENT = "tertiaryfree:signup-institution-updated";
 const MOBILE_MEDIA_QUERY = "(max-width: 767px)";
 const START_OVER_QUERY_PARAM = "startOver";
@@ -128,6 +129,7 @@ export default function SignupInstitutionPage() {
     try {
       window.localStorage.removeItem(SIGNUP_INSTITUTION_STORAGE_KEY);
       window.localStorage.removeItem(SIGNUP_STUDENT_DETAILS_STORAGE_KEY);
+      window.localStorage.removeItem(SIGNUP_LECTURER_DETAILS_STORAGE_KEY);
       window.dispatchEvent(new Event(SIGNUP_INSTITUTION_UPDATED_EVENT));
     } catch {
       // ignore cleanup failures
